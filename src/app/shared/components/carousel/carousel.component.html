@@ -1,0 +1,11 @@
+<p-carousel
+  [value]="value"
+  [responsiveOptions]="responsiveOptions"
+  [circular]="circular"
+  [autoplayInterval]="autoplayInterval"
+  [numVisible]="numVisible"
+  [numScroll]="numScroll"
+  [styleClass]="styleClass"
+  (onPage)="onPage.emit($event)">
+  <ng-content></ng-content>
+</p-carousel> 
