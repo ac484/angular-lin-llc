@@ -14,5 +14,5 @@ export class SharedInputtextComponent {
   @Input() value: string = '';
   @Output() valueChange = new EventEmitter<string>();
   @Input() placeholder?: string;
-  @Input() disabled?: boolean;
+  @Input() disabled = false;
 } 
