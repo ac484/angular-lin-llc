@@ -1,11 +1,59 @@
-[![npm version](https://badge.fury.io/js/primeng.svg)](https://badge.fury.io/js/primeng)
-[![npm downloads](https://img.shields.io/npm/dm/primeng.svg)](https://www.npmjs.com/package/primeng)
-[![Actions CI](https://github.com/primefaces/primeng/workflows/NodeJS%20CI/badge.svg)](https://github.com/primefaces/primeng/actions/workflows/node.js.yml)
-[![Discord Chat](https://img.shields.io/discord/557940238991753223.svg?color=7289da&label=chat&logo=discord)](https://discord.gg/gzKFYnpmCY)
-[![Discussions](https://img.shields.io/github/discussions-search?query=org%3Aprimefaces&logo=github&label=Prime%20Discussions&link=https%3A%2F%2Fgithub.com%2Forgs%2Fprimefaces%2Fdiscussions)](https://github.com/orgs/primefaces/discussions)
+# PrimengQuickstart
 
-[![PrimeNG Hero](https://www.primefaces.org/static/social/primeng-preview.jpg)](https://primeng.org)
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.6.
 
-### PrimeNG Website
+## Development server
 
-PrimeNG is a rich set of open source UI Components for Angular. Visit the [PrimeNG website](https://primeng.org/) for interactive demos, comprehensive documentation and additional resources.
+To start a local development server, run:
+
+```bash
+ng serve
+```
+
+Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+
+## Code scaffolding
+
+Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+
+```bash
+ng generate component component-name
+```
+
+For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+
+```bash
+ng generate --help
+```
+
+## Building
+
+To build the project run:
+
+```bash
+ng build
+```
+
+This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+
+## Running unit tests
+
+To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+
+```bash
+ng test
+```
+
+## Running end-to-end tests
+
+For end-to-end (e2e) testing, run:
+
+```bash
+ng e2e
+```
+
+Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+
+## Additional Resources
+
+For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

@@ -1,39 +1,20 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection, importProvidersFrom } from '@angular/core';
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
-import { getFirestore, provideFirestore } from '@angular/fire/firestore';
-import { getAuth, provideAuth } from '@angular/fire/auth';
-import { getStorage, provideStorage } from '@angular/fire/storage';
-import { getApp } from '@angular/fire/app';
-import { environment } from '../environments/environment';
-import { provideAppCheck, initializeAppCheck, ReCaptchaV3Provider } from '@angular/fire/app-check';
-import { NgxPermissionsModule } from 'ngx-permissions';
-import { providePrimeNG } from 'primeng/config';
-
 import { routes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { providePrimeNG } from 'primeng/config';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import Aura from '@primeuix/themes/aura';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideAnimationsAsync(),
     providePrimeNG({
       theme: {
-        preset: 'Aura'
-      }
+        preset: Aura,
+        options: { darkModeSelector: '.p-dark' },
+      },
     }),
-    provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes), 
-    provideClientHydration(withEventReplay()),
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideFirestore(() => getFirestore()),
-    provideAuth(() => getAuth()),
-    provideStorage(() => getStorage()),
-    importProvidersFrom(NgxPermissionsModule.forRoot()),
-    ...(environment.production ? [
-      provideAppCheck(() => initializeAppCheck(getApp(), {
-        provider: new ReCaptchaV3Provider(environment.firebase.recaptchaV3SiteKey),
-        isTokenAutoRefreshEnabled: true
-      }))
-    ] : []),
-  ]
+    provideRouter(routes),
+  ],
 };
