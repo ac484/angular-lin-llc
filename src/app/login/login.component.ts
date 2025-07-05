@@ -1,8 +1,7 @@
 import { Component, ChangeDetectionStrategy, OnInit, inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
 import { RouterModule, Router } from '@angular/router';
 import { Auth, getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, AuthError } from '@angular/fire/auth';
 import { isPlatformBrowser } from '@angular/common';
@@ -10,25 +9,16 @@ import { isPlatformBrowser } from '@angular/common';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, RouterModule],
+  imports: [CommonModule, CardModule, ButtonModule, RouterModule],
   template: `
     <div class="login-container">
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>登入</mat-card-title>
-        </mat-card-header>
-        <mat-card-content class="login-content">
-          <button mat-raised-button color="primary" (click)="signInWithPopup()">
-            <mat-icon>login</mat-icon>
-            Google Popup 登入
-          </button>
-          <button mat-raised-button color="accent" (click)="signInWithRedirect()">
-            <mat-icon>login</mat-icon>
-            Google Redirect 登入
-          </button>
+      <p-card header="登入">
+        <div class="login-content">
+          <button pButton type="button" label="Google Popup 登入" icon="pi pi-sign-in" (click)="signInWithPopup()"></button>
+          <button pButton type="button" label="Google Redirect 登入" icon="pi pi-sign-in" (click)="signInWithRedirect()"></button>
           <p *ngIf="error" class="error">{{ error.message }}</p>
-        </mat-card-content>
-      </mat-card>
+        </div>
+      </p-card>
     </div>
   `,
   styles: [

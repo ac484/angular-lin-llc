@@ -1,13 +1,11 @@
 import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
+import { CardModule } from 'primeng/card';
+import { TabsModule } from 'primeng/tabs';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { Auth, getAuth, signOut } from '@angular/fire/auth';
 import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
 import { NgxPermissionsService } from 'ngx-permissions';
@@ -18,51 +16,53 @@ import { NgxPermissionsService } from 'ngx-permissions';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatCardModule,
-    MatTabsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    MatSlideToggleModule
+    FormsModule,
+    CardModule,
+    TabsModule,
+    InputTextModule,
+    ButtonModule,
+    ToggleSwitchModule
   ],
   template: `
-    <mat-card *ngIf="user">
-      <mat-card-header>
-        <div class="header-left">
-          <img *ngIf="user?.photoURL" [src]="user.photoURL" class="avatar"/>
-          <div>
-            <h2>{{ profileForm.get('displayName')!.value || user?.email }}</h2>
-            <p>{{ user?.email }}</p>
-          </div>
+    <p-card *ngIf="user">
+      <div class="header-left">
+        <img *ngIf="user?.photoURL" [src]="user.photoURL" class="avatar"/>
+        <div>
+          <h2>{{ profileForm.get('displayName')!.value || user?.email }}</h2>
+          <p>{{ user?.email }}</p>
         </div>
-        <button mat-icon-button (click)="logout()">
-          <mat-icon>logout</mat-icon>
-        </button>
-      </mat-card-header>
-      <mat-tab-group>
-        <mat-tab label="個人資料">
+        <button pButton type="button" icon="pi pi-sign-out" class="p-button-text" (click)="logout()"></button>
+      </div>
+      <p-tabs>
+        <p-tabpanel header="個人資料">
           <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
-            <mat-form-field appearance="outline">
-              <mat-label>顯示名稱</mat-label>
-              <input matInput formControlName="displayName"/>
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>電話</mat-label>
-              <input matInput formControlName="phone"/>
-            </mat-form-field>
-            <button mat-raised-button color="primary" type="submit">儲存</button>
+            <div class="p-field">
+              <label for="displayName">顯示名稱</label>
+              <input pInputText id="displayName" formControlName="displayName" />
+            </div>
+            <div class="p-field">
+              <label for="phone">電話</label>
+              <input pInputText id="phone" formControlName="phone" />
+            </div>
+            <button pButton type="submit" label="儲存" class="p-button-primary"></button>
           </form>
-        </mat-tab>
-        <mat-tab label="通知設定">
-          <mat-slide-toggle formControlName="emailNotifications">電子郵件通知</mat-slide-toggle>
-          <mat-slide-toggle formControlName="pushNotifications">推播通知</mat-slide-toggle>
-        </mat-tab>
-      </mat-tab-group>
-    </mat-card>
+        </p-tabpanel>
+        <p-tabpanel header="通知設定">
+          <div class="p-field">
+            <label for="emailNotifications">電子郵件通知</label>
+            <p-toggleSwitch id="emailNotifications" formControlName="emailNotifications"></p-toggleSwitch>
+          </div>
+          <div class="p-field">
+            <label for="pushNotifications">推播通知</label>
+            <p-toggleSwitch id="pushNotifications" formControlName="pushNotifications"></p-toggleSwitch>
+          </div>
+        </p-tabpanel>
+      </p-tabs>
+    </p-card>
   `,
   styles: [
-    `.header-left { display:flex; align-items:center; } .avatar { width:40px; height:40px; border-radius:50%; margin-right:8px; }`
+    `.header-left { display:flex; align-items:center; gap: 1rem; }
+     .avatar { width:40px; height:40px; border-radius:50%; margin-right:8px; }`
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

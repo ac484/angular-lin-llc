@@ -1,26 +1,19 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { CardModule } from 'primeng/card';
 
 @Component({
   selector: 'app-admin-panel',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CardModule],
   template: `
-    <div class="dashboard-container">
-      <h1>管理儀表板</h1>
-      <p>請從側邊選單選擇操作。</p>
-    </div>
+    <p-card header="管理儀表板">
+      <p>請從左側選單選擇操作。</p>
+    </p-card>
   `,
-  styles: [`
-    .dashboard-container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    h1 {
-      margin-bottom: 2rem;
-      color: #333;
-    }
-  `],
+  styles: [
+    `.p-card { max-width: 1200px; margin: 0 auto; }`
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminPanelComponent {} 

@@ -1,38 +1,34 @@
 import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatTableModule } from '@angular/material/table';
-import { MatSlideToggleModule, MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { TableModule } from 'primeng/table';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { CardModule } from 'primeng/card';
+import { FormsModule } from '@angular/forms';
 import { FirebaseService } from '../../core/services/firebase.service';
 
 @Component({
   selector: 'app-permission-matrix',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatTableModule, MatSlideToggleModule],
+  imports: [CommonModule, TableModule, ToggleSwitchModule, CardModule, FormsModule],
   template: `
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>權限矩陣管理</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <table mat-table [dataSource]="permissions">
-          <ng-container matColumnDef="permission">
-            <th mat-header-cell *matHeaderCellDef>權限</th>
-            <td mat-cell *matCellDef="let perm">{{ perm }}</td>
-          </ng-container>
-          <ng-container *ngFor="let role of roles" [matColumnDef]="role">
-            <th mat-header-cell *matHeaderCellDef>{{ role }}</th>
-            <td mat-cell *matCellDef="let perm">
-              <mat-slide-toggle [checked]="matrix[role].includes(perm)"
-                (change)="togglePermission(role, perm, $event)">
-              </mat-slide-toggle>
+    <p-card header="權限矩陣管理">
+      <p-table [value]="permissions">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>權限</th>
+            <th *ngFor="let role of roles">{{ role }}</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-perm>
+          <tr>
+            <td>{{ perm }}</td>
+            <td *ngFor="let role of roles">
+              <p-toggleSwitch [ngModel]="matrix[role].includes(perm)" (onChange)="togglePermission(role, perm, $event)"></p-toggleSwitch>
             </td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-      </mat-card-content>
-    </mat-card>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -40,7 +36,6 @@ export class PermissionMatrixComponent implements OnInit {
   private firebaseService = inject(FirebaseService);
   roles: string[] = ['admin', 'manager', 'user'];
   permissions: string[] = ['read', 'write', 'delete'];
-  displayedColumns: string[] = ['permission', ...this.roles];
   matrix: Record<string, string[]> = {};
 
   ngOnInit(): void {
@@ -50,7 +45,7 @@ export class PermissionMatrixComponent implements OnInit {
     });
   }
 
-  togglePermission(role: string, perm: string, event: MatSlideToggleChange): void {
+  togglePermission(role: string, perm: string, event: any): void {
     if (event.checked) {
       this.matrix[role].push(perm);
     } else {
