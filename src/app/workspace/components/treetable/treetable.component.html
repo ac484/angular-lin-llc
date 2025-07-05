@@ -1,0 +1,21 @@
+<p-treeTable [value]="value" [scrollable]="true" [tableStyle]="{'min-width':'50rem'}">
+  <ng-template #header>
+    <tr>
+      <th>名稱</th>
+      <th>類型</th>
+      <th>狀態</th>
+      <th>建立時間</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-rowNode let-rowData="rowData">
+    <tr [ttRow]="rowNode">
+      <td>
+        <p-treetable-toggler [rowNode]="rowNode" />
+        {{ rowData.name }}
+      </td>
+      <td>{{ rowData.type }}</td>
+      <td>{{ rowData.status }}</td>
+      <td>{{ rowData.createdAt | date:'yyyy/MM/dd HH:mm:ss' }}</td>
+    </tr>
+  </ng-template>
+</p-treeTable> 

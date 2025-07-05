@@ -1,49 +1,131 @@
-import { Component } from '@angular/core';
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MenubarModule } from 'primeng/menubar';
-import { DockModule } from 'primeng/dock';
-import { TooltipModule } from 'primeng/tooltip';
-import type { MenuItem } from 'primeng/api';
+import type { MenuItem, MenuItemCommandEvent } from 'primeng/api';
+import { SharedTreetableComponent } from './components/treetable/treetable.component';
+import { TreeNode } from 'primeng/api';
+import { isPlatformBrowser } from '@angular/common';
+import { Firestore, collection, collectionData, addDoc } from '@angular/fire/firestore';
+import { inject } from '@angular/core';
+import { WorkspaceNode } from '../core/models/workspace.types';
+import { WorkspaceMenubarComponent } from './components/menubar/menubar.component';
+import { WorkspaceDockComponent } from './components/dock/dock.component';
 
 @Component({
   selector: 'app-workspace',
   standalone: true,
-  imports: [CommonModule, MenubarModule, DockModule, TooltipModule],
+  imports: [CommonModule, MenubarModule, SharedTreetableComponent, WorkspaceMenubarComponent, WorkspaceDockComponent],
   template: `
-    <p-menubar [model]="menubarItems">
-      <ng-template #start><i class="pi pi-apple"></i></ng-template>
-      <ng-template #end><span>Fri 13:07</span></ng-template>
-    </p-menubar>
+    <app-workspace-menubar [model]="menubarItems"></app-workspace-menubar>
+    <app-workspace-dock *ngIf="isBrowser" [model]="dockItems" [position]="'bottom'" [breakpoint]="'960px'"></app-workspace-dock>
 
-    <p-dock [model]="dockItems" position="bottom">
-      <ng-template #item let-item>
-        <img
-          [pTooltip]="item.label"
-          tooltipPosition="top"
-          [src]="item.icon"
-          [alt]="item.label"
-          width="100%"
-        />
-      </ng-template>
-    </p-dock>
+    <div *ngIf="showTreeTable" style="margin-top: 1rem;">
+      <app-shared-treetable [value]="treeTableData" [columns]="treeTableColumns"></app-shared-treetable>
+    </div>
   `
 })
 export class WorkspaceComponent {
+  isBrowser: boolean;
+  firestore: Firestore;
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    this.isBrowser = isPlatformBrowser(platformId);
+    this.firestore = inject(Firestore);
+    this.loadNodes();
+  }
+
   menubarItems: MenuItem[] = [
     { label: '檔案', icon: 'pi pi-file', items: [
       { label: '新增', icon: 'pi pi-plus' },
-      { label: '開啟', icon: 'pi pi-folder-open' }
+      { label: '開啟', icon: 'pi pi-folder-open' },
+      { label: '重新載入', icon: 'pi pi-refresh', command: () => this.loadNodes() },
+      { label: '讀取專案', icon: 'pi pi-database', command: () => this.loadProjects() },
+      { label: '新增專案', icon: 'pi pi-plus-circle', command: () => this.addProject() }
     ]},
     { label: '編輯', icon: 'pi pi-pencil', items: [
       { label: '剪下', icon: 'pi pi-cut' },
       { label: '複製', icon: 'pi pi-copy' }
-    ]}
+    ]},
+    {
+      label: '節點', icon: 'pi pi-sitemap', items: [
+        { label: '建立節點', icon: 'pi pi-plus', command: () => this.addNode() }
+      ]
+    }
   ];
 
   dockItems: MenuItem[] = [
-    { label: 'Finder', icon: '/assets/dock/finder.png' },
-    { label: 'App Store', icon: '/assets/dock/appstore.png' },
-    { label: 'Photos', icon: '/assets/dock/photos.png' },
-    { label: 'Trash', icon: '/assets/dock/trash.png' }
+    { label: 'Finder', icon: 'pi pi-home' },
+    { label: 'App Store', icon: 'pi pi-apple' },
+    { label: 'Photos', icon: 'pi pi-image' },
+    { label: 'TreeTable', icon: 'pi pi-sitemap', command: () => this.toggleTreeTable() },
+    { label: 'Trash', icon: 'pi pi-trash' }
   ];
+
+  showTreeTable = false;
+  treeTableColumns = [
+    { field: 'name', header: '名稱' },
+    { field: 'type', header: '類型' },
+    { field: 'status', header: '狀態' },
+    { field: 'createdAt', header: '建立時間' }
+  ];
+  treeTableData: TreeNode[] = [];
+
+  toggleTreeTable() {
+    this.showTreeTable = !this.showTreeTable;
+    console.log('toggleTreeTable called, showTreeTable:', this.showTreeTable);
+    console.log('treeTableData:', this.treeTableData);
+    console.log('treeTableColumns:', this.treeTableColumns);
+  }
+
+  loadProjects() {
+    const col = collection(this.firestore, 'projects');
+    collectionData(col).subscribe(data => {
+      console.log('Firestore projects:', data);
+    });
+  }
+
+  addProject() {
+    const col = collection(this.firestore, 'projects');
+    addDoc(col, { name: '測試專案', created: new Date() }).then(docRef => {
+      console.log('新增 Firestore project, id:', docRef.id);
+    });
+  }
+
+  addNode() {
+    const col = collection(this.firestore, 'nodes');
+    const node: WorkspaceNode = {
+      id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
+      name: '新節點 ' + new Date().toLocaleTimeString(),
+      type: 'custom',
+      status: 'active',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    addDoc(col, node).then(docRef => {
+      console.log('已建立節點，id:', docRef.id, node);
+      this.loadNodes();
+    });
+  }
+
+  loadNodes() {
+    const col = collection(this.firestore, 'nodes');
+    collectionData(col, { idField: 'id' }).subscribe((data: any[]) => {
+      const nodes: WorkspaceNode[] = data.map(item => ({
+        ...item,
+        createdAt: item.createdAt instanceof Date ? item.createdAt : (item.createdAt?.toDate ? item.createdAt.toDate() : new Date()),
+        updatedAt: item.updatedAt instanceof Date ? item.updatedAt : (item.updatedAt?.toDate ? item.updatedAt.toDate() : new Date())
+      }));
+      this.treeTableData = this.buildTree(nodes);
+      console.log('載入 Firestore nodes:', this.treeTableData);
+    });
+  }
+
+  buildTree(nodes: WorkspaceNode[], parentId: string | null = null): TreeNode[] {
+    return nodes
+      .filter(node => node.parentId === parentId || (!node.parentId && parentId === null))
+      .map(node => ({
+        data: node,
+        children: this.buildTree(nodes, node.id),
+        leaf: !nodes.some(n => n.parentId === node.id)
+      }));
+  }
 } 

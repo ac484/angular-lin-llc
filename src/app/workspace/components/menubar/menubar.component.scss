@@ -1,0 +1,14 @@
+:host {
+  display: block;
+  width: 100%;
+  max-width: 100vw;
+}
+:host ::ng-deep .p-menubar {
+  width: 100%;
+  min-width: 320px;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+:host ::ng-deep .p-menubar-root-list {
+  align-items: center;
+} 
