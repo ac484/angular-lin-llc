@@ -1,0 +1,8 @@
+<p-scroller [items]="items" [options]="options">
+  <ng-template pTemplate="item" let-item let-options="options">
+    {{ item }}
+  </ng-template>
+  <ng-template pTemplate="loader" let-options="options">
+    Loading...
+  </ng-template>
+</p-scroller> 
