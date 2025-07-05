@@ -7,7 +7,7 @@ import { NavBarComponent } from './shared/nav-bar.component';
   selector: 'app-root',
   imports: [CommonModule, RouterOutlet, NavBarComponent],
   templateUrl: './app.html',
-  styleUrl: '../styles.scss'
+  styleUrl: './app.scss'
 })
 export class App {
   constructor(private router: Router) {}

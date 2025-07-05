@@ -1,42 +1,72 @@
 import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CardModule } from 'primeng/card';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { Firestore, collection, doc, setDoc, deleteDoc, collectionData, docData } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { lastValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Firestore, collection, doc, setDoc, deleteDoc, collectionData, docData } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-role-management',
   standalone: true,
-  imports: [CommonModule, FormsModule, CardModule, InputTextModule, ButtonModule],
-  template: `
-    <p-card header="角色管理">
-      <div *ngIf="roles$ | async as roles">
-        <div *ngFor="let role of roles" class="role-item">
-          <ng-container *ngIf="editingRole !== role; else editTpl">
-            {{ role }}
-            <button pButton type="button" icon="pi pi-pencil" class="p-button-text p-button-sm" (click)="startEdit(role)"></button>
-            <button pButton type="button" icon="pi pi-trash" class="p-button-text p-button-sm" (click)="deleteRole(role)"></button>
-          </ng-container>
-          <ng-template #editTpl>
-            <input pInputText [(ngModel)]="editedRoleName" />
-            <button pButton type="button" icon="pi pi-check" class="p-button-text p-button-sm" (click)="saveEdit(role)"></button>
-            <button pButton type="button" icon="pi pi-times" class="p-button-text p-button-sm" (click)="cancelEdit()"></button>
-          </ng-template>
-        </div>
-      </div>
-      <input pInputText placeholder="新角色名稱" [(ngModel)]="newRoleName" />
-      <button pButton type="button" label="新增角色" icon="pi pi-plus" class="p-button-primary" (click)="addRole()"></button>
-    </p-card>
-  `,
-  styles: [
-    `.role-item { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; }
-     input[pInputText] { width: 100%; margin-top: 1rem; }`
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule
   ],
+  template: `
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>角色管理</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div *ngIf="roles$ | async as roles">
+          <div *ngFor="let role of roles" class="role-item">
+            <ng-container *ngIf="editingRole !== role; else editTpl">
+              {{ role }}
+              <button mat-icon-button color="primary" (click)="startEdit(role)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="deleteRole(role)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </ng-container>
+            <ng-template #editTpl>
+              <mat-form-field appearance="outline">
+                <input matInput [(ngModel)]="editedRoleName" />
+              </mat-form-field>
+              <button mat-icon-button color="primary" (click)="saveEdit(role)">
+                <mat-icon>check</mat-icon>
+              </button>
+              <button mat-icon-button (click)="cancelEdit()">
+                <mat-icon>close</mat-icon>
+              </button>
+            </ng-template>
+          </div>
+        </div>
+        <mat-form-field appearance="outline">
+          <mat-label>新角色名稱</mat-label>
+          <input matInput [(ngModel)]="newRoleName" />
+        </mat-form-field>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="addRole()">新增角色</button>
+      </mat-card-actions>
+    </mat-card>
+  `,
+  styles: [`
+    .role-item { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; }
+    mat-form-field { width: 100%; margin-top: 1rem; }
+  `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RoleManagementComponent implements OnInit {

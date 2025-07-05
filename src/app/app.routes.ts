@@ -1,15 +1,24 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
-import { LoginComponent } from './login/login.component';
-import { WorkspaceComponent } from './workspace/workspace.component';
-import { AccountComponent } from './account/account.component';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'workspace', component: WorkspaceComponent },
-  { path: 'account', component: AccountComponent },
-  { path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
-  { path: '**', redirectTo: '' }
+  {
+    path: 'login',
+    loadComponent: () => import('./login/login.component').then(m => m.LoginComponent)
+  },
+  {
+    path: '',
+    loadComponent: () => import('./home/home.component').then(m => m.HomeComponent)
+  },
+  {
+    path: 'account',
+    loadComponent: () => import('./account/account.component').then(m => m.AccountComponent)
+  },
+  {
+    path: 'workspace',
+    loadComponent: () => import('./workspace/workspace.component').then(m => m.WorkspaceComponent)
+  },
+  {
+    path: 'admin',
+    loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule)
+  }
 ];
-

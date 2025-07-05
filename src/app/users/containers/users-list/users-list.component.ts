@@ -1,60 +1,72 @@
 import { Component, ChangeDetectionStrategy, OnInit, inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { CardModule } from 'primeng/card';
-import { TableModule } from 'primeng/table';
-import { SelectModule } from 'primeng/select';
-import { ButtonModule } from 'primeng/button';
-import { ChipModule } from 'primeng/chip';
-import { FormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatSelectModule } from '@angular/material/select';
 import { FirebaseService, User } from '../../../core/services/firebase.service';
 import { Observable, from, of } from 'rxjs';
 
 @Component({
   selector: 'app-users-list',
   standalone: true,
-  imports: [CommonModule, CardModule, TableModule, SelectModule, ButtonModule, ChipModule, FormsModule],
+  imports: [
+    CommonModule, 
+    MatCardModule, 
+    MatButtonModule, 
+    MatIconModule,
+    MatChipsModule,
+    MatSelectModule
+  ],
   template: `
     <div class="users-container">
-      <p-card>
-        <ng-template pTemplate="header">
-          <div class="header">
-            <h2>用戶管理</h2>
-            <p>管理系統用戶帳戶</p>
-          </div>
-        </ng-template>
-        <ng-template pTemplate="content">
-          <ng-container *ngIf="users$ | async as users">
-            <p-table [value]="users">
-              <ng-template pTemplate="header">
-                <tr>
-                  <th>電郵</th><th>名稱</th><th>創建日期</th><th>角色</th><th>動作</th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-user>
-                <tr>
-                  <td>{{ user.email }}</td>
-                  <td>{{ user.displayName || '未設定' }}</td>
-                  <td>{{ user.createdAt | date:'yyyy/MM/dd HH:mm' }}</td>
-                  <td>
-                    <p-select [options]="roles" [(ngModel)]="user.role" (onChange)="changeUserRole(user, $any($event).value)"></p-select>
-                  </td>
-                  <td>
-                    <p-chip label="活躍" class="p-mr-2"></p-chip>
-                    <button pButton icon="pi pi-pencil" class="p-button-text p-button-sm p-mr-2" (click)="editUser(user)"></button>
-                    <button pButton icon="pi pi-trash" class="p-button-text p-button-sm p-button-danger" (click)="deleteUser(user)"></button>
-                  </td>
-                </tr>
-              </ng-template>
-            </p-table>
-            <div *ngIf="users.length === 0" class="no-users">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>用戶管理</mat-card-title>
+          <mat-card-subtitle>管理系統用戶帳戶</mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <div class="users-list" *ngIf="users$ | async as users">
+            <div class="user-item" *ngFor="let user of users">
+              <div class="user-info">
+                <div class="user-email">{{ user.email }}</div>
+                <div class="user-details">
+                  <span class="user-name">{{ user.displayName || '未設定' }}</span>
+                  <span class="user-date">{{ user.createdAt | date:'yyyy/MM/dd HH:mm' }}</span>
+                </div>
+                <mat-form-field appearance="outline">
+                  <mat-label>角色</mat-label>
+                  <mat-select [(value)]="user.role" (selectionChange)="changeUserRole(user, $event.value)">
+                    <mat-option *ngFor="let role of roles" [value]="role">{{ role }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="user-actions">
+                <mat-chip color="primary" selected>活躍</mat-chip>
+                <button mat-icon-button color="primary" (click)="editUser(user)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteUser(user)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+            
+            <div class="no-users" *ngIf="users.length === 0">
               <p>目前沒有用戶資料</p>
             </div>
-          </ng-container>
-        </ng-template>
-        <ng-template pTemplate="footer">
-          <button pButton label="重新整理" icon="pi pi-refresh" class="p-button-primary" (click)="refreshUsers()"></button>
-        </ng-template>
-      </p-card>
+          </div>
+        </mat-card-content>
+        
+        <mat-card-actions>
+          <button mat-raised-button color="accent" (click)="refreshUsers()">
+            <mat-icon>refresh</mat-icon>
+            重新整理
+          </button>
+        </mat-card-actions>
+      </mat-card>
     </div>
   `,
   styles: [`

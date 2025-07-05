@@ -1,32 +1,65 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CardModule } from 'primeng/card';
-import { ButtonModule } from 'primeng/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, CardModule, ButtonModule, RouterModule],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, RouterModule],
   template: `
     <div class="home-container">
-      <p-card header="歡迎來到 Angular Lin LLC" subheader="極簡主義的現代化應用程式">
-        <div class="home-content">
+      <mat-card class="welcome-card">
+        <mat-card-header>
+          <mat-card-title>歡迎來到 Angular Lin LLC</mat-card-title>
+          <mat-card-subtitle>極簡主義的現代化應用程式</mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
           <p>這是一個基於 Angular 19 和 Firebase 的極簡主義工業應用程式。</p>
           <p>遵循「少即是多」的設計原則，專注於核心用戶管理功能。</p>
-        </div>
-        <ng-template pTemplate="footer">
-          <button pButton type="button" label="管理面板" icon="pi pi-cog" class="p-button-primary" routerLink="/admin"></button>
-          <button pButton type="button" label="登入" icon="pi pi-sign-in" class="p-button-secondary" routerLink="/login"></button>
-        </ng-template>
-      </p-card>
+        </mat-card-content>
+        
+        <mat-card-actions>
+          <button mat-raised-button color="primary" routerLink="/admin">
+            <mat-icon>admin_panel_settings</mat-icon>
+            管理面板
+          </button>
+          <button mat-raised-button color="accent" routerLink="/login">
+            <mat-icon>login</mat-icon>
+            登入
+          </button>
+        </mat-card-actions>
+      </mat-card>
     </div>
   `,
-  styles: [
-    `.home-container { display: flex; justify-content: center; align-items: center; min-height: 80vh; padding: 2rem; }
-     .home-content { margin: 1rem 0; }
-     :host ::ng-deep .p-card-footer { display: flex; gap: 1rem; justify-content: center; }`
-  ],
+  styles: [`
+    .home-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 80vh;
+      padding: 2rem;
+    }
+    
+    .welcome-card {
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+    
+    mat-card-content {
+      margin: 1rem 0;
+    }
+    
+    mat-card-actions {
+      display: flex;
+      justify-content: center;
+      padding: 1rem;
+    }
+  `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent {} 
