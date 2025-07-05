@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy, OnInit, inject, PLATFORM_ID } from 
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 import { ChipModule } from 'primeng/chip';
 import { FormsModule } from '@angular/forms';
@@ -12,7 +12,7 @@ import { Observable, from, of } from 'rxjs';
 @Component({
   selector: 'app-users-list',
   standalone: true,
-  imports: [CommonModule, CardModule, TableModule, DropdownModule, ButtonModule, ChipModule, FormsModule],
+  imports: [CommonModule, CardModule, TableModule, SelectModule, ButtonModule, ChipModule, FormsModule],
   template: `
     <div class="users-container">
       <p-card>
@@ -36,7 +36,7 @@ import { Observable, from, of } from 'rxjs';
                   <td>{{ user.displayName || '未設定' }}</td>
                   <td>{{ user.createdAt | date:'yyyy/MM/dd HH:mm' }}</td>
                   <td>
-                    <p-dropdown [options]="roles" [(ngModel)]="user.role" (onChange)="changeUserRole(user, $any($event).value)"></p-dropdown>
+                    <p-select [options]="roles" [(ngModel)]="user.role" (onChange)="changeUserRole(user, $any($event).value)"></p-select>
                   </td>
                   <td>
                     <p-chip label="活躍" class="p-mr-2"></p-chip>
