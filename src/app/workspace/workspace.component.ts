@@ -10,17 +10,21 @@ import { inject } from '@angular/core';
 import { WorkspaceNode } from '../core/models/workspace.types';
 import { WorkspaceMenubarComponent } from './components/menubar/menubar.component';
 import { WorkspaceDockComponent } from './components/dock/dock.component';
+import { WorkspaceTreeComponent } from './components/tree/tree.component';
 
 @Component({
   selector: 'app-workspace',
   standalone: true,
-  imports: [CommonModule, MenubarModule, SharedTreetableComponent, WorkspaceMenubarComponent, WorkspaceDockComponent],
+  imports: [CommonModule, MenubarModule, SharedTreetableComponent, WorkspaceMenubarComponent, WorkspaceDockComponent, WorkspaceTreeComponent],
   template: `
     <app-workspace-menubar [model]="menubarItems"></app-workspace-menubar>
     <app-workspace-dock *ngIf="isBrowser" [model]="dockItems" [position]="'bottom'" [breakpoint]="'960px'"></app-workspace-dock>
 
     <div *ngIf="showTreeTable" style="margin-top: 1rem;">
       <app-shared-treetable [value]="treeTableData" [columns]="treeTableColumns"></app-shared-treetable>
+    </div>
+    <div *ngIf="showTree" style="margin-top: 1rem;">
+      <app-workspace-tree [nodes]="treeData"></app-workspace-tree>
     </div>
   `
 })
@@ -54,26 +58,34 @@ export class WorkspaceComponent {
 
   dockItems: MenuItem[] = [
     { label: 'Finder', icon: 'pi pi-home' },
-    { label: 'App Store', icon: 'pi pi-apple' },
+    { label: 'Tree', icon: 'pi pi-apple', command: () => this.toggleTree() },
     { label: 'Photos', icon: 'pi pi-image' },
     { label: 'TreeTable', icon: 'pi pi-sitemap', command: () => this.toggleTreeTable() },
     { label: 'Trash', icon: 'pi pi-trash' }
   ];
 
   showTreeTable = false;
+  showTree = false;
   treeTableColumns = [
     { field: 'name', header: '名稱' },
     { field: 'type', header: '類型' },
     { field: 'status', header: '狀態' },
     { field: 'createdAt', header: '建立時間' }
   ];
-  treeTableData: TreeNode[] = [];
+  treeTableData: TreeNode<WorkspaceNode>[] = [];
+  treeData: TreeNode<WorkspaceNode>[] = [];
 
   toggleTreeTable() {
     this.showTreeTable = !this.showTreeTable;
     console.log('toggleTreeTable called, showTreeTable:', this.showTreeTable);
     console.log('treeTableData:', this.treeTableData);
     console.log('treeTableColumns:', this.treeTableColumns);
+  }
+
+  toggleTree() {
+    this.showTree = !this.showTree;
+    console.log('toggleTree called, showTree:', this.showTree);
+    this.treeData = this.treeTableData;
   }
 
   loadProjects() {
@@ -115,11 +127,12 @@ export class WorkspaceComponent {
         updatedAt: item.updatedAt instanceof Date ? item.updatedAt : (item.updatedAt?.toDate ? item.updatedAt.toDate() : new Date())
       }));
       this.treeTableData = this.buildTree(nodes);
+      this.treeData = this.treeTableData;
       console.log('載入 Firestore nodes:', this.treeTableData);
     });
   }
 
-  buildTree(nodes: WorkspaceNode[], parentId: string | null = null): TreeNode[] {
+  buildTree(nodes: WorkspaceNode[], parentId: string | null = null): TreeNode<WorkspaceNode>[] {
     return nodes
       .filter(node => node.parentId === parentId || (!node.parentId && parentId === null))
       .map(node => ({
