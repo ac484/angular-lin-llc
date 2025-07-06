@@ -17,11 +17,12 @@ import { WorkspaceStateService } from '../services/workspace-state.service';
 import { MENUBAR_ITEMS, DOCK_ITEMS, DOCK_CONTEXT_MENU_ITEMS } from '../config/workspace-menu.config';
 import { Observable } from 'rxjs';
 import { ProgressspinnerComponent } from '../../shared/progressspinner/progressspinner.component';
+import { TreeModule } from 'primeng/tree';
 
 @Component({
   selector: 'app-workspace',
   standalone: true,
-  imports: [CommonModule, MenubarModule, SharedTreetableComponent, WorkspaceMenubarComponent, WorkspaceDockComponent, WorkspaceTreeComponent, WorkspaceContextMenuComponent, ProgressspinnerComponent],
+  imports: [CommonModule, MenubarModule, SharedTreetableComponent, WorkspaceMenubarComponent, WorkspaceDockComponent, WorkspaceTreeComponent, WorkspaceContextMenuComponent, ProgressspinnerComponent, TreeModule],
   template: `
     <app-progressspinner *ngIf="isLoading" [style]="{width: '48px', height: '48px', margin: '2rem auto', display: 'block'}"></app-progressspinner>
     <div *ngIf="!isLoading" class="workspace-content">
@@ -47,6 +48,18 @@ import { ProgressspinnerComponent } from '../../shared/progressspinner/progresss
           (action)="onTreeAction($event)"
         ></app-workspace-tree>
       </div>
+      <div *ngIf="showTemplateTree" style="margin-top: 1rem;">
+        <p-tree [value]="templateTreeData" styleClass="w-full md:w-[30rem]">
+          <ng-template let-node pTemplate="url">
+            <a [href]="node.data" target="_blank" rel="noopener noreferrer" class="text-surface-700 dark:text-surface-100 hover:text-primary">
+              {{ node.label }}
+            </a>
+          </ng-template>
+          <ng-template let-node pTemplate="default">
+            <b>{{ node.label }}</b>
+          </ng-template>
+        </p-tree>
+      </div>
     </div>
   `
 })
@@ -58,6 +71,32 @@ export class WorkspaceComponent {
   dockContextMenuItems: MenuItem[] = [];
   selectedTreeNode: TreeNode<any> | null = null;
   @ViewChild('dockContextMenu') dockContextMenu?: WorkspaceContextMenuComponent;
+  showTemplateTree = false;
+  templateTreeData = [
+    {
+      label: '官方網站',
+      data: 'https://angular.dev',
+      type: 'url',
+      children: []
+    },
+    {
+      label: '說明文件',
+      type: 'default',
+      children: [
+        {
+          label: 'API Reference',
+          data: 'https://angular.dev/api',
+          type: 'url',
+          children: []
+        },
+        {
+          label: '教學',
+          type: 'default',
+          children: []
+        }
+      ]
+    }
+  ];
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -169,6 +208,9 @@ export class WorkspaceComponent {
       case 'Home': return () => this.goHome();
       case 'Tree': return () => this.toggleTree();
       case 'TreeTable': return () => this.toggleTreeTable();
+      case 'Template': return () => {
+        this.showTemplateTree = !this.showTemplateTree;
+      };
       default: return undefined;
     }
   }

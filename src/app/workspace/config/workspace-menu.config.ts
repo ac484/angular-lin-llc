@@ -47,6 +47,7 @@ export const DOCK_ITEMS: MenuItem[] = [
   { label: 'Home', icon: 'pi pi-home' },
   { label: 'Tree', icon: 'pi pi-th-large' },
   { label: 'TreeTable', icon: 'pi pi-sitemap' },
+  { label: 'Template', icon: 'pi pi-file-edit' },
   { label: 'Trash', icon: 'pi pi-trash' }
 ];
 
