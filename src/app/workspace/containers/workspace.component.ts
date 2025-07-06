@@ -24,9 +24,15 @@ import { Observable } from 'rxjs';
   template: `
     <app-workspace-menubar [model]="menubarItems"></app-workspace-menubar>
     <div (contextmenu)="onDockContextMenu($event)">
-      <app-workspace-dock *ngIf="isBrowser" [model]="dockItems" [position]="'bottom'" [breakpoint]="'960px'" (addNode)="addNode()" (addTask)="addTask()"></app-workspace-dock>
+      <app-workspace-dock *ngIf="isBrowser"
+        [model]="dockItems"
+        [position]="'bottom'"
+        [breakpoint]="'960px'"
+        (addNode)="addNode()"
+        (addTask)="addTask()"
+        (dockRightClick)="onDockContextMenu($event)"></app-workspace-dock>
       <app-workspace-contextmenu
-        #dockContextMenu
+        *ngIf="showDockContextMenu"
         [model]="dockContextMenuItems"
         [target]="dockContextTarget">
       </app-workspace-contextmenu>
@@ -35,7 +41,15 @@ import { Observable } from 'rxjs';
       <app-shared-treetable [value]="(state.treeTableData$ | async) || []" [columns]="(state.treeTableColumns$ | async) || []"></app-shared-treetable>
     </div>
     <div *ngIf="(state.showTree$ | async)" style="margin-top: 1rem;">
-      <app-workspace-tree [nodes]="(state.treeData$ | async) || []" (addChild)="addNode($event)"></app-workspace-tree>
+      <app-workspace-tree
+        [nodes]="(state.treeData$ | async) || []"
+        (addChild)="addNode($event)"
+        (nodeRightClick)="onTreeNodeRightClick($event)"></app-workspace-tree>
+      <app-workspace-contextmenu
+        *ngIf="showTreeContextMenu"
+        [model]="treeContextMenuItems"
+        [target]="treeContextTarget">
+      </app-workspace-contextmenu>
     </div>
   `
 })
@@ -45,6 +59,10 @@ export class WorkspaceComponent {
   dockItems: MenuItem[] = [];
   dockContextMenuItems: MenuItem[] = [];
   dockContextTarget: string | HTMLElement | undefined = undefined;
+  showDockContextMenu = false;
+  treeContextMenuItems: MenuItem[] = [];
+  treeContextTarget: string | HTMLElement | undefined = undefined;
+  showTreeContextMenu = false;
   @ViewChild('dockContextMenu') dockContextMenu?: WorkspaceContextMenuComponent;
 
   constructor(
@@ -196,6 +214,27 @@ export class WorkspaceComponent {
 
   onDockContextMenu(event: MouseEvent) {
     event.preventDefault();
-    this.dockContextMenu?.show(event);
+    this.dockContextTarget = event.target as HTMLElement;
+    this.showDockContextMenu = true;
+    setTimeout(() => this.showDockContextMenu = false, 2000); // 自動隱藏，可依需求調整
+  }
+
+  onTreeNodeRightClick({ event, node }: { event: MouseEvent, node: any }) {
+    event.preventDefault();
+    this.treeContextTarget = event.target as HTMLElement;
+    this.treeContextMenuItems = [
+      {
+        label: '建立子節點',
+        icon: 'pi pi-plus',
+        command: () => this.addNode(node)
+      },
+      {
+        label: '建立任務',
+        icon: 'pi pi-tasks',
+        command: () => this.addTask(node)
+      }
+    ];
+    this.showTreeContextMenu = true;
+    setTimeout(() => this.showTreeContextMenu = false, 2000); // 自動隱藏，可依需求調整
   }
 } 
