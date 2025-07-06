@@ -1,12 +1,20 @@
-<p-dock [model]="model" [position]="position" [breakpoint]="breakpoint">
-  <ng-template #item let-item>
-    <a class="p-dock-item-link" [pTooltip]="item.label" tooltipPosition="top">
-      <ng-container *ngIf="item.icon && item.icon.startsWith('pi '); else imageTpl">
-        <i [class]="item.icon" style="font-size: 2rem"></i>
-      </ng-container>
-      <ng-template #imageTpl>
-        <img *ngIf="item.icon && !item.icon.startsWith('pi ')" [src]="item.icon" [alt]="item.label" style="width: 2rem; height: 2rem;" />
-      </ng-template>
-    </a>
-  </ng-template>
-</p-dock> 
+<div (contextmenu)="onDockRightClick($event)" style="width: 100%">
+  <p-dock [model]="model" [position]="position" [breakpoint]="breakpoint">
+    <ng-template #item let-item>
+      <a class="p-dock-item-link" [pTooltip]="item.label" tooltipPosition="top">
+        <ng-container *ngIf="item.icon && item.icon.startsWith('pi '); else imageTpl">
+          <i [class]="item.icon" style="font-size: 2rem"></i>
+        </ng-container>
+        <ng-template #imageTpl>
+          <img *ngIf="item.icon && !item.icon.startsWith('pi ')" [src]="item.icon" [alt]="item.label" style="width: 2rem; height: 2rem;" />
+        </ng-template>
+      </a>
+    </ng-template>
+  </p-dock>
+  <app-workspace-contextmenu
+    *ngIf="showContextMenu"
+    [model]="contextMenuItems"
+    [target]="contextTarget"
+    (mouseleave)="showContextMenu = false">
+  </app-workspace-contextmenu>
+</div> 

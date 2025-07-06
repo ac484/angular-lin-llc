@@ -52,8 +52,8 @@ export class WorkspaceComponent {
       { label: '新增', icon: 'pi pi-plus' },
       { label: '開啟', icon: 'pi pi-folder-open' },
       { label: '重新載入', icon: 'pi pi-refresh', command: () => this.loadNodes() },
-      { label: '讀取專案', icon: 'pi pi-database', command: () => this.loadProjects() },
-      { label: '新增專案', icon: 'pi pi-plus-circle', command: () => this.addProject() }
+      { label: '讀取工作空間', icon: 'pi pi-database', command: () => this.loadWorkspaces() },
+      { label: '新增工作空間', icon: 'pi pi-plus-circle', command: () => this.addWorkspace() }
     ]},
     { label: '編輯', icon: 'pi pi-pencil', items: [
       { label: '剪下', icon: 'pi pi-cut' },
@@ -110,19 +110,29 @@ export class WorkspaceComponent {
     this.treeData = this.treeTableData;
   }
 
-  loadProjects() {
+  loadWorkspaces() {
     if (!this.isBrowser) return;
-    const col = collection(this.firestore, 'projects');
+    const col = collection(this.firestore, 'workspaces');
     collectionData(col).subscribe(data => {
-      console.log('Firestore projects:', data);
+      console.log('Firestore workspaces:', data);
     });
   }
 
-  addProject() {
+  addWorkspace(parentNode?: any) {
     if (!this.isBrowser) return;
-    const col = collection(this.firestore, 'projects');
-    addDoc(col, { name: '測試專案', created: new Date() }).then(docRef => {
-      console.log('新增 Firestore project, id:', docRef.id);
+    const col = collection(this.firestore, 'nodes');
+    const node: WorkspaceNode = {
+      id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
+      name: '新節點 ' + new Date().toLocaleTimeString(),
+      type: 'custom',
+      status: 'active',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      parentId: parentNode?.data?.id ?? null
+    };
+    addDoc(col, node).then(docRef => {
+      console.log('已建立節點，id:', docRef.id, node);
+      this.loadNodes();
     });
   }
 

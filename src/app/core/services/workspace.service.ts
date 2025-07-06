@@ -4,11 +4,10 @@ import { Firestore, collection, getDocs } from '@angular/fire/firestore';
 import { WorkspaceNode, NodeType } from '../models/workspace.types';
 
 @Injectable({ providedIn: 'root' })
-export class ProjectService {
+export class WorkspaceService {
   private firestore = inject(Firestore);
 
-  // 取得所有專案節點（極簡範例）
-  async getProjectTree(): Promise<WorkspaceNode[]> {
+  async getWorkspaceTree(): Promise<WorkspaceNode[]> {
     try {
       const querySnapshot = await getDocs(collection(this.firestore, 'WorkspaceNodes'));
       return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }) as WorkspaceNode);
