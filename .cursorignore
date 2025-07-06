@@ -54,3 +54,7 @@ ui-debug.log
 # 其他
 *.tgz
 *.tar.gz
+
+docs/
+public/
+pnpm-lock.yaml
