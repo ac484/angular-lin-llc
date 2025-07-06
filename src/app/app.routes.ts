@@ -11,7 +11,7 @@ export const routes: Routes = [
   },
   {
     path: 'account',
-    loadChildren: () => import('./account/account.module').then(m => m.AccountModule)
+    loadComponent: () => import('./account/account.component').then(m => m.AccountComponent)
   },
   {
     path: 'workspace',
