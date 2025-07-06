@@ -11,11 +11,11 @@ export const routes: Routes = [
   },
   {
     path: 'account',
-    loadComponent: () => import('./account/account.component').then(m => m.AccountComponent)
+    loadChildren: () => import('./account/account.module').then(m => m.AccountModule)
   },
   {
     path: 'workspace',
-    loadComponent: () => import('./workspace/workspace.component').then(m => m.WorkspaceComponent)
+    loadChildren: () => import('./workspace/workspace.module').then(m => m.WorkspaceModule)
   },
   {
     path: 'admin',

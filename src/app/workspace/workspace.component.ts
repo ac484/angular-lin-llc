@@ -42,7 +42,9 @@ export class WorkspaceComponent {
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private router: Router) {
     this.isBrowser = isPlatformBrowser(platformId);
     this.firestore = inject(Firestore);
-    this.loadNodes();
+    if (this.isBrowser) {
+      this.loadNodes();
+    }
   }
 
   menubarItems: MenuItem[] = [
@@ -103,6 +105,7 @@ export class WorkspaceComponent {
   }
 
   loadProjects() {
+    if (!this.isBrowser) return;
     const col = collection(this.firestore, 'projects');
     collectionData(col).subscribe(data => {
       console.log('Firestore projects:', data);
@@ -110,6 +113,7 @@ export class WorkspaceComponent {
   }
 
   addProject() {
+    if (!this.isBrowser) return;
     const col = collection(this.firestore, 'projects');
     addDoc(col, { name: '測試專案', created: new Date() }).then(docRef => {
       console.log('新增 Firestore project, id:', docRef.id);
@@ -117,6 +121,7 @@ export class WorkspaceComponent {
   }
 
   addNode(parentNode?: any) {
+    if (!this.isBrowser) return;
     const col = collection(this.firestore, 'nodes');
     const node: WorkspaceNode = {
       id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
@@ -134,6 +139,7 @@ export class WorkspaceComponent {
   }
 
   loadNodes() {
+    if (!this.isBrowser) return;
     const col = collection(this.firestore, 'nodes');
     collectionData(col, { idField: 'id' }).subscribe((data: any[]) => {
       const nodes: WorkspaceNode[] = data.map(item => ({

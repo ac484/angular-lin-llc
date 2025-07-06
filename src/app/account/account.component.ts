@@ -85,10 +85,11 @@ export class AccountComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    if (isPlatformBrowser(this.platformId)) {
-      this.user = this.auth.currentUser;
-      if (this.user) {
-        const uid = this.user.uid;
+    if (!isPlatformBrowser(this.platformId)) return;
+    this.user = this.auth.currentUser;
+    if (this.user) {
+      const uid = this.user.uid;
+      try {
         const snap = await getDoc(doc(this.firestore, 'users', uid));
         const data = snap.data() as any;
         this.profileForm.patchValue({
@@ -98,6 +99,8 @@ export class AccountComponent implements OnInit {
           pushNotifications: data.pushNotifications || false
         });
         this.permissionsService.loadPermissions([data.role || 'user']);
+      } catch (e) {
+        // SSR 階段或 Firestore 失敗時容錯
       }
     }
   }
