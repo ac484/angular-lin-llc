@@ -66,6 +66,8 @@ export class WorkspaceComponent {
   selectedTreeNode: TreeNode<any> | null = null;
   @ViewChild('dockContextMenu') dockContextMenu?: WorkspaceContextMenuComponent;
   showTemplateTree = false;
+  workspaceId = 'default'; // 可根據實際需求調整
+  workspaceNodes: WorkspaceNode[] = [];
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -75,7 +77,7 @@ export class WorkspaceComponent {
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
     if (this.isBrowser) {
-      this.loadNodes();
+      this.loadWorkspaceTree();
     }
     // 產生 menubarItems，根據 label 動態加上 command
     this.menubarItems = MENUBAR_ITEMS.map(item => ({
@@ -110,16 +112,23 @@ export class WorkspaceComponent {
     this.state.treeData$.next(this.state.treeTableData$.value);
   }
 
-  loadWorkspaces() {
+  loadWorkspaceTree() {
     if (!this.isBrowser) return;
-    this.data.loadWorkspaces().subscribe(data => {
-      // 可根據需求處理 workspaces
-      console.log('Firestore workspaces:', data);
+    this.data.loadWorkspaceTree(this.workspaceId).subscribe(nodes => {
+      this.workspaceNodes = nodes ?? [];
+      const tree = this.buildTree(this.workspaceNodes);
+      this.state.treeTableData$.next(tree);
+      this.state.treeData$.next(tree);
+      this.isLoading = false;
     });
   }
 
-  addWorkspace(parentNode?: any) {
+  saveWorkspaceTree() {
     if (!this.isBrowser) return;
+    this.data.saveWorkspaceTree(this.workspaceId, this.workspaceNodes).then(() => this.loadWorkspaceTree());
+  }
+
+  addWorkspace(parentNode?: any) {
     const node: WorkspaceNode = {
       id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
       name: '新節點 ' + new Date().toLocaleTimeString(),
@@ -129,32 +138,8 @@ export class WorkspaceComponent {
       updatedAt: new Date(),
       parentId: parentNode?.data?.id ?? null
     };
-    this.data.addWorkspace(node).then(() => this.loadNodes());
-  }
-
-  loadNodes() {
-    if (!this.isBrowser) return;
-    this.data.loadNodes().subscribe((data: WorkspaceNode[]) => {
-      const nodes: WorkspaceNode[] = (data ?? []).map((item: WorkspaceNode) => {
-        let createdAt: Date = new Date();
-        let updatedAt: Date = new Date();
-        if (item.createdAt instanceof Date) {
-          createdAt = item.createdAt;
-        } else if (item.createdAt && typeof (item.createdAt as any).toDate === 'function') {
-          createdAt = (item.createdAt as any).toDate();
-        }
-        if (item.updatedAt instanceof Date) {
-          updatedAt = item.updatedAt;
-        } else if (item.updatedAt && typeof (item.updatedAt as any).toDate === 'function') {
-          updatedAt = (item.updatedAt as any).toDate();
-        }
-        return { ...item, createdAt, updatedAt };
-      });
-      const tree = this.data.buildTree(nodes) ?? [];
-      this.state.treeTableData$.next(tree);
-      this.state.treeData$.next(tree);
-      this.isLoading = false;
-    });
+    this.workspaceNodes.push(node);
+    this.saveWorkspaceTree();
   }
 
   goHome() {
@@ -169,9 +154,9 @@ export class WorkspaceComponent {
   // 根據 label 回傳對應的 command function
   getMenubarCommand(label?: string) {
     switch (label) {
-      case '開啟': return () => this.loadWorkspaces();
-      case '重新載入': return () => this.loadNodes();
-      case '讀取工作空間': return () => this.loadWorkspaces();
+      case '開啟': return () => this.loadWorkspaceTree();
+      case '重新載入': return () => this.loadWorkspaceTree();
+      case '讀取工作空間': return () => this.loadWorkspaceTree();
       case '新增工作空間': return () => this.addWorkspace();
       default: return undefined;
     }
@@ -189,7 +174,7 @@ export class WorkspaceComponent {
   }
   getDockContextMenuCommand(label?: string) {
     switch (label) {
-      case '重新整理': return () => this.loadNodes();
+      case '重新整理': return () => this.loadWorkspaceTree();
       case '回首頁': return () => this.goHome();
       default: return undefined;
     }
@@ -233,7 +218,10 @@ export class WorkspaceComponent {
     const newChildren = (template.children ?? []).map(child => this.deepCloneNode(child));
     if (!this.selectedTreeNode.data.children) this.selectedTreeNode.data.children = [];
     this.selectedTreeNode.data.children.push(...newChildren);
-    this.data.updateNode(this.selectedTreeNode.data).then(() => this.loadNodes());
+    // 將 workspaceNodes 中對應節點 children 更新
+    const idx = this.workspaceNodes.findIndex(n => n.id === this.selectedTreeNode?.data?.id);
+    if (idx > -1) this.workspaceNodes[idx] = this.selectedTreeNode.data;
+    this.saveWorkspaceTree();
   }
 
   deepCloneNode(node: WorkspaceNode): WorkspaceNode {
@@ -257,5 +245,17 @@ export class WorkspaceComponent {
     template.updatedAt = new Date();
     // parentId 不需處理
     this.data.addTemplate(template).then(() => this.loadTemplates());
+  }
+
+  // 若原本有 buildTree 方法，保留一份本地 buildTree 實作
+  buildTree(nodes: WorkspaceNode[], parentId: string | null = null): TreeNode<WorkspaceNode>[] {
+    return nodes
+      .filter(node => (node.parentId ?? null) === parentId || (node.parentId === '' && parentId === null))
+      .map(node => ({
+        label: node.name,
+        data: node,
+        children: this.buildTree(nodes, node.id),
+        leaf: !nodes.some(n => n.parentId === node.id)
+      }));
   }
 } 

@@ -1,34 +1,26 @@
 // 本檔案依據 Firebase Console 專案設定，使用 Firebase Client SDK 操作 Cloud Firestore
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, collectionData, addDoc, doc, setDoc } from '@angular/fire/firestore';
+import { Firestore, doc, setDoc, docData, collection, collectionData, addDoc } from '@angular/fire/firestore';
 import { WorkspaceNode } from '../../core/models/workspace.types';
-import { Observable } from 'rxjs';
-import { TreeNode } from 'primeng/api';
+import { Observable, map } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class WorkspaceDataService {
   private firestore = inject(Firestore);
 
-  loadNodes(): Observable<WorkspaceNode[]> {
-    const col = collection(this.firestore, 'nodes');
-    return collectionData(col, { idField: 'id' }) as Observable<WorkspaceNode[]>;
+  // 讀取整棵 workspace tree
+  loadWorkspaceTree(workspaceId: string): Observable<WorkspaceNode[]> {
+    const ref = doc(this.firestore, 'workspaces', workspaceId);
+    return docData(ref).pipe(map((data: any) => data?.nodes ?? []));
   }
 
-  addNode(node: WorkspaceNode): Promise<void> {
-    const col = collection(this.firestore, 'nodes');
-    return addDoc(col, node).then(() => {});
+  // 儲存整棵 workspace tree
+  saveWorkspaceTree(workspaceId: string, nodes: WorkspaceNode[]): Promise<void> {
+    const ref = doc(this.firestore, 'workspaces', workspaceId);
+    return setDoc(ref, { nodes }, { merge: true });
   }
 
-  addWorkspace(node: WorkspaceNode): Promise<void> {
-    const col = collection(this.firestore, 'nodes');
-    return addDoc(col, node).then(() => {});
-  }
-
-  loadWorkspaces(): Observable<WorkspaceNode[]> {
-    const col = collection(this.firestore, 'workspaces');
-    return collectionData(col) as Observable<WorkspaceNode[]>;
-  }
-
+  // 範本相關維持不變
   loadTemplates(): Observable<WorkspaceNode[]> {
     const col = collection(this.firestore, 'templates');
     return collectionData(col, { idField: 'id' }) as Observable<WorkspaceNode[]>;
@@ -37,21 +29,5 @@ export class WorkspaceDataService {
   addTemplate(template: WorkspaceNode): Promise<void> {
     const col = collection(this.firestore, 'templates');
     return addDoc(col, template).then(() => {});
-  }
-
-  updateNode(node: WorkspaceNode): Promise<void> {
-    const ref = doc(this.firestore, 'nodes', node.id);
-    return setDoc(ref, node, { merge: true });
-  }
-
-  buildTree(nodes: WorkspaceNode[], parentId: string | null = null): TreeNode<WorkspaceNode>[] {
-    return nodes
-      .filter(node => (node.parentId ?? null) === parentId || (node.parentId === '' && parentId === null))
-      .map(node => ({
-        label: node.name,
-        data: node,
-        children: this.buildTree(nodes, node.id),
-        leaf: !nodes.some(n => n.parentId === node.id)
-      }));
   }
 }
