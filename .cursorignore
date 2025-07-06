@@ -58,3 +58,8 @@ ui-debug.log
 docs/
 public/
 pnpm-lock.yaml
+.gitignore
+tsconfig.app.json
+tsconfig.json
+tsconfig.spec.json
+angular.json
