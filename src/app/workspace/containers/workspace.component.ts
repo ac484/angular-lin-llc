@@ -16,13 +16,15 @@ import { WorkspaceDataService } from '../services/workspace-data.service';
 import { WorkspaceStateService } from '../services/workspace-state.service';
 import { MENUBAR_ITEMS, DOCK_ITEMS, DOCK_CONTEXT_MENU_ITEMS } from '../config/workspace-menu.config';
 import { Observable } from 'rxjs';
+import { ProgressspinnerComponent } from '../../shared/progressspinner/progressspinner.component';
 
 @Component({
   selector: 'app-workspace',
   standalone: true,
-  imports: [CommonModule, MenubarModule, SharedTreetableComponent, WorkspaceMenubarComponent, WorkspaceDockComponent, WorkspaceTreeComponent, WorkspaceContextMenuComponent],
+  imports: [CommonModule, MenubarModule, SharedTreetableComponent, WorkspaceMenubarComponent, WorkspaceDockComponent, WorkspaceTreeComponent, WorkspaceContextMenuComponent, ProgressspinnerComponent],
   template: `
-    <div class="workspace-content">
+    <app-progressspinner *ngIf="isLoading" [style]="{width: '48px', height: '48px', margin: '2rem auto', display: 'block'}"></app-progressspinner>
+    <div *ngIf="!isLoading" class="workspace-content">
       <app-workspace-menubar [model]="menubarItems"></app-workspace-menubar>
       <div (contextmenu)="onDockContextMenu($event)">
         <app-workspace-dock *ngIf="isBrowser"
@@ -52,6 +54,7 @@ import { Observable } from 'rxjs';
 })
 export class WorkspaceComponent {
   isBrowser: boolean;
+  isLoading = true;
   menubarItems: MenuItem[] = [];
   dockItems: MenuItem[] = [];
   dockContextMenuItems: MenuItem[] = [];
@@ -141,6 +144,7 @@ export class WorkspaceComponent {
       const tree = this.data.buildTree(nodes) ?? [];
       this.state.treeTableData$.next(tree);
       this.state.treeData$.next(tree);
+      this.isLoading = false;
     });
   }
 
