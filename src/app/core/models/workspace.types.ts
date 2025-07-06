@@ -9,6 +9,7 @@ export interface WorkspaceNode {
     id: string
     name: string
     type: string // 動態類型，如 'factory', 'area', 'building', 'floor', 'level', 'station', 'task', 'department', 'team' 等
+    nodeTypeId: string // 新增：對應 NodeType.id，決定節點的型態、圖示、顏色等
     parentId?: string | null
     children?: WorkspaceNode[]
     

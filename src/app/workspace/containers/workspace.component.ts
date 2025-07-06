@@ -7,7 +7,7 @@ import { SharedTreetableComponent } from '../components/treetable/treetable.comp
 import { TreeNode } from 'primeng/api';
 import { isPlatformBrowser } from '@angular/common';
 import { inject } from '@angular/core';
-import { WorkspaceNode } from '../../core/models/workspace.types';
+import { WorkspaceNode, NodeType } from '../../core/models/workspace.types';
 import { WorkspaceMenubarComponent } from '../components/menubar/menubar.component';
 import { WorkspaceDockComponent } from '../components/dock/dock.component';
 import { WorkspaceTreeComponent } from '../components/tree/tree.component';
@@ -80,12 +80,12 @@ export class WorkspaceComponent {
     if (this.isBrowser) {
       this.loadWorkspaceList();
     }
-    // 產生 menubarItems，根據 label 動態加上 command
+    // 產生 menubarItems，根據 label 與 id 動態加上 command
     this.menubarItems = MENUBAR_ITEMS.map(item => ({
       ...item,
       items: item.items?.map(sub => ({
         ...sub,
-        command: this.getMenubarCommand(sub.label)
+        command: () => this.onMenubarCreate(sub.id!)
       }))
     }));
     // 產生 dockItems
@@ -139,6 +139,7 @@ export class WorkspaceComponent {
       id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
       name: '新節點 ' + new Date().toLocaleTimeString(),
       type: 'custom',
+      nodeTypeId: 'custom',
       status: 'active',
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -241,6 +242,7 @@ export class WorkspaceComponent {
       id: id,
       name: name,
       type: 'root',
+      nodeTypeId: 'root',
       status: 'active' as 'active',
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -271,6 +273,29 @@ export class WorkspaceComponent {
       updatedAt: new Date()
     };
     this.workspaceNodes = this.data.addTaskToNode(this.workspaceNodes, node.data.id, task);
+    this.saveWorkspaceTree();
+  }
+
+  onMenubarCreate(typeId: string) {
+    if (typeId === 'task') {
+      // 建立任務（主節點下）
+      if (this.workspaceNodes.length > 0) {
+        this.addTaskToNode({ data: this.workspaceNodes[0] });
+      }
+      return;
+    }
+    // 建立指定型別節點（主節點）
+    const node: WorkspaceNode = {
+      id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
+      name: `${typeId} 節點 - ` + new Date().toLocaleTimeString(),
+      type: typeId,
+      nodeTypeId: typeId,
+      status: 'active',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      parentId: null
+    };
+    this.workspaceNodes.push(node);
     this.saveWorkspaceTree();
   }
 } 
