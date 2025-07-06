@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Firestore, collection, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc } from '@angular/fire/firestore';
-import { NodeType } from '../models/project.types';
+import { NodeType } from '../models/workspace.types';
 
 @Injectable({
   providedIn: 'root'

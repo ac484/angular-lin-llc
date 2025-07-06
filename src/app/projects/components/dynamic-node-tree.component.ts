@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
-import { ProjectNode, NodeType } from '../../core/models/project.types';
+import { WorkspaceNode, NodeType } from '../../core/models/workspace.types';
 import { ProjectService } from '../../core/services/project.service';
 import { NodeTypeService } from '../../core/services/node-type.service';
 import { Observable, from, combineLatest, map, of } from 'rxjs';
@@ -145,13 +145,13 @@ export class DynamicNodeTreeComponent implements OnInit {
   private projectService = inject(ProjectService);
   private nodeTypeService = inject(NodeTypeService);
   
-  treeControl = new NestedTreeControl<ProjectNode>(node => node.children ?? []);
-  dataSource = new MatTreeNestedDataSource<ProjectNode>();
+  treeControl = new NestedTreeControl<WorkspaceNode>(node => node.children ?? []);
+  dataSource = new MatTreeNestedDataSource<WorkspaceNode>();
   nodeTypes$: Observable<NodeType[]> = from(this.nodeTypeService.getNodeTypes());
-  hasChild = (_: number, node: ProjectNode): boolean => !!node.children?.length;
+  hasChild = (_: number, node: WorkspaceNode): boolean => !!node.children?.length;
 
   ngOnInit(): void {
-    this.projectService.getProjectTree().then((nodes: ProjectNode[]) => this.dataSource.data = nodes);
+    this.projectService.getProjectTree().then((nodes: WorkspaceNode[]) => this.dataSource.data = nodes);
   }
 
   getNodeTypeIcon(type: string): string {
@@ -201,17 +201,17 @@ export class DynamicNodeTreeComponent implements OnInit {
     console.log('新增根節點');
   }
 
-  addChildNode(parentNode: ProjectNode): void {
+  addChildNode(parentNode: WorkspaceNode): void {
     // TODO: 實作新增子節點
     console.log('新增子節點到:', parentNode);
   }
 
-  editNode(node: ProjectNode): void {
+  editNode(node: WorkspaceNode): void {
     // TODO: 實作編輯節點
     console.log('編輯節點:', node);
   }
 
-  deleteNode(node: ProjectNode): void {
+  deleteNode(node: WorkspaceNode): void {
     // TODO: 實作刪除節點
     console.log('刪除節點:', node);
   }
