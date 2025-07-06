@@ -49,16 +49,10 @@ import { TreeModule } from 'primeng/tree';
         ></app-workspace-tree>
       </div>
       <div *ngIf="showTemplateTree" style="margin-top: 1rem;">
-        <p-tree [value]="templateTreeData" styleClass="w-full md:w-[30rem]">
-          <ng-template let-node pTemplate="url">
-            <a [href]="node.data" target="_blank" rel="noopener noreferrer" class="text-surface-700 dark:text-surface-100 hover:text-primary">
-              {{ node.label }}
-            </a>
-          </ng-template>
-          <ng-template let-node pTemplate="default">
-            <b>{{ node.label }}</b>
-          </ng-template>
-        </p-tree>
+        <div *ngFor="let tpl of (state.templateList$ | async)">
+          <span>{{ tpl.name }}</span>
+          <button (click)="onInsertTemplate(tpl)">插入到選中節點</button>
+        </div>
       </div>
     </div>
   `
@@ -72,31 +66,6 @@ export class WorkspaceComponent {
   selectedTreeNode: TreeNode<any> | null = null;
   @ViewChild('dockContextMenu') dockContextMenu?: WorkspaceContextMenuComponent;
   showTemplateTree = false;
-  templateTreeData = [
-    {
-      label: '官方網站',
-      data: 'https://angular.dev',
-      type: 'url',
-      children: []
-    },
-    {
-      label: '說明文件',
-      type: 'default',
-      children: [
-        {
-          label: 'API Reference',
-          data: 'https://angular.dev/api',
-          type: 'url',
-          children: []
-        },
-        {
-          label: '教學',
-          type: 'default',
-          children: []
-        }
-      ]
-    }
-  ];
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -126,6 +95,10 @@ export class WorkspaceComponent {
       ...item,
       command: this.getDockContextMenuCommand(item.label)
     }));
+  }
+
+  ngOnInit() {
+    this.loadTemplates();
   }
 
   toggleTreeTable() {
@@ -246,5 +219,29 @@ export class WorkspaceComponent {
         // TODO: 收合全部
         break;
     }
+  }
+
+  loadTemplates() {
+    this.data.loadTemplates().subscribe(list => {
+      this.state.templateList$.next(list);
+    });
+  }
+
+  onInsertTemplate(template: WorkspaceNode) {
+    if (!this.selectedTreeNode) return;
+    const newChildren = (template.children ?? []).map(child => this.deepCloneNode(child));
+    if (!this.selectedTreeNode.data.children) this.selectedTreeNode.data.children = [];
+    this.selectedTreeNode.data.children.push(...newChildren);
+    this.data.updateNode(this.selectedTreeNode.data).then(() => this.loadNodes());
+  }
+
+  deepCloneNode(node: WorkspaceNode): WorkspaceNode {
+    return {
+      ...node,
+      id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
+      children: node.children?.map(child => this.deepCloneNode(child)) ?? [],
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
   }
 } 

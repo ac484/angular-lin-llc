@@ -15,4 +15,5 @@ export class WorkspaceStateService {
   ]);
   treeTableData$ = new BehaviorSubject<TreeNode<WorkspaceNode>[]>([]);
   treeData$ = new BehaviorSubject<TreeNode<WorkspaceNode>[]>([]);
+  templateList$ = new BehaviorSubject<WorkspaceNode[]>([]);
 }

@@ -1,6 +1,6 @@
 // 本檔案依據 Firebase Console 專案設定，使用 Firebase Client SDK 操作 Cloud Firestore
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, collectionData, addDoc } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, addDoc, doc, setDoc } from '@angular/fire/firestore';
 import { WorkspaceNode } from '../../core/models/workspace.types';
 import { Observable } from 'rxjs';
 import { TreeNode } from 'primeng/api';
@@ -27,6 +27,21 @@ export class WorkspaceDataService {
   loadWorkspaces(): Observable<WorkspaceNode[]> {
     const col = collection(this.firestore, 'workspaces');
     return collectionData(col) as Observable<WorkspaceNode[]>;
+  }
+
+  loadTemplates(): Observable<WorkspaceNode[]> {
+    const col = collection(this.firestore, 'templates');
+    return collectionData(col, { idField: 'id' }) as Observable<WorkspaceNode[]>;
+  }
+
+  addTemplate(template: WorkspaceNode): Promise<void> {
+    const col = collection(this.firestore, 'templates');
+    return addDoc(col, template).then(() => {});
+  }
+
+  updateNode(node: WorkspaceNode): Promise<void> {
+    const ref = doc(this.firestore, 'nodes', node.id);
+    return setDoc(ref, node, { merge: true });
   }
 
   buildTree(nodes: WorkspaceNode[], parentId: string | null = null): TreeNode<WorkspaceNode>[] {
