@@ -30,12 +30,15 @@ export interface WorkspaceNode {
     // 排序和顯示
     order?: number // 排序
     isVisible?: boolean // 是否可見
-  }
+
+    // 節點下任務清單
+    tasks?: Task[]
+}
   
-  /**
-   * 節點類型定義 - 可動態擴展
-   */
-  export interface NodeType {
+/**
+ * 節點類型定義 - 可動態擴展
+ */
+export interface NodeType {
     id: string // 節點類型ID
     name: string // 節點名稱
     icon: string // 節點圖示
@@ -43,12 +46,12 @@ export interface WorkspaceNode {
     allowedChildren?: string[] // 允許的子節點類型
     properties?: string[] // 該類型節點擁有的屬性
     isLeaf?: boolean // 是否為葉節點（不可有子節點）
-  }
+}
   
-  /**
-   * 任務型別 - 可關聯到任何節點
-   */
-  export interface Task {
+/**
+ * 任務型別 - 可關聯到任何節點
+ */
+export interface Task {
     id: string // 任務ID
     nodeId: string // 關聯的節點 ID
     title: string // 任務標題
@@ -84,21 +87,21 @@ export interface WorkspaceNode {
     }>
 
     dependencies?: string[] // 儲存「必須先完成的任務ID」陣列
-  }
+}
   
-  /**
-   * 用戶型別 - 支援動態角色
-   */
+/**
+ * 用戶型別 - 支援動態角色
+ */
 
-  export interface User {
+export interface User {
     id: string; // Firebase UID 唯一識別碼
     email: string; // 電子郵件
     displayName?: string; // 顯示名稱
     role?: string; // 例如 'admin' | 'user'
     createdAt: Date; // 創建時間
-  }
+}
   
-  export interface WorkspaceUser extends User {
+export interface WorkspaceUser extends User {
     role: string // 動態角色，如 'admin', 'manager', 'worker', 'inspector', 'supervisor' 等
     department?: string // 部門
     skills?: string[] // 技能
@@ -106,12 +109,12 @@ export interface WorkspaceNode {
     
     // 動態屬性
     customFields?: Record<string, unknown> // 自定義屬性
-  }
+}
 
 
 //PrimeNG Tree需要的型別 要實現原生拖曳功能 所以需要以下型別
 
-  export interface TreeNode<T = any> { // 樹狀結構節點型別
+export interface TreeNode<T = any> { // 樹狀結構節點型別
     label?: string; // 節點標籤
     data?: T; // 節點資料
     icon?: string; // 節點圖示
@@ -130,4 +133,4 @@ export interface WorkspaceNode {
     selectable?: boolean; // 是否可選中
     key?: string; // 節點鍵值
     loading?: boolean; // 是否加載中
-  }
+}

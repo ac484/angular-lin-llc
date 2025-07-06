@@ -6,7 +6,7 @@ import { SharedTreetableComponent } from '../components/treetable/treetable.comp
 import { TreeNode } from 'primeng/api';
 import { isPlatformBrowser } from '@angular/common';
 import { inject } from '@angular/core';
-import { WorkspaceNode } from '../../core/models/workspace.types';
+import { WorkspaceNode, Task } from '../../core/models/workspace.types';
 import { WorkspaceMenubarComponent } from '../components/menubar/menubar.component';
 import { WorkspaceDockComponent } from '../components/dock/dock.component';
 import { WorkspaceTreeComponent } from '../components/tree/tree.component';
@@ -186,7 +186,7 @@ export class WorkspaceComponent {
         this.addWorkspace(event.node);
         break;
       case 'task':
-        // TODO: 建立任務
+        this.addTaskToNode(event.node.data);
         break;
       case 'rename':
         // TODO: 重新命名
@@ -204,5 +204,22 @@ export class WorkspaceComponent {
         // TODO: 收合全部
         break;
     }
+  }
+
+  addTaskToNode(node: WorkspaceNode) {
+    if (!this.isBrowser || !node) return;
+    const newTask: Task = {
+      id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
+      nodeId: node.id,
+      title: '新任務 ' + new Date().toLocaleTimeString(),
+      status: 'pending',
+      progress: 0,
+      assigneeId: '',
+      reviewerId: '',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    const tasks = Array.isArray(node.tasks) ? [...node.tasks, newTask] : [newTask];
+    this.data.updateNodeTasks(node.id, tasks).then(() => this.loadNodes());
   }
 } 
