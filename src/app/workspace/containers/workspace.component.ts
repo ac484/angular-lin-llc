@@ -174,7 +174,7 @@ export class WorkspaceComponent {
   }
   getDockCommand(label?: string) {
     switch (label) {
-      case 'Finder': return () => this.goHome();
+      case 'Home': return () => this.goHome();
       case 'Tree': return () => this.toggleTree();
       case 'TreeTable': return () => this.toggleTreeTable();
       default: return undefined;
