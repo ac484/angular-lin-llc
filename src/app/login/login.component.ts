@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterModule, Router } from '@angular/router';
 import { Auth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, AuthError } from '@angular/fire/auth';
 import { isPlatformBrowser } from '@angular/common';
+import { FirebaseService } from '../core/services/firebase.service';
 
 @Component({
   selector: 'app-login',
@@ -43,13 +44,14 @@ export class LoginComponent implements OnInit {
   private auth: Auth = inject(Auth);
   error: AuthError | null = null;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private firebaseService: FirebaseService) {}
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       getRedirectResult(this.auth)
-        .then(result => {
+        .then(async result => {
           if (result?.user) {
+            await this.firebaseService.createUserInFirestore(result.user);
             this.router.navigate(['/account']);
           }
         })
@@ -65,6 +67,7 @@ export class LoginComponent implements OnInit {
     try {
       const result = await signInWithPopup(this.auth, new GoogleAuthProvider());
       if (result.user) {
+        await this.firebaseService.createUserInFirestore(result.user);
         this.router.navigate(['/account']);
       }
     } catch (err) {

@@ -5,7 +5,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSelectModule } from '@angular/material/select';
-import { FirebaseService, User } from '../../../core/services/firebase.service';
+import { FirebaseService } from '../../../core/services/firebase.service';
+import { User } from '../../../core/models/workspace.types';
 import { Observable, from, of } from 'rxjs';
 
 @Component({

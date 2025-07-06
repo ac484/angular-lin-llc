@@ -1,19 +1,12 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { Firestore, collection, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, limit } from '@angular/fire/firestore';
-import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, user } from '@angular/fire/auth';
+import { Firestore, collection, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, limit, setDoc } from '@angular/fire/firestore';
+import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, user, User as FirebaseUser } from '@angular/fire/auth';
 import { Storage, ref, uploadBytes, getDownloadURL, deleteObject } from '@angular/fire/storage';
 import { Observable, from } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
+import { User } from '../models/workspace.types';
 
 // 本檔案依據 Firebase Console 專案設定，使用 Firebase Client SDK 操作 Cloud Firestore
-
-export interface User {
-  id?: string;
-  email: string;
-  displayName?: string;
-  role?: string;
-  createdAt: Date;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -120,5 +113,18 @@ export class FirebaseService {
       const storageRef = ref(this.storage, path);
       await deleteObject(storageRef);
     } catch (e) {}
+  }
+
+  // 新增：用戶登入後寫入 Firestore
+  async createUserInFirestore(firebaseUser: FirebaseUser, defaultRole: string = 'guest'): Promise<void> {
+    const userDocRef = doc(this.firestore, 'users', firebaseUser.uid);
+    const newUser: User = {
+      id: firebaseUser.uid,
+      email: firebaseUser.email ?? '',
+      displayName: firebaseUser.displayName || '',
+      role: defaultRole,
+      createdAt: new Date()
+    };
+    await setDoc(userDocRef, newUser, { merge: true });
   }
 } 

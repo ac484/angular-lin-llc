@@ -15,7 +15,7 @@ import { RouterModule } from '@angular/router';
       <span class="brand">Angular Lin LLC</span>
       <span class="spacer"></span>
       
-      <button mat-button routerLink="/" routerLinkActive="active">
+      <button mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
         <mat-icon>home</mat-icon>
         首頁
       </button>
@@ -59,7 +59,10 @@ import { RouterModule } from '@angular/router';
     }
     
     .active {
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: #1976d2 !important; /* Material primary */
+      color: #fff !important;
+      border-radius: 4px;
+      font-weight: 600;
     }
     
     mat-toolbar {
