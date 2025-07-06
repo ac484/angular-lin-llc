@@ -15,8 +15,8 @@ const routes: Routes = [
         path: 'users', 
         loadChildren: () => import('../users/users.module').then(m => m.UsersModule) 
       },
-      { path: 'roles', loadComponent: () => import('./components/role-management.component').then(m => m.RoleManagementComponent) },
-      { path: 'permissions', loadComponent: () => import('./components/permission-matrix.component').then(m => m.PermissionMatrixComponent) }
+      { path: 'roles', loadChildren: () => import('./components/role-management.module').then(m => m.RoleManagementModule) },
+      { path: 'permissions', loadChildren: () => import('./components/permission-matrix.module').then(m => m.PermissionMatrixModule) }
     ]
   }
 ];
