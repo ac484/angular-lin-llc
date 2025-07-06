@@ -34,20 +34,23 @@ export class WorkspaceDataService {
     return nodes
       .filter(node => (node.parentId ?? null) === parentId || (node.parentId === '' && parentId === null))
       .map(node => {
-        // 先遞迴產生子節點
+        // 遞迴產生子節點
         const children = this.buildTree(nodes, node.id);
         // 將 tasks 轉為葉節點
         const taskNodes: TreeNode<Task>[] = (node.tasks ?? []).map(task => ({
+          key: task.id,
           label: task.title,
           data: task,
-          leaf: true,
           type: 'task',
+          leaf: true,
           icon: 'pi pi-check-square',
           children: []
         }));
         return {
+          key: node.id,
           label: node.name,
           data: node,
+          type: node.type,
           children: [...children, ...taskNodes],
           leaf: children.length === 0 && taskNodes.length === 0
         };

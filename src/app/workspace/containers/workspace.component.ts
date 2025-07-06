@@ -38,7 +38,7 @@ import { ProgressspinnerComponent } from '../../shared/progressspinner/progresss
         </app-workspace-contextmenu>
       </div>
       <div *ngIf="(state.showTreeTable$ | async)" style="margin-top: 1rem;">
-        <app-shared-treetable [value]="(state.treeTableData$ | async) || []"></app-shared-treetable>
+        <app-shared-treetable [value]="(state.treeTableData$ | async) || []" [columns]="(state.treeTableColumns$ | async) || []"></app-shared-treetable>
       </div>
       <div *ngIf="(state.showTree$ | async)" style="margin-top: 1rem;">
         <app-workspace-tree
