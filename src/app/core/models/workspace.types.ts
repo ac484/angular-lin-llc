@@ -89,6 +89,15 @@ export interface WorkspaceNode {
   /**
    * 用戶型別 - 支援動態角色
    */
+
+  export interface User {
+    id: string; // Firebase UID
+    email: string;
+    displayName?: string;
+    role?: string; // 例如 'admin' | 'user'
+    createdAt: Date;
+  }
+  
   export interface WorkspaceUser extends User {
     role: string // 動態角色，如 'admin', 'manager', 'worker', 'inspector', 'supervisor' 等
     department?: string
@@ -97,12 +106,4 @@ export interface WorkspaceNode {
     
     // 動態屬性
     customFields?: Record<string, unknown>
-  }
-  
-  export interface User {
-    id: string; // Firebase UID
-    email: string;
-    displayName?: string;
-    role?: string; // 例如 'admin' | 'user'
-    createdAt: Date;
   }
