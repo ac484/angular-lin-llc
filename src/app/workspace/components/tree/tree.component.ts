@@ -1,22 +1,20 @@
 import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { TreeModule } from 'primeng/tree';
-import { TreeNode } from 'primeng/api';
+import { ContextMenuModule } from 'primeng/contextmenu';
+import { TreeNode, MenuItem } from 'primeng/api';
 import { WorkspaceNode } from '../../../core/models/workspace.types';
 
 @Component({
   selector: 'app-workspace-tree',
   standalone: true,
-  imports: [TreeModule],
+  imports: [TreeModule, ContextMenuModule],
   templateUrl: './tree.component.html',
   styleUrls: ['./tree.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkspaceTreeComponent {
   @Input() nodes: TreeNode<any>[] = [];
-  @Output() nodeRightClick = new EventEmitter<{ event: MouseEvent, node: TreeNode<any> }>();
-
-  onNodeRightClick(event: MouseEvent, node: TreeNode<any>) {
-    event.preventDefault();
-    this.nodeRightClick.emit({ event, node });
-  }
+  @Input() contextMenuItems: MenuItem[] = [];
+  @Input() selectedNode: TreeNode<any> | null = null;
+  @Output() selectedNodeChange = new EventEmitter<TreeNode<any> | null>();
 } 

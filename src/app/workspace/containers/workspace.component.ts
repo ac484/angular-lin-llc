@@ -43,7 +43,8 @@ import { ProgressspinnerComponent } from '../../shared/progressspinner/progresss
       <div *ngIf="(state.showTree$ | async)" style="margin-top: 1rem;">
         <app-workspace-tree
           [nodes]="(state.treeData$ | async) || []"
-          (nodeRightClick)="onTreeNodeRightClick($event)"></app-workspace-tree>
+          [contextMenuItems]="treeContextMenuItems"
+          [(selectedNode)]="selectedTreeNode"></app-workspace-tree>
         <app-workspace-contextmenu
           #treeContextMenu
           [model]="treeContextMenuItems">
@@ -59,6 +60,7 @@ export class WorkspaceComponent {
   dockItems: MenuItem[] = [];
   dockContextMenuItems: MenuItem[] = [];
   treeContextMenuItems: MenuItem[] = [];
+  selectedTreeNode: TreeNode<any> | null = null;
   @ViewChild('dockContextMenu') dockContextMenu?: WorkspaceContextMenuComponent;
   @ViewChild('treeContextMenu') treeContextMenu?: WorkspaceContextMenuComponent;
 
@@ -155,15 +157,6 @@ export class WorkspaceComponent {
   onDockContextMenu(event: MouseEvent) {
     event.preventDefault();
     this.dockContextMenu?.show(event);
-  }
-
-  onTreeNodeRightClick({ event, node }: { event: MouseEvent, node: any }) {
-    event.preventDefault();
-    this.treeContextMenuItems = [
-      { label: '建立子節點', icon: 'pi pi-plus', command: () => {/* 實際功能請依需求補上 */} },
-      { label: '建立任務', icon: 'pi pi-tasks', command: () => {/* 實際功能請依需求補上 */} }
-    ];
-    this.treeContextMenu?.show(event);
   }
 
   // 根據 label 回傳對應的 command function

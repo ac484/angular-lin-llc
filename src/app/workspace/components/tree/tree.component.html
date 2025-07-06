@@ -1,9 +1,16 @@
-<p-tree [value]="nodes">
+<p-tree
+  [value]="nodes"
+  [contextMenu]="cm"
+  [(selection)]="selectedNode"
+  selectionMode="single"
+  styleClass="w-full"
+>
   <ng-template let-node pTemplate="default">
-    <span (contextmenu)="onNodeRightClick($event, node)">
+    <span>
       {{ node.label }}
       <span style="margin-left: 1rem; color: #888;">({{ node.data.type }})</span>
       <span style="margin-left: 1rem; color: #888;">[{{ node.data.status }}]</span>
     </span>
   </ng-template>
-</p-tree> 
+</p-tree>
+<p-contextmenu #cm [model]="contextMenuItems"></p-contextmenu> 
