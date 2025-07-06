@@ -48,12 +48,6 @@ import { TreeModule } from 'primeng/tree';
           (action)="onTreeAction($event)"
         ></app-workspace-tree>
       </div>
-      <div *ngIf="showTemplateTree" style="margin-top: 1rem;">
-        <div *ngFor="let tpl of (state.templateList$ | async)">
-          <span>{{ tpl.name }}</span>
-          <button (click)="onInsertTemplate(tpl)">插入到選中節點</button>
-        </div>
-      </div>
     </div>
   `
 })
@@ -65,7 +59,6 @@ export class WorkspaceComponent {
   dockContextMenuItems: MenuItem[] = [];
   selectedTreeNode: TreeNode<any> | null = null;
   @ViewChild('dockContextMenu') dockContextMenu?: WorkspaceContextMenuComponent;
-  showTemplateTree = false;
   workspaceId = 'default'; // 可根據實際需求調整
   workspaceNodes: WorkspaceNode[] = [];
 
@@ -84,11 +77,11 @@ export class WorkspaceComponent {
       ...item,
       items: item.items?.map(sub => ({
         ...sub,
-        command: sub.label === '建立範本' ? () => this.createTemplateFromSelected() : this.getMenubarCommand(sub.label)
+        command: this.getMenubarCommand(sub.label)
       }))
     }));
     // 產生 dockItems
-    this.dockItems = DOCK_ITEMS.map(item => ({
+    this.dockItems = DOCK_ITEMS.filter(item => item.label !== 'Template').map(item => ({
       ...item,
       command: this.getDockCommand(item.label)
     }));
@@ -99,9 +92,7 @@ export class WorkspaceComponent {
     }));
   }
 
-  ngOnInit() {
-    this.loadTemplates();
-  }
+  ngOnInit() {}
 
   toggleTreeTable() {
     this.state.showTreeTable$.next(!this.state.showTreeTable$.value);
@@ -166,9 +157,6 @@ export class WorkspaceComponent {
       case 'Home': return () => this.goHome();
       case 'Tree': return () => this.toggleTree();
       case 'TreeTable': return () => this.toggleTreeTable();
-      case 'Template': return () => {
-        this.showTemplateTree = !this.showTemplateTree;
-      };
       default: return undefined;
     }
   }
@@ -204,47 +192,6 @@ export class WorkspaceComponent {
         // TODO: 收合全部
         break;
     }
-  }
-
-  loadTemplates() {
-    this.data.loadTemplates().subscribe(list => {
-      this.state.templateList$.next(list);
-    });
-  }
-
-  onInsertTemplate(template: WorkspaceNode) {
-    if (!this.selectedTreeNode) return;
-    // 直接複製 template.children 陣列
-    const newChildren = (template.children ?? []).map(child => this.deepCloneNode(child));
-    if (!this.selectedTreeNode.data.children) this.selectedTreeNode.data.children = [];
-    this.selectedTreeNode.data.children.push(...newChildren);
-    // 將 workspaceNodes 中對應節點 children 更新
-    const idx = this.workspaceNodes.findIndex(n => n.id === this.selectedTreeNode?.data?.id);
-    if (idx > -1) this.workspaceNodes[idx] = this.selectedTreeNode.data;
-    this.saveWorkspaceTree();
-  }
-
-  deepCloneNode(node: WorkspaceNode): WorkspaceNode {
-    return {
-      ...node,
-      id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
-      children: node.children?.map(child => this.deepCloneNode(child)) ?? [],
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-  }
-
-  createTemplateFromSelected() {
-    if (!this.selectedTreeNode) return;
-    // 深拷貝選中節點（含 children 陣列）
-    const template: WorkspaceNode = this.deepCloneNode(this.selectedTreeNode.data);
-    template.id = crypto.randomUUID?.() || Math.random().toString(36).slice(2);
-    template.type = 'template';
-    template.status = 'active';
-    template.createdAt = new Date();
-    template.updatedAt = new Date();
-    // parentId 不需處理
-    this.data.addTemplate(template).then(() => this.loadTemplates());
   }
 
   // 若原本有 buildTree 方法，保留一份本地 buildTree 實作

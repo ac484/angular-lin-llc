@@ -19,15 +19,4 @@ export class WorkspaceDataService {
     const ref = doc(this.firestore, 'workspaces', workspaceId);
     return setDoc(ref, { nodes }, { merge: true });
   }
-
-  // 範本相關維持不變
-  loadTemplates(): Observable<WorkspaceNode[]> {
-    const col = collection(this.firestore, 'templates');
-    return collectionData(col, { idField: 'id' }) as Observable<WorkspaceNode[]>;
-  }
-
-  addTemplate(template: WorkspaceNode): Promise<void> {
-    const col = collection(this.firestore, 'templates');
-    return addDoc(col, template).then(() => {});
-  }
 }
