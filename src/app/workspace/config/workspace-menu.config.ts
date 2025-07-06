@@ -2,13 +2,6 @@ import type { MenuItem } from 'primeng/api';
 
 export const MENUBAR_ITEMS: MenuItem[] = [
   {
-    label: '操作',
-    icon: 'pi pi-cog',
-    items: [
-      { label: '新增工作空間', icon: 'pi pi-plus-circle' }
-    ]
-  },
-  {
     label: '節點',
     icon: 'pi pi-sitemap',
     items: [

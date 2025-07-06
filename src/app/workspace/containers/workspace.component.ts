@@ -1,5 +1,6 @@
 import { Component, Inject, PLATFORM_ID, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MenubarModule } from 'primeng/menubar';
 import type { MenuItem, MenuItemCommandEvent } from 'primeng/api';
 import { SharedTreetableComponent } from '../components/treetable/treetable.component';
@@ -22,10 +23,16 @@ import { TreeModule } from 'primeng/tree';
 @Component({
   selector: 'app-workspace',
   standalone: true,
-  imports: [CommonModule, MenubarModule, SharedTreetableComponent, WorkspaceMenubarComponent, WorkspaceDockComponent, WorkspaceTreeComponent, WorkspaceContextMenuComponent, ProgressspinnerComponent, TreeModule],
+  imports: [CommonModule, FormsModule, MenubarModule, SharedTreetableComponent, WorkspaceMenubarComponent, WorkspaceDockComponent, WorkspaceTreeComponent, WorkspaceContextMenuComponent, ProgressspinnerComponent, TreeModule],
   template: `
     <app-progressspinner *ngIf="isLoading" [style]="{width: '48px', height: '48px', margin: '2rem auto', display: 'block'}"></app-progressspinner>
     <div *ngIf="!isLoading" class="workspace-content">
+      <div style="margin-bottom: 1rem;">
+        <label>工作空間：</label>
+        <select [(ngModel)]="workspaceId" (change)="onWorkspaceChange($event)">
+          <option *ngFor="let ws of workspaceList" [value]="ws.id">{{ ws.name }}</option>
+        </select>
+      </div>
       <app-workspace-menubar [model]="menubarItems"></app-workspace-menubar>
       <div (contextmenu)="onDockContextMenu($event)">
         <app-workspace-dock *ngIf="isBrowser"
@@ -59,8 +66,9 @@ export class WorkspaceComponent {
   dockContextMenuItems: MenuItem[] = [];
   selectedTreeNode: TreeNode<any> | null = null;
   @ViewChild('dockContextMenu') dockContextMenu?: WorkspaceContextMenuComponent;
-  workspaceId = 'default'; // 可根據實際需求調整
+  workspaceId = '';
   workspaceNodes: WorkspaceNode[] = [];
+  workspaceList: { id: string, name: string }[] = [];
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -70,7 +78,7 @@ export class WorkspaceComponent {
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
     if (this.isBrowser) {
-      this.loadWorkspaceTree();
+      this.loadWorkspaceList();
     }
     // 產生 menubarItems，根據 label 動態加上 command
     this.menubarItems = MENUBAR_ITEMS.map(item => ({
@@ -81,7 +89,7 @@ export class WorkspaceComponent {
       }))
     }));
     // 產生 dockItems
-    this.dockItems = DOCK_ITEMS.filter(item => item.label !== 'Template').map(item => ({
+    this.dockItems = DOCK_ITEMS.map(item => ({
       ...item,
       command: this.getDockCommand(item.label)
     }));
@@ -94,17 +102,24 @@ export class WorkspaceComponent {
 
   ngOnInit() {}
 
-  toggleTreeTable() {
-    this.state.showTreeTable$.next(!this.state.showTreeTable$.value);
+  loadWorkspaceList() {
+    this.data.listWorkspaces().subscribe(list => {
+      this.workspaceList = list;
+      if (list.length > 0) {
+        this.workspaceId = list[0].id;
+        this.loadWorkspaceTree();
+      }
+      this.isLoading = false;
+    });
   }
 
-  toggleTree() {
-    this.state.showTree$.next(!this.state.showTree$.value);
-    this.state.treeData$.next(this.state.treeTableData$.value);
+  onWorkspaceChange(event: any) {
+    this.loadWorkspaceTree();
   }
 
   loadWorkspaceTree() {
-    if (!this.isBrowser) return;
+    if (!this.isBrowser || !this.workspaceId) return;
+    this.isLoading = true;
     this.data.loadWorkspaceTree(this.workspaceId).subscribe(nodes => {
       this.workspaceNodes = nodes ?? [];
       const tree = this.buildTree(this.workspaceNodes);
@@ -115,7 +130,7 @@ export class WorkspaceComponent {
   }
 
   saveWorkspaceTree() {
-    if (!this.isBrowser) return;
+    if (!this.isBrowser || !this.workspaceId) return;
     this.data.saveWorkspaceTree(this.workspaceId, this.workspaceNodes).then(() => this.loadWorkspaceTree());
   }
 
@@ -149,6 +164,7 @@ export class WorkspaceComponent {
       case '重新載入': return () => this.loadWorkspaceTree();
       case '讀取工作空間': return () => this.loadWorkspaceTree();
       case '新增工作空間': return () => this.addWorkspace();
+      case '建立節點': return () => this.createRootWorkspace();
       default: return undefined;
     }
   }
@@ -172,6 +188,9 @@ export class WorkspaceComponent {
     switch (event.type) {
       case 'add':
         this.addWorkspace(event.node);
+        break;
+      case 'addTask':
+        this.addTaskToNode(event.node);
         break;
       case 'task':
         // TODO: 建立任務
@@ -204,5 +223,54 @@ export class WorkspaceComponent {
         children: this.buildTree(nodes, node.id),
         leaf: !nodes.some(n => n.parentId === node.id)
       }));
+  }
+
+  toggleTreeTable() {
+    this.state.showTreeTable$.next(!this.state.showTreeTable$.value);
+  }
+
+  toggleTree() {
+    this.state.showTree$.next(!this.state.showTree$.value);
+    this.state.treeData$.next(this.state.treeTableData$.value);
+  }
+
+  createRootWorkspace() {
+    const id = crypto.randomUUID?.() || Math.random().toString(36).slice(2);
+    const name = '主節點-' + Math.floor(Math.random() * 10000);
+    const rootNode = {
+      id: id,
+      name: name,
+      type: 'root',
+      status: 'active' as 'active',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      parentId: null,
+      children: [] as WorkspaceNode[]
+    };
+    // 新增一個 workspace 文件
+    this.data.saveWorkspaceTree(id, [rootNode]).then(() => {
+      this.loadWorkspaceList();
+      setTimeout(() => {
+        this.workspaceId = id;
+        this.loadWorkspaceTree();
+      }, 300);
+    });
+  }
+
+  addTaskToNode(node: any) {
+    const taskId = crypto.randomUUID?.() || Math.random().toString(36).slice(2);
+    const task = {
+      id: taskId,
+      nodeId: node.data.id,
+      title: '任務-' + Math.floor(Math.random() * 10000),
+      status: 'pending' as const,
+      progress: 0,
+      assigneeId: '',
+      reviewerId: '',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.workspaceNodes = this.data.addTaskToNode(this.workspaceNodes, node.data.id, task);
+    this.saveWorkspaceTree();
   }
 } 
