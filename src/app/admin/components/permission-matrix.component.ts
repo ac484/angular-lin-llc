@@ -1,40 +1,50 @@
 import { Component, ChangeDetectionStrategy, OnInit, inject, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatTableModule } from '@angular/material/table';
-import { MatSlideToggleModule, MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { TableModule } from 'primeng/table';
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { ToggleButtonModule } from 'primeng/togglebutton';
 import { FirebaseService } from '../../core/services/firebase.service';
 import { isPlatformBrowser } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-permission-matrix',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatTableModule, MatSlideToggleModule],
+  imports: [CommonModule, FormsModule, CardModule, TableModule, ToggleButtonModule, ButtonModule],
   template: `
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>權限矩陣管理</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <table mat-table [dataSource]="permissions">
-          <ng-container matColumnDef="permission">
-            <th mat-header-cell *matHeaderCellDef>權限</th>
-            <td mat-cell *matCellDef="let perm">{{ perm }}</td>
-          </ng-container>
-          <ng-container *ngFor="let role of roles" [matColumnDef]="role">
-            <th mat-header-cell *matHeaderCellDef>{{ role }}</th>
-            <td mat-cell *matCellDef="let perm">
-              <mat-slide-toggle [checked]="matrix[role].includes(perm)"
-                (change)="togglePermission(role, perm, $event)">
-              </mat-slide-toggle>
-            </td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-      </mat-card-content>
-    </mat-card>
+    <p-card>
+      <div class="p-card-header">
+        <span class="p-card-title">權限矩陣管理</span>
+      </div>
+      <div class="p-card-content">
+        <p-table [value]="permissions">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>權限</th>
+              <th *ngFor="let role of roles">{{ role }}</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-perm>
+            <tr>
+              <td>{{ perm }}</td>
+              <td *ngFor="let role of roles">
+                <p-toggleButton
+                  [onLabel]="'有'"
+                  [offLabel]="'無'"
+                  [(ngModel)]="matrix[role + '_' + perm]"
+                  (onChange)="togglePermission(role, perm, matrix[role + '_' + perm])">
+                </p-toggleButton>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </p-card>
   `,
+  styles: [
+    `:host ::ng-deep .p-togglebutton { min-width: 48px; }`
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PermissionMatrixComponent implements OnInit {
@@ -42,27 +52,31 @@ export class PermissionMatrixComponent implements OnInit {
   roles: string[] = ['admin', 'manager', 'user'];
   permissions: string[] = ['read', 'write', 'delete'];
   displayedColumns: string[] = ['permission', ...this.roles];
-  matrix: Record<string, string[]> = {};
+  matrix: Record<string, boolean> = {}; // UI toggle 狀態
+  rolePermissions: Record<string, string[]> = {}; // Firestore 權限陣列
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
     this.roles.forEach(role => {
-      this.matrix[role] = [];
+      this.rolePermissions[role] = [];
       if (isPlatformBrowser(this.platformId)) {
         // TODO: 可從 Firestore 讀取預設權限
       }
+      this.permissions.forEach(perm => {
+        this.matrix[role + '_' + perm] = false;
+      });
     });
   }
 
-  togglePermission(role: string, perm: string, event: MatSlideToggleChange): void {
-    if (event.checked) {
-      this.matrix[role].push(perm);
+  togglePermission(role: string, perm: string, checked: boolean | undefined): void {
+    if (checked) {
+      if (!this.rolePermissions[role].includes(perm)) this.rolePermissions[role].push(perm);
     } else {
-      this.matrix[role] = this.matrix[role].filter(p => p !== perm);
+      this.rolePermissions[role] = this.rolePermissions[role].filter(p => p !== perm);
     }
     if (isPlatformBrowser(this.platformId)) {
-      this.firebaseService.updateDocument('roles', role, { permissions: this.matrix[role] })
+      this.firebaseService.updateDocument('roles', role, { permissions: this.rolePermissions[role] })
         .then(() => console.log(`Permissions for ${role} updated`))
         .catch(err => console.error('更新權限失敗', err));
     }

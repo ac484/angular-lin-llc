@@ -1,133 +1,53 @@
 import { Component, ChangeDetectionStrategy, OnInit, inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatSelectModule } from '@angular/material/select';
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { SelectModule } from 'primeng/select';
+import { TagModule } from 'primeng/tag';
+import { RippleModule } from 'primeng/ripple';
 import { FirebaseService } from '../../../core/services/firebase.service';
 import { User } from '../../../core/models/workspace.types';
 import { Observable, from, of } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-users-list',
   standalone: true,
   imports: [
-    CommonModule, 
-    MatCardModule, 
-    MatButtonModule, 
-    MatIconModule,
-    MatChipsModule,
-    MatSelectModule
+    CommonModule, FormsModule, CardModule, ButtonModule, SelectModule, TagModule, RippleModule
   ],
   template: `
-    <div class="users-container">
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>用戶管理</mat-card-title>
-          <mat-card-subtitle>管理系統用戶帳戶</mat-card-subtitle>
-        </mat-card-header>
-        
-        <mat-card-content>
-          <div class="users-list" *ngIf="users$ | async as users">
-            <div class="user-item" *ngFor="let user of users">
-              <div class="user-info">
-                <div class="user-email">{{ user.email }}</div>
-                <div class="user-details">
-                  <span class="user-name">{{ user.displayName || '未設定' }}</span>
-                  <span class="user-date">{{ user.createdAt | date:'yyyy/MM/dd HH:mm' }}</span>
-                </div>
-                <mat-form-field appearance="outline">
-                  <mat-label>角色</mat-label>
-                  <mat-select [(value)]="user.role" (selectionChange)="changeUserRole(user, $event.value)">
-                    <mat-option *ngFor="let role of roles" [value]="role">{{ role }}</mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>
-              <div class="user-actions">
-                <mat-chip color="primary" selected>活躍</mat-chip>
-                <button mat-icon-button color="primary" (click)="editUser(user)">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-icon-button color="warn" (click)="deleteUser(user)">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </div>
+    <p-card>
+      <div class="p-card-header">
+        <span class="p-card-title">用戶管理</span>
+        <span class="p-card-subtitle">管理系統用戶帳戶</span>
+      </div>
+      <div class="p-card-content">
+        <div *ngIf="users$ | async as users">
+          <div *ngFor="let user of users" class="user-row">
+            <div style="flex:1">
+              <div>{{ user.email }}</div>
+              <small>{{ user.displayName || '未設定' }}｜{{ user.createdAt | date:'yyyy/MM/dd HH:mm' }}</small>
             </div>
-            
-            <div class="no-users" *ngIf="users.length === 0">
-              <p>目前沒有用戶資料</p>
-            </div>
+            <p-select [options]="roles" [(ngModel)]="user.role" (onChange)="changeUserRole(user, $event.value)" styleClass="role-select"></p-select>
+            <p-tag value="活躍" severity="success"></p-tag>
+            <button pButton icon="pi pi-pencil" class="p-button-text" (click)="editUser(user)"></button>
+            <button pButton icon="pi pi-trash" class="p-button-text p-button-danger" (click)="deleteUser(user)"></button>
           </div>
-        </mat-card-content>
-        
-        <mat-card-actions>
-          <button mat-raised-button color="accent" (click)="refreshUsers()">
-            <mat-icon>refresh</mat-icon>
-            重新整理
-          </button>
-        </mat-card-actions>
-      </mat-card>
-    </div>
+          <div *ngIf="users.length === 0" class="no-users">目前沒有用戶資料</div>
+        </div>
+      </div>
+      <div class="p-card-footer">
+        <button pButton icon="pi pi-refresh" label="重新整理" (click)="refreshUsers()"></button>
+      </div>
+    </p-card>
   `,
-  styles: [`
-    .users-container {
-      padding: 2rem;
-    }
-    
-    .users-list {
-      margin: 1rem 0;
-    }
-    
-    .user-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem;
-      border-bottom: 1px solid #eee;
-    }
-    
-    .user-item:last-child {
-      border-bottom: none;
-    }
-    
-    .user-info {
-      flex: 1;
-    }
-    
-    .user-email {
-      font-weight: 500;
-      color: #333;
-    }
-    
-    .user-details {
-      margin-top: 0.5rem;
-      font-size: 0.9rem;
-      color: #666;
-    }
-    
-    .user-name {
-      margin-right: 1rem;
-    }
-    
-    .user-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .no-users {
-      text-align: center;
-      padding: 2rem;
-      color: #666;
-    }
-    
-    mat-card-actions {
-      display: flex;
-      gap: 1rem;
-      padding: 1rem;
-    }
-  `],
+  styles: [
+    `.user-row { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 0; border-bottom: 1px solid #eee; }
+     .user-row:last-child { border-bottom: none; }
+     .role-select { min-width: 100px; }
+     .no-users { text-align: center; color: #888; padding: 2rem 0; }`
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UsersListComponent implements OnInit {
