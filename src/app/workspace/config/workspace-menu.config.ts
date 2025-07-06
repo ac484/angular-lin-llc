@@ -26,6 +26,20 @@ export const MENUBAR_ITEMS: MenuItem[] = [
     items: [
       { label: '建立節點', icon: 'pi pi-plus' }
     ]
+  },
+  {
+    label: '範本',
+    icon: 'pi pi-file-edit',
+    items: [
+      { label: '建立範本', icon: 'pi pi-plus' }
+    ]
+  },
+  {
+    label: '任務',
+    icon: 'pi pi-list',
+    items: [
+      { label: '建立任務', icon: 'pi pi-plus' }
+    ]
   }
 ];
 
