@@ -4,7 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule, Router } from '@angular/router';
-import { Auth, getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, AuthError } from '@angular/fire/auth';
+import { Auth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, AuthError } from '@angular/fire/auth';
 import { isPlatformBrowser } from '@angular/common';
 
 @Component({
@@ -40,14 +40,13 @@ import { isPlatformBrowser } from '@angular/common';
 })
 export class LoginComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
-  private auth: Auth | null = null;
+  private auth: Auth = inject(Auth);
   error: AuthError | null = null;
 
   constructor(private router: Router) {}
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      this.auth = getAuth();
       getRedirectResult(this.auth)
         .then(result => {
           if (result?.user) {
@@ -62,7 +61,6 @@ export class LoginComponent implements OnInit {
 
   async signInWithPopup(): Promise<void> {
     if (!isPlatformBrowser(this.platformId)) return;
-    if (!this.auth) this.auth = getAuth();
     this.error = null;
     try {
       const result = await signInWithPopup(this.auth, new GoogleAuthProvider());
@@ -76,7 +74,6 @@ export class LoginComponent implements OnInit {
 
   async signInWithRedirect(): Promise<void> {
     if (!isPlatformBrowser(this.platformId)) return;
-    if (!this.auth) this.auth = getAuth();
     this.error = null;
     try {
       await signInWithRedirect(this.auth, new GoogleAuthProvider());
