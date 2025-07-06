@@ -1,7 +1,7 @@
 import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { TreeModule } from 'primeng/tree';
 import { ContextMenuModule } from 'primeng/contextmenu';
-import { TreeNode, MenuItem } from 'primeng/api';
+import { TreeNode, MenuItem, TreeDragDropService } from 'primeng/api';
 import { WorkspaceNode, Task } from '../../../core/models/workspace.types';
 
 @Component({
@@ -10,7 +10,8 @@ import { WorkspaceNode, Task } from '../../../core/models/workspace.types';
   imports: [TreeModule, ContextMenuModule],
   templateUrl: './tree.component.html',
   styleUrls: ['./tree.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TreeDragDropService]
 })
 export class WorkspaceTreeComponent {
   @Input() nodes: TreeNode<WorkspaceNode | Task>[] = [];
@@ -30,4 +31,8 @@ export class WorkspaceTreeComponent {
     { label: '展開全部', icon: 'pi pi-angle-down', command: () => this.action.emit({ type: 'expandAll', node: this.selectedNode! }) },
     { label: '收合全部', icon: 'pi pi-angle-up', command: () => this.action.emit({ type: 'collapseAll', node: this.selectedNode! }) }
   ];
+
+  onNodeDrop(event: any) {
+    console.log('拖曳事件', event);
+  }
 } 

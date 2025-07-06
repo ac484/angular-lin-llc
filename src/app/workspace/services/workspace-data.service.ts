@@ -32,10 +32,10 @@ export class WorkspaceDataService {
 
   buildTree(nodes: WorkspaceNode[], parentId: string | null = null): TreeNode<WorkspaceNode | Task>[] {
     return nodes
-      .filter(node => (node.parentId ?? null) === parentId || (node.parentId === '' && parentId === null))
+      .filter(node => (node.parentId ?? null) === parentId)
       .map(node => {
         // 遞迴產生子節點
-        const children = this.buildTree(nodes, node.id);
+        const children: TreeNode<WorkspaceNode | Task>[] = this.buildTree(nodes, node.id);
         // 將 tasks 轉為葉節點
         const taskNodes: TreeNode<Task>[] = (node.tasks ?? []).map(task => ({
           key: task.id,
@@ -46,14 +46,15 @@ export class WorkspaceDataService {
           icon: 'pi pi-check-square',
           children: []
         }));
+        const allChildren = [...children, ...taskNodes];
         return {
           key: node.id,
           label: node.name,
           data: node,
           type: node.type,
-          children: [...children, ...taskNodes],
-          leaf: children.length === 0 && taskNodes.length === 0
-        };
+          children: allChildren,
+          leaf: allChildren.length === 0
+        } as TreeNode<WorkspaceNode | Task>;
       });
   }
 

@@ -4,6 +4,9 @@
   [(selection)]="selectedNode"
   selectionMode="single"
   styleClass="w-full"
+  [draggableNodes]="true"
+  [droppableNodes]="true"
+  (onNodeDrop)="onNodeDrop($event)"
 >
   <ng-template let-node pTemplate="default">
     <span>
