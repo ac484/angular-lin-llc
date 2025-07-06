@@ -1,8 +1,9 @@
-import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter, inject } from '@angular/core';
 import { TreeModule } from 'primeng/tree';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { TreeNode, MenuItem, TreeDragDropService } from 'primeng/api';
 import { WorkspaceNode, Task } from '../../../core/models/workspace.types';
+import { WorkspaceDataService } from '../../../workspace/services/workspace-data.service';
 
 @Component({
   selector: 'app-workspace-tree',
@@ -18,6 +19,7 @@ export class WorkspaceTreeComponent {
   @Input() selectedNode: TreeNode<WorkspaceNode | Task> | null = null;
   @Output() selectedNodeChange = new EventEmitter<TreeNode<WorkspaceNode | Task> | null>();
   @Output() action = new EventEmitter<{ type: string, node: TreeNode<WorkspaceNode | Task> }>();
+  @Output() reload = new EventEmitter<void>();
 
   contextMenuItems: MenuItem[] = [
     { label: '建立子節點', icon: 'pi pi-plus', command: () => this.action.emit({ type: 'add', node: this.selectedNode! }) },
@@ -32,7 +34,15 @@ export class WorkspaceTreeComponent {
     { label: '收合全部', icon: 'pi pi-angle-up', command: () => this.action.emit({ type: 'collapseAll', node: this.selectedNode! }) }
   ];
 
+  private data = inject(WorkspaceDataService);
+
   onNodeDrop(event: any) {
-    console.log('拖曳事件', event);
+    const dragNodeId = event.dragNode?.data?.id;
+    const newParentId = event.dropNode?.data?.id ?? null;
+    if (dragNodeId) {
+      this.data.updateNodeParent(dragNodeId, newParentId).then(() => {
+        this.reload.emit();
+      });
+    }
   }
 } 

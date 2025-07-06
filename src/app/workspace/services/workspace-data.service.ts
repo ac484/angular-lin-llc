@@ -62,4 +62,9 @@ export class WorkspaceDataService {
     const nodeRef = doc(this.firestore, 'nodes', nodeId);
     return updateDoc(nodeRef, { tasks });
   }
+
+  updateNodeParent(nodeId: string, newParentId: string | null): Promise<void> {
+    const nodeRef = doc(this.firestore, 'nodes', nodeId);
+    return updateDoc(nodeRef, { parentId: newParentId });
+  }
 }

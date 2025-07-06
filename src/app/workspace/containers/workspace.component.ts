@@ -45,6 +45,7 @@ import { ProgressspinnerComponent } from '../../shared/progressspinner/progresss
           [nodes]="(state.treeData$ | async) || []"
           [(selectedNode)]="selectedTreeNode"
           (action)="onTreeAction($event)"
+          (reload)="loadNodes()"
         ></app-workspace-tree>
       </div>
     </div>
