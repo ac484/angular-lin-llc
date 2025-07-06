@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -7,9 +7,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Firestore, collection, doc, setDoc, deleteDoc, collectionData, docData } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { lastValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-role-management',
@@ -76,8 +77,14 @@ export class RoleManagementComponent implements OnInit {
   editingRole: string | null = null;
   editedRoleName = '';
 
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+
   ngOnInit(): void {
-    this.loadRoles();
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadRoles();
+    } else {
+      this.roles$ = of([]);
+    }
   }
 
   startEdit(role: string): void {

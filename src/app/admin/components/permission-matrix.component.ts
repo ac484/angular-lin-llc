@@ -1,9 +1,10 @@
-import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatSlideToggleModule, MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { FirebaseService } from '../../core/services/firebase.service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-permission-matrix',
@@ -43,10 +44,14 @@ export class PermissionMatrixComponent implements OnInit {
   displayedColumns: string[] = ['permission', ...this.roles];
   matrix: Record<string, string[]> = {};
 
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+
   ngOnInit(): void {
     this.roles.forEach(role => {
       this.matrix[role] = [];
-      // TODO: 可從 Firestore 讀取預設權限
+      if (isPlatformBrowser(this.platformId)) {
+        // TODO: 可從 Firestore 讀取預設權限
+      }
     });
   }
 
@@ -56,9 +61,10 @@ export class PermissionMatrixComponent implements OnInit {
     } else {
       this.matrix[role] = this.matrix[role].filter(p => p !== perm);
     }
-    // 儲存至 Firestore 'roles' collection，文件ID 為 role 名稱
-    this.firebaseService.updateDocument('roles', role, { permissions: this.matrix[role] })
-      .then(() => console.log(`Permissions for ${role} updated`))
-      .catch(err => console.error('更新權限失敗', err));
+    if (isPlatformBrowser(this.platformId)) {
+      this.firebaseService.updateDocument('roles', role, { permissions: this.matrix[role] })
+        .then(() => console.log(`Permissions for ${role} updated`))
+        .catch(err => console.error('更新權限失敗', err));
+    }
   }
 } 
