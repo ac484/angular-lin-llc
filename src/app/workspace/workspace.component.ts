@@ -11,27 +11,35 @@ import { WorkspaceNode } from '../core/models/workspace.types';
 import { WorkspaceMenubarComponent } from './components/menubar/menubar.component';
 import { WorkspaceDockComponent } from './components/dock/dock.component';
 import { WorkspaceTreeComponent } from './components/tree/tree.component';
+import { Router } from '@angular/router';
+import { WorkspaceContextMenuComponent } from './components/contextmenu/contextmenu.component';
 
 @Component({
   selector: 'app-workspace',
   standalone: true,
-  imports: [CommonModule, MenubarModule, SharedTreetableComponent, WorkspaceMenubarComponent, WorkspaceDockComponent, WorkspaceTreeComponent],
+  imports: [CommonModule, MenubarModule, SharedTreetableComponent, WorkspaceMenubarComponent, WorkspaceDockComponent, WorkspaceTreeComponent, WorkspaceContextMenuComponent],
   template: `
     <app-workspace-menubar [model]="menubarItems"></app-workspace-menubar>
-    <app-workspace-dock *ngIf="isBrowser" [model]="dockItems" [position]="'bottom'" [breakpoint]="'960px'"></app-workspace-dock>
-
+    <div (contextmenu)="onDockContextMenu($event)">
+      <app-workspace-dock *ngIf="isBrowser" [model]="dockItems" [position]="'bottom'" [breakpoint]="'960px'"></app-workspace-dock>
+      <app-workspace-contextmenu
+        *ngIf="showDockContextMenu"
+        [model]="dockContextMenuItems"
+        [target]="dockContextTarget">
+      </app-workspace-contextmenu>
+    </div>
     <div *ngIf="showTreeTable" style="margin-top: 1rem;">
       <app-shared-treetable [value]="treeTableData" [columns]="treeTableColumns"></app-shared-treetable>
     </div>
     <div *ngIf="showTree" style="margin-top: 1rem;">
-      <app-workspace-tree [nodes]="treeData"></app-workspace-tree>
+      <app-workspace-tree [nodes]="treeData" (addChild)="addNode($event)"></app-workspace-tree>
     </div>
   `
 })
 export class WorkspaceComponent {
   isBrowser: boolean;
   firestore: Firestore;
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private router: Router) {
     this.isBrowser = isPlatformBrowser(platformId);
     this.firestore = inject(Firestore);
     this.loadNodes();
@@ -57,9 +65,8 @@ export class WorkspaceComponent {
   ];
 
   dockItems: MenuItem[] = [
-    { label: 'Finder', icon: 'pi pi-home' },
-    { label: 'Tree', icon: 'pi pi-apple', command: () => this.toggleTree() },
-    { label: 'Photos', icon: 'pi pi-image' },
+    { label: 'Finder', icon: 'pi pi-home', command: () => this.goHome() },
+    { label: 'Tree', icon: 'pi pi-th-large', command: () => this.toggleTree() },
     { label: 'TreeTable', icon: 'pi pi-sitemap', command: () => this.toggleTreeTable() },
     { label: 'Trash', icon: 'pi pi-trash' }
   ];
@@ -74,6 +81,13 @@ export class WorkspaceComponent {
   ];
   treeTableData: TreeNode<WorkspaceNode>[] = [];
   treeData: TreeNode<WorkspaceNode>[] = [];
+
+  showDockContextMenu = false;
+  dockContextMenuItems = [
+    { label: '重新整理', icon: 'pi pi-refresh', command: () => this.loadNodes() },
+    { label: '回首頁', icon: 'pi pi-home', command: () => this.goHome() }
+  ];
+  dockContextTarget: string | HTMLElement | undefined;
 
   toggleTreeTable() {
     this.showTreeTable = !this.showTreeTable;
@@ -102,7 +116,7 @@ export class WorkspaceComponent {
     });
   }
 
-  addNode() {
+  addNode(parentNode?: any) {
     const col = collection(this.firestore, 'nodes');
     const node: WorkspaceNode = {
       id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
@@ -110,7 +124,8 @@ export class WorkspaceComponent {
       type: 'custom',
       status: 'active',
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
+      parentId: parentNode?.data?.id ?? null
     };
     addDoc(col, node).then(docRef => {
       console.log('已建立節點，id:', docRef.id, node);
@@ -134,11 +149,23 @@ export class WorkspaceComponent {
 
   buildTree(nodes: WorkspaceNode[], parentId: string | null = null): TreeNode<WorkspaceNode>[] {
     return nodes
-      .filter(node => node.parentId === parentId || (!node.parentId && parentId === null))
+      .filter(node => (node.parentId ?? null) === parentId || (node.parentId === '' && parentId === null))
       .map(node => ({
+        label: node.name,
         data: node,
         children: this.buildTree(nodes, node.id),
         leaf: !nodes.some(n => n.parentId === node.id)
       }));
+  }
+
+  goHome() {
+    this.router.navigate(['/']);
+  }
+
+  onDockContextMenu(event: MouseEvent) {
+    event.preventDefault();
+    this.showDockContextMenu = true;
+    this.dockContextTarget = event.target as HTMLElement;
+    setTimeout(() => this.showDockContextMenu = false, 3000); // 自動隱藏
   }
 } 

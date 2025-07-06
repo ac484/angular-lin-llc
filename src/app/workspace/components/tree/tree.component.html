@@ -1,1 +1,14 @@
-<p-tree [value]="nodes"></p-tree> 
+<p-tree [value]="nodes">
+  <ng-template let-node pTemplate="default">
+    <span (contextmenu)="onNodeRightClick($event, node)">
+      {{ node.label }}
+      <span style="margin-left: 1rem; color: #888;">({{ node.data.type }})</span>
+      <span style="margin-left: 1rem; color: #888;">[{{ node.data.status }}]</span>
+    </span>
+    <app-workspace-contextmenu
+      *ngIf="contextNode === node"
+      [model]="contextMenuItems"
+      [target]="contextTarget">
+    </app-workspace-contextmenu>
+  </ng-template>
+</p-tree> 
