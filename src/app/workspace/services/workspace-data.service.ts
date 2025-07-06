@@ -42,7 +42,8 @@ export class WorkspaceDataService {
           data: task,
           leaf: true,
           type: 'task',
-          icon: 'pi pi-check-square'
+          icon: 'pi pi-check-square',
+          children: []
         }));
         return {
           label: node.name,
