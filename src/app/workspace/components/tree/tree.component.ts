@@ -14,7 +14,20 @@ import { WorkspaceNode } from '../../../core/models/workspace.types';
 })
 export class WorkspaceTreeComponent {
   @Input() nodes: TreeNode<any>[] = [];
-  @Input() contextMenuItems: MenuItem[] = [];
   @Input() selectedNode: TreeNode<any> | null = null;
   @Output() selectedNodeChange = new EventEmitter<TreeNode<any> | null>();
+  @Output() action = new EventEmitter<{ type: string, node: TreeNode<any> }>();
+
+  contextMenuItems: MenuItem[] = [
+    { label: '建立子節點', icon: 'pi pi-plus', command: () => this.action.emit({ type: 'add', node: this.selectedNode! }) },
+    { label: '建立任務', icon: 'pi pi-tasks', command: () => this.action.emit({ type: 'task', node: this.selectedNode! }) },
+    { separator: true },
+    { label: '重新命名', icon: 'pi pi-pencil', command: () => this.action.emit({ type: 'rename', node: this.selectedNode! }) },
+    { label: '刪除', icon: 'pi pi-trash', command: () => this.action.emit({ type: 'delete', node: this.selectedNode! }) },
+    { label: '複製 ID', icon: 'pi pi-copy', command: () => navigator.clipboard.writeText(this.selectedNode?.data?.id || '') },
+    { label: '查看詳細', icon: 'pi pi-info-circle', command: () => this.action.emit({ type: 'detail', node: this.selectedNode! }) },
+    { separator: true },
+    { label: '展開全部', icon: 'pi pi-angle-down', command: () => this.action.emit({ type: 'expandAll', node: this.selectedNode! }) },
+    { label: '收合全部', icon: 'pi pi-angle-up', command: () => this.action.emit({ type: 'collapseAll', node: this.selectedNode! }) }
+  ];
 } 

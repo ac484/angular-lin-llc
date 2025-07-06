@@ -43,12 +43,9 @@ import { ProgressspinnerComponent } from '../../shared/progressspinner/progresss
       <div *ngIf="(state.showTree$ | async)" style="margin-top: 1rem;">
         <app-workspace-tree
           [nodes]="(state.treeData$ | async) || []"
-          [contextMenuItems]="treeContextMenuItems"
-          [(selectedNode)]="selectedTreeNode"></app-workspace-tree>
-        <app-workspace-contextmenu
-          #treeContextMenu
-          [model]="treeContextMenuItems">
-        </app-workspace-contextmenu>
+          [(selectedNode)]="selectedTreeNode"
+          (action)="onTreeAction($event)"
+        ></app-workspace-tree>
       </div>
     </div>
   `
@@ -59,10 +56,8 @@ export class WorkspaceComponent {
   menubarItems: MenuItem[] = [];
   dockItems: MenuItem[] = [];
   dockContextMenuItems: MenuItem[] = [];
-  treeContextMenuItems: MenuItem[] = [];
   selectedTreeNode: TreeNode<any> | null = null;
   @ViewChild('dockContextMenu') dockContextMenu?: WorkspaceContextMenuComponent;
-  @ViewChild('treeContextMenu') treeContextMenu?: WorkspaceContextMenuComponent;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -182,6 +177,32 @@ export class WorkspaceComponent {
       case '重新整理': return () => this.loadNodes();
       case '回首頁': return () => this.goHome();
       default: return undefined;
+    }
+  }
+
+  onTreeAction(event: { type: string, node: any }) {
+    switch (event.type) {
+      case 'add':
+        this.addWorkspace(event.node);
+        break;
+      case 'task':
+        // TODO: 建立任務
+        break;
+      case 'rename':
+        // TODO: 重新命名
+        break;
+      case 'delete':
+        // TODO: 刪除
+        break;
+      case 'detail':
+        // TODO: 查看詳細
+        break;
+      case 'expandAll':
+        // TODO: 展開全部
+        break;
+      case 'collapseAll':
+        // TODO: 收合全部
+        break;
     }
   }
 } 
