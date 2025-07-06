@@ -7,7 +7,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
 import { WorkspaceNode, NodeType } from '../../core/models/workspace.types';
-import { ProjectService } from '../../core/services/project.service';
+import { ProjectService } from '../../core/services/workspace.service';
 import { NodeTypeService } from '../../core/services/node-type.service';
 import { Observable, from, combineLatest, map, of } from 'rxjs';
 import { NestedTreeControl } from '@angular/cdk/tree';
