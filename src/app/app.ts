@@ -11,7 +11,7 @@ import { NavBarComponent } from './shared/nav-bar.component';
 })
 export class App {
   constructor(private router: Router) {}
-  get isAdminRoute(): boolean {
-    return this.router.url.startsWith('/admin');
+  get isHideNavBarRoute(): boolean {
+    return this.router.url.startsWith('/admin') || this.router.url.startsWith('/workspace');
   }
 }
