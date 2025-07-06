@@ -30,15 +30,27 @@ export class WorkspaceDataService {
     return collectionData(col) as Observable<WorkspaceNode[]>;
   }
 
-  buildTree(nodes: WorkspaceNode[], parentId: string | null = null): TreeNode<WorkspaceNode>[] {
+  buildTree(nodes: WorkspaceNode[], parentId: string | null = null): TreeNode<WorkspaceNode | Task>[] {
     return nodes
       .filter(node => (node.parentId ?? null) === parentId || (node.parentId === '' && parentId === null))
-      .map(node => ({
-        label: node.name,
-        data: node,
-        children: this.buildTree(nodes, node.id),
-        leaf: !nodes.some(n => n.parentId === node.id)
-      }));
+      .map(node => {
+        // 先遞迴產生子節點
+        const children = this.buildTree(nodes, node.id);
+        // 將 tasks 轉為葉節點
+        const taskNodes: TreeNode<Task>[] = (node.tasks ?? []).map(task => ({
+          label: task.title,
+          data: task,
+          leaf: true,
+          type: 'task',
+          icon: 'pi pi-check-square'
+        }));
+        return {
+          label: node.name,
+          data: node,
+          children: [...children, ...taskNodes],
+          leaf: children.length === 0 && taskNodes.length === 0
+        };
+      });
   }
 
   updateNodeTasks(nodeId: string, tasks: Task[]): Promise<void> {

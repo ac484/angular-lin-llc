@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { TreeNode } from 'primeng/api';
-import { WorkspaceNode } from '../../core/models/workspace.types';
+import { WorkspaceNode, Task } from '../../core/models/workspace.types';
 
 @Injectable({ providedIn: 'root' })
 export class WorkspaceStateService {
@@ -13,6 +13,6 @@ export class WorkspaceStateService {
     { field: 'status', header: '狀態' },
     { field: 'createdAt', header: '建立時間' }
   ]);
-  treeTableData$ = new BehaviorSubject<TreeNode<WorkspaceNode>[]>([]);
-  treeData$ = new BehaviorSubject<TreeNode<WorkspaceNode>[]>([]);
+  treeTableData$ = new BehaviorSubject<TreeNode<WorkspaceNode | Task>[]>([]);
+  treeData$ = new BehaviorSubject<TreeNode<WorkspaceNode | Task>[]>([]);
 }

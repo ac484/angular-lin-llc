@@ -2,7 +2,7 @@ import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter } from 
 import { TreeModule } from 'primeng/tree';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { TreeNode, MenuItem } from 'primeng/api';
-import { WorkspaceNode } from '../../../core/models/workspace.types';
+import { WorkspaceNode, Task } from '../../../core/models/workspace.types';
 
 @Component({
   selector: 'app-workspace-tree',
@@ -13,10 +13,10 @@ import { WorkspaceNode } from '../../../core/models/workspace.types';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkspaceTreeComponent {
-  @Input() nodes: TreeNode<any>[] = [];
-  @Input() selectedNode: TreeNode<any> | null = null;
-  @Output() selectedNodeChange = new EventEmitter<TreeNode<any> | null>();
-  @Output() action = new EventEmitter<{ type: string, node: TreeNode<any> }>();
+  @Input() nodes: TreeNode<WorkspaceNode | Task>[] = [];
+  @Input() selectedNode: TreeNode<WorkspaceNode | Task> | null = null;
+  @Output() selectedNodeChange = new EventEmitter<TreeNode<WorkspaceNode | Task> | null>();
+  @Output() action = new EventEmitter<{ type: string, node: TreeNode<WorkspaceNode | Task> }>();
 
   contextMenuItems: MenuItem[] = [
     { label: '建立子節點', icon: 'pi pi-plus', command: () => this.action.emit({ type: 'add', node: this.selectedNode! }) },
