@@ -12,11 +12,10 @@ import { WorkspaceNode } from '../../../core/models/workspace.types';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkspaceTreeComponent {
-  @Input() nodes: TreeNode<WorkspaceNode>[] = [];
-  @Output() addChild = new EventEmitter<TreeNode<WorkspaceNode>>();
-  @Output() nodeRightClick = new EventEmitter<{ event: MouseEvent, node: TreeNode<WorkspaceNode> }>();
+  @Input() nodes: TreeNode<any>[] = [];
+  @Output() nodeRightClick = new EventEmitter<{ event: MouseEvent, node: TreeNode<any> }>();
 
-  onNodeRightClick(event: MouseEvent, node: TreeNode<WorkspaceNode>) {
+  onNodeRightClick(event: MouseEvent, node: TreeNode<any>) {
     event.preventDefault();
     this.nodeRightClick.emit({ event, node });
   }

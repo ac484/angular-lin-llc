@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DockModule } from 'primeng/dock';
 import { TooltipModule } from 'primeng/tooltip';
@@ -19,13 +19,4 @@ export class WorkspaceDockComponent {
   @Input() position: 'bottom' | 'top' | 'left' | 'right' = 'bottom';
   /** 行動版斷點 */
   @Input() breakpoint: string = '960px';
-
-  @Output() addNode = new EventEmitter<void>();
-  @Output() addTask = new EventEmitter<void>();
-  @Output() dockRightClick = new EventEmitter<MouseEvent>();
-
-  onDockRightClick(event: MouseEvent) {
-    event.preventDefault();
-    this.dockRightClick.emit(event);
-  }
 } 

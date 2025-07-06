@@ -13,5 +13,4 @@ import { TreeNode } from 'primeng/api';
 })
 export class SharedTreetableComponent {
   @Input() value: TreeNode<any>[] | undefined;
-  @Input() columns: any[] | undefined;
 } 
