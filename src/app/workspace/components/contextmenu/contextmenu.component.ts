@@ -16,4 +16,8 @@ export class WorkspaceContextMenuComponent {
   /** 目標元素（選擇器或 HTMLElement） */
   @Input() target: string | HTMLElement | undefined;
   @ViewChild(ContextMenu) contextMenu?: ContextMenu;
+
+  show(event: MouseEvent): void {
+    this.contextMenu?.show(event);
+  }
 } 
