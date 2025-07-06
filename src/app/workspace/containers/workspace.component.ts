@@ -27,22 +27,19 @@ import { Observable } from 'rxjs';
       <app-workspace-dock *ngIf="isBrowser"
         [model]="dockItems"
         [position]="'bottom'"
-        [breakpoint]="'960px'"
-        (addNode)="addNode()"
-        (addTask)="addTask()"
-        (dockRightClick)="onDockContextMenu($event)"></app-workspace-dock>
+        [breakpoint]="'960px'">
+      </app-workspace-dock>
       <app-workspace-contextmenu
         #dockContextMenu
         [model]="dockContextMenuItems">
       </app-workspace-contextmenu>
     </div>
     <div *ngIf="(state.showTreeTable$ | async)" style="margin-top: 1rem;">
-      <app-shared-treetable [value]="(state.treeTableData$ | async) || []" [columns]="(state.treeTableColumns$ | async) || []"></app-shared-treetable>
+      <app-shared-treetable [value]="(state.treeTableData$ | async) || []"></app-shared-treetable>
     </div>
     <div *ngIf="(state.showTree$ | async)" style="margin-top: 1rem;">
       <app-workspace-tree
         [nodes]="(state.treeData$ | async) || []"
-        (addChild)="addNode($event)"
         (nodeRightClick)="onTreeNodeRightClick($event)"></app-workspace-tree>
       <app-workspace-contextmenu
         #treeContextMenu
@@ -121,35 +118,6 @@ export class WorkspaceComponent {
     this.data.addWorkspace(node).then(() => this.loadNodes());
   }
 
-  addNode(parentNode?: any) {
-    if (!this.isBrowser) return;
-    const node: WorkspaceNode = {
-      id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
-      name: '新節點 ' + new Date().toLocaleTimeString(),
-      type: 'custom',
-      status: 'active',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      parentId: parentNode?.data?.id ?? null
-    };
-    this.data.addNode(node).then(() => this.loadNodes());
-  }
-
-  addTask(parentNode?: any) {
-    if (!this.isBrowser) return;
-    // 這裡可根據實際需求調整 task 結構
-    const node: WorkspaceNode = {
-      id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
-      name: '新任務 ' + new Date().toLocaleTimeString(),
-      type: 'task',
-      status: 'active',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      parentId: parentNode?.data?.id ?? null
-    };
-    this.data.addNode(node).then(() => this.loadNodes());
-  }
-
   loadNodes() {
     if (!this.isBrowser) return;
     this.data.loadNodes().subscribe((data: WorkspaceNode[]) => {
@@ -186,16 +154,8 @@ export class WorkspaceComponent {
   onTreeNodeRightClick({ event, node }: { event: MouseEvent, node: any }) {
     event.preventDefault();
     this.treeContextMenuItems = [
-      {
-        label: '建立子節點',
-        icon: 'pi pi-plus',
-        command: () => this.addNode(node)
-      },
-      {
-        label: '建立任務',
-        icon: 'pi pi-tasks',
-        command: () => this.addTask(node)
-      }
+      { label: '建立子節點', icon: 'pi pi-plus', command: () => {/* 實際功能請依需求補上 */} },
+      { label: '建立任務', icon: 'pi pi-tasks', command: () => {/* 實際功能請依需求補上 */} }
     ];
     this.treeContextMenu?.show(event);
   }
@@ -203,12 +163,10 @@ export class WorkspaceComponent {
   // 根據 label 回傳對應的 command function
   getMenubarCommand(label?: string) {
     switch (label) {
-      case '新增': return () => this.addNode();
       case '開啟': return () => this.loadWorkspaces();
       case '重新載入': return () => this.loadNodes();
       case '讀取工作空間': return () => this.loadWorkspaces();
       case '新增工作空間': return () => this.addWorkspace();
-      case '建立節點': return () => this.addNode();
       default: return undefined;
     }
   }
