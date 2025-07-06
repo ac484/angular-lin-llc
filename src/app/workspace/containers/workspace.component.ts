@@ -82,7 +82,7 @@ export class WorkspaceComponent {
       ...item,
       items: item.items?.map(sub => ({
         ...sub,
-        command: this.getMenubarCommand(sub.label)
+        command: sub.label === '建立範本' ? () => this.createTemplateFromSelected() : this.getMenubarCommand(sub.label)
       }))
     }));
     // 產生 dockItems
@@ -229,6 +229,7 @@ export class WorkspaceComponent {
 
   onInsertTemplate(template: WorkspaceNode) {
     if (!this.selectedTreeNode) return;
+    // 直接複製 template.children 陣列
     const newChildren = (template.children ?? []).map(child => this.deepCloneNode(child));
     if (!this.selectedTreeNode.data.children) this.selectedTreeNode.data.children = [];
     this.selectedTreeNode.data.children.push(...newChildren);
@@ -243,5 +244,18 @@ export class WorkspaceComponent {
       createdAt: new Date(),
       updatedAt: new Date()
     };
+  }
+
+  createTemplateFromSelected() {
+    if (!this.selectedTreeNode) return;
+    // 深拷貝選中節點（含 children 陣列）
+    const template: WorkspaceNode = this.deepCloneNode(this.selectedTreeNode.data);
+    template.id = crypto.randomUUID?.() || Math.random().toString(36).slice(2);
+    template.type = 'template';
+    template.status = 'active';
+    template.createdAt = new Date();
+    template.updatedAt = new Date();
+    // parentId 不需處理
+    this.data.addTemplate(template).then(() => this.loadTemplates());
   }
 } 
