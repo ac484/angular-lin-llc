@@ -145,15 +145,21 @@ export class UsersListComponent implements OnInit {
   }
 
   loadUsers(): void {
-    this.users$ = from(this.firebaseService.getDocuments<User>('users'));
+    if (isPlatformBrowser(this.platformId)) {
+      this.users$ = from(this.firebaseService.getDocuments<User>('users'));
+    } else {
+      this.users$ = of([]);
+    }
   }
 
   editUser(user: User): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     // TODO: 實作編輯用戶功能
     console.log('編輯用戶:', user);
   }
 
   deleteUser(user: User): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     // TODO: 實作刪除用戶功能
     console.log('刪除用戶:', user);
   }

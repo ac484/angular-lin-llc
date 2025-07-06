@@ -9,13 +9,21 @@ export class ProjectService {
 
   // 取得所有專案節點（極簡範例）
   async getProjectTree(): Promise<ProjectNode[]> {
-    const querySnapshot = await getDocs(collection(this.firestore, 'projectNodes'));
-    return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }) as ProjectNode);
+    try {
+      const querySnapshot = await getDocs(collection(this.firestore, 'projectNodes'));
+      return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }) as ProjectNode);
+    } catch (e) {
+      return [];
+    }
   }
 
   // 取得所有節點型別
   async getNodeTypes(): Promise<NodeType[]> {
-    const querySnapshot = await getDocs(collection(this.firestore, 'nodeTypes'));
-    return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }) as NodeType);
+    try {
+      const querySnapshot = await getDocs(collection(this.firestore, 'nodeTypes'));
+      return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }) as NodeType);
+    } catch (e) {
+      return [];
+    }
   }
 }

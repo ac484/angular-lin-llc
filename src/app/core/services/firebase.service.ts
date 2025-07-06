@@ -33,15 +33,25 @@ export class FirebaseService {
   // 認證相關方法
   async signIn(email: string, password: string): Promise<any> {
     if (!this.isBrowser()) throw new Error('signIn 僅能於瀏覽器呼叫');
-    return signInWithEmailAndPassword(this.auth, email, password);
+    try {
+      return await signInWithEmailAndPassword(this.auth, email, password);
+    } catch (e) {
+      return null;
+    }
   }
 
   async signUp(email: string, password: string): Promise<any> {
-    return createUserWithEmailAndPassword(this.auth, email, password);
+    try {
+      return await createUserWithEmailAndPassword(this.auth, email, password);
+    } catch (e) {
+      return null;
+    }
   }
 
   async signOut(): Promise<void> {
-    return signOut(this.auth);
+    try {
+      await signOut(this.auth);
+    } catch (e) {}
   }
 
   getCurrentUser(): Observable<any> {
@@ -50,43 +60,65 @@ export class FirebaseService {
 
   // Firestore 操作方法
   async getDocument<T>(collectionName: string, docId: string): Promise<T | null> {
-    const docRef = doc(this.firestore, collectionName, docId);
-    const docSnap = await getDoc(docRef);
-    return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } as T : null;
+    try {
+      const docRef = doc(this.firestore, collectionName, docId);
+      const docSnap = await getDoc(docRef);
+      return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } as T : null;
+    } catch (e) {
+      return null;
+    }
   }
 
   async getDocuments<T>(collectionName: string): Promise<T[]> {
     if (!this.isBrowser()) {
       return [];
     }
-    const querySnapshot = await getDocs(collection(this.firestore, collectionName));
-    return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }) as T);
+    try {
+      const querySnapshot = await getDocs(collection(this.firestore, collectionName));
+      return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }) as T);
+    } catch (e) {
+      return [];
+    }
   }
 
-  async addDocument<T extends Record<string, any>>(collectionName: string, data: T): Promise<string> {
-    const docRef = await addDoc(collection(this.firestore, collectionName), data);
-    return docRef.id;
+  async addDocument<T extends Record<string, any>>(collectionName: string, data: T): Promise<string | null> {
+    try {
+      const docRef = await addDoc(collection(this.firestore, collectionName), data);
+      return docRef.id;
+    } catch (e) {
+      return null;
+    }
   }
 
   async updateDocument<T>(collectionName: string, docId: string, data: Partial<T>): Promise<void> {
-    const docRef = doc(this.firestore, collectionName, docId);
-    await updateDoc(docRef, data as any);
+    try {
+      const docRef = doc(this.firestore, collectionName, docId);
+      await updateDoc(docRef, data as any);
+    } catch (e) {}
   }
 
   async deleteDocument(collectionName: string, docId: string): Promise<void> {
-    const docRef = doc(this.firestore, collectionName, docId);
-    await deleteDoc(docRef);
+    try {
+      const docRef = doc(this.firestore, collectionName, docId);
+      await deleteDoc(docRef);
+    } catch (e) {}
   }
 
   // Storage 操作方法
-  async uploadFile(file: File, path: string): Promise<string> {
-    const storageRef = ref(this.storage, path);
-    const snapshot = await uploadBytes(storageRef, file);
-    return getDownloadURL(snapshot.ref);
+  async uploadFile(file: File, path: string): Promise<string | null> {
+    try {
+      const storageRef = ref(this.storage, path);
+      const snapshot = await uploadBytes(storageRef, file);
+      return await getDownloadURL(snapshot.ref);
+    } catch (e) {
+      return null;
+    }
   }
 
   async deleteFile(path: string): Promise<void> {
-    const storageRef = ref(this.storage, path);
-    await deleteObject(storageRef);
+    try {
+      const storageRef = ref(this.storage, path);
+      await deleteObject(storageRef);
+    } catch (e) {}
   }
 } 
