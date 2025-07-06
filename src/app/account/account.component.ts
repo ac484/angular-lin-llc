@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -8,9 +8,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { Auth, getAuth, signOut } from '@angular/fire/auth';
+import { Auth } from '@angular/fire/auth';
 import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
 import { NgxPermissionsService } from 'ngx-permissions';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-account',
@@ -30,10 +31,10 @@ import { NgxPermissionsService } from 'ngx-permissions';
     <mat-card *ngIf="user">
       <mat-card-header>
         <div class="header-left">
-          <img *ngIf="user?.photoURL" [src]="user.photoURL" class="avatar"/>
+          <img *ngIf="user.photoURL" [src]="user.photoURL" class="avatar"/>
           <div>
-            <h2>{{ profileForm.get('displayName')!.value || user?.email }}</h2>
-            <p>{{ user?.email }}</p>
+            <h2>{{ profileForm.get('displayName')!.value || user.email }}</h2>
+            <p>{{ user.email }}</p>
           </div>
         </div>
         <button mat-icon-button (click)="logout()">
@@ -67,10 +68,11 @@ import { NgxPermissionsService } from 'ngx-permissions';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountComponent implements OnInit {
-  private auth: Auth = getAuth();
+  private auth: Auth = inject(Auth);
   private firestore: Firestore = inject(Firestore);
   private permissionsService: NgxPermissionsService = inject(NgxPermissionsService);
-  user = this.auth.currentUser!;
+  private platformId = inject(PLATFORM_ID);
+  user: any = null;
   profileForm: FormGroup;
 
   constructor(private fb: FormBuilder) {
@@ -83,17 +85,20 @@ export class AccountComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    if (this.user) {
-      const uid = this.user.uid;
-      const snap = await getDoc(doc(this.firestore, 'users', uid));
-      const data = snap.data() as any;
-      this.profileForm.patchValue({
-        displayName: data.displayName || '',
-        phone: data.phone || '',
-        emailNotifications: data.emailNotifications || false,
-        pushNotifications: data.pushNotifications || false
-      });
-      this.permissionsService.loadPermissions([data.role || 'user']);
+    if (isPlatformBrowser(this.platformId)) {
+      this.user = this.auth.currentUser;
+      if (this.user) {
+        const uid = this.user.uid;
+        const snap = await getDoc(doc(this.firestore, 'users', uid));
+        const data = snap.data() as any;
+        this.profileForm.patchValue({
+          displayName: data.displayName || '',
+          phone: data.phone || '',
+          emailNotifications: data.emailNotifications || false,
+          pushNotifications: data.pushNotifications || false
+        });
+        this.permissionsService.loadPermissions([data.role || 'user']);
+      }
     }
   }
 
@@ -110,6 +115,8 @@ export class AccountComponent implements OnInit {
   }
 
   logout(): void {
-    signOut(this.auth);
+    if (isPlatformBrowser(this.platformId)) {
+      this.auth.signOut();
+    }
   }
 } 

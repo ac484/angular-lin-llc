@@ -1,4 +1,4 @@
-import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, PLATFORM_ID, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MenubarModule } from 'primeng/menubar';
 import type { MenuItem, MenuItemCommandEvent } from 'primeng/api';
@@ -23,7 +23,7 @@ import { WorkspaceContextMenuComponent } from './components/contextmenu/contextm
     <div (contextmenu)="onDockContextMenu($event)">
       <app-workspace-dock *ngIf="isBrowser" [model]="dockItems" [position]="'bottom'" [breakpoint]="'960px'"></app-workspace-dock>
       <app-workspace-contextmenu
-        *ngIf="showDockContextMenu"
+        #dockContextMenu
         [model]="dockContextMenuItems"
         [target]="dockContextTarget">
       </app-workspace-contextmenu>
@@ -82,12 +82,12 @@ export class WorkspaceComponent {
   treeTableData: TreeNode<WorkspaceNode>[] = [];
   treeData: TreeNode<WorkspaceNode>[] = [];
 
-  showDockContextMenu = false;
   dockContextMenuItems = [
     { label: '重新整理', icon: 'pi pi-refresh', command: () => this.loadNodes() },
     { label: '回首頁', icon: 'pi pi-home', command: () => this.goHome() }
   ];
-  dockContextTarget: string | HTMLElement | undefined;
+  dockContextTarget: string | HTMLElement | undefined = document.body;
+  @ViewChild('dockContextMenu') dockContextMenu?: WorkspaceContextMenuComponent;
 
   toggleTreeTable() {
     this.showTreeTable = !this.showTreeTable;
@@ -164,8 +164,6 @@ export class WorkspaceComponent {
 
   onDockContextMenu(event: MouseEvent) {
     event.preventDefault();
-    this.showDockContextMenu = true;
-    this.dockContextTarget = event.target as HTMLElement;
-    setTimeout(() => this.showDockContextMenu = false, 3000); // 自動隱藏
+    this.dockContextMenu?.show(event);
   }
 } 

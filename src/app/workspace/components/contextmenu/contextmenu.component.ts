@@ -1,5 +1,5 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
-import { ContextMenuModule } from 'primeng/contextmenu';
+import { Component, Input, ChangeDetectionStrategy, ViewChild } from '@angular/core';
+import { ContextMenuModule, ContextMenu } from 'primeng/contextmenu';
 import { MenuItem } from 'primeng/api';
 
 @Component({
@@ -15,4 +15,9 @@ export class WorkspaceContextMenuComponent {
   @Input() model: MenuItem[] = [];
   /** 目標元素（選擇器或 HTMLElement） */
   @Input() target: string | HTMLElement | undefined;
+  @ViewChild(ContextMenu) contextMenu?: ContextMenu;
+
+  show(event: MouseEvent) {
+    this.contextMenu?.show(event);
+  }
 } 
