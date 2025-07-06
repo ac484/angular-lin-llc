@@ -107,3 +107,27 @@ export interface WorkspaceNode {
     // 動態屬性
     customFields?: Record<string, unknown>
   }
+
+
+//PrimeNG Tree需要的型別
+
+  export interface TreeNode<T = any> { // 樹狀結構節點型別
+    label?: string; // 節點標籤
+    data?: T; // 節點資料
+    icon?: string; // 節點圖示
+    expandedIcon?: string; // 展開圖示
+    collapsedIcon?: string; // 收合圖示
+    children?: TreeNode<T>[]; // 子節點
+    leaf?: boolean; // 是否為葉節點
+    expanded?: boolean; // 是否展開
+    type?: string; // 節點類型
+    parent?: TreeNode<T>; // 父節點
+    partialSelected?: boolean; // 部分選中
+    style?: any; // 節點樣式
+    styleClass?: string; // 節點樣式類別
+    draggable?: boolean; // 是否可拖動
+    droppable?: boolean; // 是否可放置
+    selectable?: boolean; // 是否可選中
+    key?: string; // 節點鍵值
+    loading?: boolean; // 是否加載中
+  }
