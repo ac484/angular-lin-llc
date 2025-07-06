@@ -88,8 +88,14 @@ export class WorkspaceComponent {
     { label: '重新整理', icon: 'pi pi-refresh', command: () => this.loadNodes() },
     { label: '回首頁', icon: 'pi pi-home', command: () => this.goHome() }
   ];
-  dockContextTarget: string | HTMLElement | undefined = document.body;
+  dockContextTarget: string | HTMLElement | undefined = undefined;
   @ViewChild('dockContextMenu') dockContextMenu?: WorkspaceContextMenuComponent;
+
+  ngOnInit() {
+    if (this.isBrowser) {
+      this.dockContextTarget = document.body;
+    }
+  }
 
   toggleTreeTable() {
     this.showTreeTable = !this.showTreeTable;
