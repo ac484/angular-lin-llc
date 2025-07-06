@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 import { WorkspaceContextMenuComponent } from '../components/contextmenu/contextmenu.component';
 import { WorkspaceDataService } from '../services/workspace-data.service';
 import { WorkspaceStateService } from '../services/workspace-state.service';
-import { menubarItems, dockItems, dockContextMenuItems } from '../config/workspace-menu.config';
+import { MENUBAR_ITEMS, DOCK_ITEMS, DOCK_CONTEXT_MENU_ITEMS } from '../config/workspace-menu.config';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -75,47 +75,24 @@ export class WorkspaceComponent {
     if (this.isBrowser) {
       this.loadNodes();
     }
-    // 產生 menubarItems，command 用箭頭函式包裝
-    this.menubarItems = [
-      {
-        label: '檔案',
-        icon: 'pi pi-file',
-        items: [
-          { label: '新增', icon: 'pi pi-plus', command: () => this.addNode() },
-          { label: '開啟', icon: 'pi pi-folder-open', command: () => this.loadWorkspaces() },
-          { label: '重新載入', icon: 'pi pi-refresh', command: () => this.loadNodes() },
-          { label: '讀取工作空間', icon: 'pi pi-database', command: () => this.loadWorkspaces() },
-          { label: '新增工作空間', icon: 'pi pi-plus-circle', command: () => this.addWorkspace() }
-        ]
-      },
-      {
-        label: '編輯',
-        icon: 'pi pi-pencil',
-        items: [
-          { label: '剪下', icon: 'pi pi-cut' },
-          { label: '複製', icon: 'pi pi-copy' }
-        ]
-      },
-      {
-        label: '節點',
-        icon: 'pi pi-sitemap',
-        items: [
-          { label: '建立節點', icon: 'pi pi-plus', command: () => this.addNode() }
-        ]
-      }
-    ];
+    // 產生 menubarItems，根據 label 動態加上 command
+    this.menubarItems = MENUBAR_ITEMS.map(item => ({
+      ...item,
+      items: item.items?.map(sub => ({
+        ...sub,
+        command: this.getMenubarCommand(sub.label)
+      }))
+    }));
     // 產生 dockItems
-    this.dockItems = [
-      { label: 'Finder', icon: 'pi pi-home', command: () => this.goHome() },
-      { label: 'Tree', icon: 'pi pi-th-large', command: () => this.toggleTree() },
-      { label: 'TreeTable', icon: 'pi pi-sitemap', command: () => this.toggleTreeTable() },
-      { label: 'Trash', icon: 'pi pi-trash' }
-    ];
+    this.dockItems = DOCK_ITEMS.map(item => ({
+      ...item,
+      command: this.getDockCommand(item.label)
+    }));
     // 產生 dockContextMenuItems
-    this.dockContextMenuItems = [
-      { label: '重新整理', icon: 'pi pi-refresh', command: () => this.loadNodes() },
-      { label: '回首頁', icon: 'pi pi-home', command: () => this.goHome() }
-    ];
+    this.dockContextMenuItems = DOCK_CONTEXT_MENU_ITEMS.map(item => ({
+      ...item,
+      command: this.getDockContextMenuCommand(item.label)
+    }));
   }
 
   ngOnInit() {
@@ -236,5 +213,33 @@ export class WorkspaceComponent {
     ];
     this.showTreeContextMenu = true;
     setTimeout(() => this.showTreeContextMenu = false, 2000); // 自動隱藏，可依需求調整
+  }
+
+  // 根據 label 回傳對應的 command function
+  getMenubarCommand(label?: string) {
+    switch (label) {
+      case '新增': return () => this.addNode();
+      case '開啟': return () => this.loadWorkspaces();
+      case '重新載入': return () => this.loadNodes();
+      case '讀取工作空間': return () => this.loadWorkspaces();
+      case '新增工作空間': return () => this.addWorkspace();
+      case '建立節點': return () => this.addNode();
+      default: return undefined;
+    }
+  }
+  getDockCommand(label?: string) {
+    switch (label) {
+      case 'Finder': return () => this.goHome();
+      case 'Tree': return () => this.toggleTree();
+      case 'TreeTable': return () => this.toggleTreeTable();
+      default: return undefined;
+    }
+  }
+  getDockContextMenuCommand(label?: string) {
+    switch (label) {
+      case '重新整理': return () => this.loadNodes();
+      case '回首頁': return () => this.goHome();
+      default: return undefined;
+    }
   }
 } 
