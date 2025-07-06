@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ProgressBarModule } from 'primeng/progressbar';
 
 @Component({
@@ -8,4 +8,6 @@ import { ProgressBarModule } from 'primeng/progressbar';
   templateUrl: './progressbar.component.html',
   styleUrls: ['./progressbar.component.scss']
 })
-export class ProgressbarComponent {} 
+export class ProgressbarComponent {
+  @Input() value: number | null = null;
+} 
