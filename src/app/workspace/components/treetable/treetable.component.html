@@ -10,9 +10,7 @@
   <ng-template #body let-rowNode let-rowData="rowData">
     <tr [ttRow]="rowNode">
       <td>
-        <ng-container *ngIf="rowNode.children?.length">
-          <p-treetable-toggler [rowNode]="rowNode" />
-        </ng-container>
+        <p-treetable-toggler [rowNode]="rowNode" />
         {{ rowData.name }}
       </td>
       <td>{{ rowData.type }}</td>

@@ -1,29 +1,44 @@
 import type { MenuItem } from 'primeng/api';
-import { NodeType } from '../../core/models/workspace.types';
-
-const NODE_TYPES: NodeType[] = [
-  { id: 'factory', name: '廠區', icon: 'pi pi-building', color: '#1976d2' },
-  { id: 'area', name: '區域', icon: 'pi pi-map', color: '#388e3c' },
-  { id: 'department', name: '部門', icon: 'pi pi-users', color: '#fbc02d' },
-  { id: 'custom', name: '自訂', icon: 'pi pi-circle', color: '#757575' },
-  { id: 'root', name: '主節點', icon: 'pi pi-sitemap', color: '#512da8' }
-];
 
 export const MENUBAR_ITEMS: MenuItem[] = [
   {
+    label: '檔案',
+    icon: 'pi pi-file',
+    items: [
+      { label: '新增', icon: 'pi pi-plus' },
+      { label: '開啟', icon: 'pi pi-folder-open' },
+      { label: '重新載入', icon: 'pi pi-refresh' },
+      { label: '讀取工作空間', icon: 'pi pi-database' },
+      { label: '新增工作空間', icon: 'pi pi-plus-circle' }
+    ]
+  },
+  {
+    label: '編輯',
+    icon: 'pi pi-pencil',
+    items: [
+      { label: '剪下', icon: 'pi pi-cut' },
+      { label: '複製', icon: 'pi pi-copy' }
+    ]
+  },
+  {
     label: '節點',
     icon: 'pi pi-sitemap',
-    items: NODE_TYPES.filter(nt => !nt.isLeaf).map(nt => ({
-      label: `建立${nt.name}`,
-      icon: nt.icon,
-      id: nt.id
-    }))
+    items: [
+      { label: '建立節點', icon: 'pi pi-plus' }
+    ]
+  },
+  {
+    label: '範本',
+    icon: 'pi pi-file-edit',
+    items: [
+      { label: '建立範本', icon: 'pi pi-plus' }
+    ]
   },
   {
     label: '任務',
     icon: 'pi pi-list',
     items: [
-      { label: '建立任務', icon: 'pi pi-plus', id: 'task' }
+      { label: '建立任務', icon: 'pi pi-plus' }
     ]
   }
 ];
@@ -32,6 +47,7 @@ export const DOCK_ITEMS: MenuItem[] = [
   { label: 'Home', icon: 'pi pi-home' },
   { label: 'Tree', icon: 'pi pi-th-large' },
   { label: 'TreeTable', icon: 'pi pi-sitemap' },
+  { label: 'Trash', icon: 'pi pi-trash' }
 ];
 
 export const DOCK_CONTEXT_MENU_ITEMS: MenuItem[] = [
