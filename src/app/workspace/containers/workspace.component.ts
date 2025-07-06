@@ -22,29 +22,31 @@ import { Observable } from 'rxjs';
   standalone: true,
   imports: [CommonModule, MenubarModule, SharedTreetableComponent, WorkspaceMenubarComponent, WorkspaceDockComponent, WorkspaceTreeComponent, WorkspaceContextMenuComponent],
   template: `
-    <app-workspace-menubar [model]="menubarItems"></app-workspace-menubar>
-    <div (contextmenu)="onDockContextMenu($event)">
-      <app-workspace-dock *ngIf="isBrowser"
-        [model]="dockItems"
-        [position]="'bottom'"
-        [breakpoint]="'960px'">
-      </app-workspace-dock>
-      <app-workspace-contextmenu
-        #dockContextMenu
-        [model]="dockContextMenuItems">
-      </app-workspace-contextmenu>
-    </div>
-    <div *ngIf="(state.showTreeTable$ | async)" style="margin-top: 1rem;">
-      <app-shared-treetable [value]="(state.treeTableData$ | async) || []"></app-shared-treetable>
-    </div>
-    <div *ngIf="(state.showTree$ | async)" style="margin-top: 1rem;">
-      <app-workspace-tree
-        [nodes]="(state.treeData$ | async) || []"
-        (nodeRightClick)="onTreeNodeRightClick($event)"></app-workspace-tree>
-      <app-workspace-contextmenu
-        #treeContextMenu
-        [model]="treeContextMenuItems">
-      </app-workspace-contextmenu>
+    <div class="workspace-content">
+      <app-workspace-menubar [model]="menubarItems"></app-workspace-menubar>
+      <div (contextmenu)="onDockContextMenu($event)">
+        <app-workspace-dock *ngIf="isBrowser"
+          [model]="dockItems"
+          [position]="'bottom'"
+          [breakpoint]="'960px'">
+        </app-workspace-dock>
+        <app-workspace-contextmenu
+          #dockContextMenu
+          [model]="dockContextMenuItems">
+        </app-workspace-contextmenu>
+      </div>
+      <div *ngIf="(state.showTreeTable$ | async)" style="margin-top: 1rem;">
+        <app-shared-treetable [value]="(state.treeTableData$ | async) || []"></app-shared-treetable>
+      </div>
+      <div *ngIf="(state.showTree$ | async)" style="margin-top: 1rem;">
+        <app-workspace-tree
+          [nodes]="(state.treeData$ | async) || []"
+          (nodeRightClick)="onTreeNodeRightClick($event)"></app-workspace-tree>
+        <app-workspace-contextmenu
+          #treeContextMenu
+          [model]="treeContextMenuItems">
+        </app-workspace-contextmenu>
+      </div>
     </div>
   `
 })
