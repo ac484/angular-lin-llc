@@ -5,19 +5,7 @@ export const MENUBAR_ITEMS: MenuItem[] = [
     label: '檔案',
     icon: 'pi pi-file',
     items: [
-      { label: '新增', icon: 'pi pi-plus' },
-      { label: '開啟', icon: 'pi pi-folder-open' },
-      { label: '重新載入', icon: 'pi pi-refresh' },
-      { label: '讀取工作空間', icon: 'pi pi-database' },
       { label: '新增工作空間', icon: 'pi pi-plus-circle' }
-    ]
-  },
-  {
-    label: '編輯',
-    icon: 'pi pi-pencil',
-    items: [
-      { label: '剪下', icon: 'pi pi-cut' },
-      { label: '複製', icon: 'pi pi-copy' }
     ]
   },
   {
@@ -25,13 +13,6 @@ export const MENUBAR_ITEMS: MenuItem[] = [
     icon: 'pi pi-sitemap',
     items: [
       { label: '建立節點', icon: 'pi pi-plus' }
-    ]
-  },
-  {
-    label: '範本',
-    icon: 'pi pi-file-edit',
-    items: [
-      { label: '建立範本', icon: 'pi pi-plus' }
     ]
   },
   {
