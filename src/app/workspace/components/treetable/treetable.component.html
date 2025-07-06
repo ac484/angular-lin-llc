@@ -11,11 +11,16 @@
     <tr [ttRow]="rowNode">
       <td>
         <p-treetable-toggler [rowNode]="rowNode" />
-        {{ rowData.name }}
+        <ng-container *ngIf="rowData.type !== 'task'; else taskName">
+          {{ rowData.name }}
+        </ng-container>
+        <ng-template #taskName>
+          <span style="color:#1976d2"><i class="pi pi-check-square" style="margin-right:4px"></i>{{ rowData.title }}</span>
+        </ng-template>
       </td>
-      <td>{{ rowData.type }}</td>
+      <td>{{ rowData.type || 'task' }}</td>
       <td>{{ rowData.status }}</td>
-      <td>{{ rowData.createdAt | date:'yyyy/MM/dd HH:mm:ss' }}</td>
+      <td>{{ (rowData.createdAt | date:'yyyy/MM/dd HH:mm:ss') || '' }}</td>
     </tr>
   </ng-template>
 </p-treeTable> 
