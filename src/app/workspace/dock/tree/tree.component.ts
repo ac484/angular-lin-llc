@@ -5,11 +5,12 @@ import { TreeNode, MenuItem, TreeDragDropService } from 'primeng/api';
 import { WorkspaceNode, Task } from '../models/workspace.types';
 import { WorkspaceDataService } from '../services/dock-data.service';
 import { DEFAULT_NODE_TYPES } from '../config/dock-menu.config';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-workspace-tree',
   standalone: true,
-  imports: [TreeModule, ContextMenuModule],
+  imports: [CommonModule, TreeModule, ContextMenuModule],
   templateUrl: './tree.component.html',
   styleUrls: ['./tree.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

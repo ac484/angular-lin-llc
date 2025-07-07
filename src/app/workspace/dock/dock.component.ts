@@ -11,6 +11,8 @@ import { WorkspaceDataService } from './services/dock-data.service';
 import { WorkspaceStateService } from './services/dock-state.service';
 import { MENUBAR_ITEMS, DOCK_ITEMS, DOCK_CONTEXT_MENU_ITEMS } from './config/dock-menu.config';
 import { WorkspaceNode, Task } from './models/workspace.types';
+import { PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-workspace-dock',
@@ -26,6 +28,8 @@ export class WorkspaceDockComponent {
   dockContextMenuItems: MenuItem[] = [];
   selectedTreeNode: TreeNode<any> | null = null;
   @ViewChild('dockContextMenu') dockContextMenu?: DockContextMenuComponent;
+
+  isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   constructor(
     public data: WorkspaceDataService,

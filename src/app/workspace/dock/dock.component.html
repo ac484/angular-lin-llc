@@ -1,6 +1,6 @@
 <app-workspace-menubar [model]="menubarItems"></app-workspace-menubar>
 <div (contextmenu)="onDockContextMenu($event)">
-  <p-dock [model]="dockItems" position="bottom" breakpoint="960px">
+  <p-dock *ngIf="isBrowser" [model]="dockItems" position="bottom" breakpoint="960px">
     <ng-template #item let-item>
       <a class="p-dock-item-link" [pTooltip]="item.label" tooltipPosition="top">
         <ng-container *ngIf="item.icon && item.icon.startsWith('pi '); else imageTpl">
