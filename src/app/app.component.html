@@ -1,0 +1,20 @@
+<div class="w-screen h-screen grid grid-rows-[auto_1fr] gap-y-2">
+  <p-toolbar>
+    <div class="p-toolbar-group-left" style="flex: 1 1 auto">
+      <span class="text-xl font-bold mr-2">Angular 19 Primeng 19 TailwindCSS</span>
+    </div>
+    <div class="p-toolbar-group-right" style="flex: 0 0 auto">
+      <p-togglebutton class="mr-2"
+                      [(ngModel)]="darkTheme"
+                      [onLabel]="''"
+                      [offLabel]="''"
+                      [onIcon]="'pi pi-sun'"
+                      [offIcon]="'pi pi-moon'">
+      </p-togglebutton>
+      <button pButton severity="secondary"><i class="pi pi-bars"></i></button>
+    </div>
+  </p-toolbar>
+  <div class="p-2">
+    <textarea class="w-full h-full border"></textarea>
+  </div>
+</div>
