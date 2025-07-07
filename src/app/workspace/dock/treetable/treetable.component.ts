@@ -1,7 +1,7 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { TreeTableModule } from 'primeng/treetable';
 import { TreeNode } from 'primeng/api';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-shared-treetable',
@@ -12,6 +12,6 @@ import { CommonModule } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SharedTreetableComponent {
-  @Input() value: TreeNode<any>[] = [];
-  @Input() columns: { field: string; header: string }[] = [];
+  @Input() value: TreeNode<any>[] | undefined;
+  @Input() columns: any[] | undefined;
 } 
