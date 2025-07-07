@@ -68,9 +68,9 @@ export class WorkspaceDockComponent {
     });
   }
 
-  addWorkspace(parentNode?: any) {
-    let type = 'root';
-    if (parentNode?.data?.type === 'root' || parentNode?.data?.type === 'branch') {
+  addWorkspace(parentNode?: any, typeOverride?: string) {
+    let type = typeOverride || 'root';
+    if (!typeOverride && (parentNode?.data?.type === 'root' || parentNode?.data?.type === 'branch')) {
       type = 'branch';
     }
     const node: WorkspaceNode = {
@@ -119,7 +119,7 @@ export class WorkspaceDockComponent {
       case '開啟': return () => this.loadWorkspaces();
       case '重新載入': return () => this.loadNodes();
       case '讀取工作空間': return () => this.loadWorkspaces();
-      case '新增工作空間': return () => this.addWorkspace();
+      case '建立根結點': return () => this.addWorkspace(undefined, 'root');
       default: return undefined;
     }
   }
@@ -139,6 +139,12 @@ export class WorkspaceDockComponent {
 
   onTreeAction(event: { type: string, node: any }) {
     switch (event.type) {
+      case 'addBranch':
+        this.addWorkspace(event.node, 'branch');
+        break;
+      case 'addLeaf':
+        this.addWorkspace(event.node, 'leaf');
+        break;
       case 'add':
         this.addWorkspace(event.node);
         break;

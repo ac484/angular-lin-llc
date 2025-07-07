@@ -6,7 +6,7 @@ export const MENUBAR_ITEMS: MenuItem[] = [
     label: '檔案',
     icon: 'pi pi-file',
     items: [
-      { label: '新增工作空間', icon: 'pi pi-plus-circle' }
+      { label: '建立根結點', icon: 'pi pi-sitemap' }
     ]
   }
 ];
