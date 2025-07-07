@@ -4,9 +4,19 @@
   [(selection)]="selectedNode"
   selectionMode="single"
   styleClass="w-full"
+  style="height: 400px; overflow-y: auto;"
   [draggableNodes]="true"
   [droppableNodes]="true"
   (onNodeDrop)="onNodeDrop($event)"
+  filter="true"
+  filterBy="label,data.type,data.status"
+  filterMode="strict"
+  filterPlaceholder="搜尋..."
+  [virtualScroll]="true"
+  [virtualScrollItemSize]="40"
+  [lazy]="true"
+  [scrollHeight]="'100%'"
+
 >
   <ng-template let-node pTemplate="default">
     <span>

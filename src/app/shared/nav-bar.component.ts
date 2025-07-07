@@ -27,7 +27,7 @@ import { RouterModule } from '@angular/router';
       
       <button mat-button routerLink="/account" routerLinkActive="active">
         <mat-icon>account_circle</mat-icon>
-        個人帳戶
+        我的
       </button>
       
       <button mat-button [matMenuTriggerFor]="adminMenu" routerLinkActive="active">
