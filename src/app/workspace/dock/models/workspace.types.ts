@@ -8,7 +8,7 @@
 export interface WorkspaceNode {
     id: string // 節點ID
     name: string // 節點名稱
-    type: string // 動態類型，如 'factory', 'area', 'building', 'floor', 'level', 'station', 'task', 'department', 'team' 等
+    type: string // 節點型別，必須對應 NodeType.id（如 'root', 'branch', 'leaf' 或自訂型別）
     parentId?: string | null // 父節點ID
     children?: WorkspaceNode[] // 子節點陣列
     
@@ -39,14 +39,18 @@ export interface WorkspaceNode {
  * 節點類型定義 - 可動態擴展
  */
 export interface NodeType {
-    id: string // 節點類型ID
-    name: string // 節點名稱
-    icon: string // 節點圖示
-    color: string // 節點顏色
-    allowedChildren?: string[] // 允許的子節點類型
-    properties?: string[] // 該類型節點擁有的屬性
+    id: string // 節點型別ID，必須與 WorkspaceNode.type 對應
+    name: string // 顯示名稱
+    allowedChildren?: string[] // 允許的子節點型別（NodeType.id 陣列）
+    properties?: string[] // 該型別節點擁有的屬性
     isLeaf?: boolean // 是否為葉節點（不可有子節點）
 }
+
+export const NODE_TYPES: NodeType[] = [
+  { id: 'root', name: '根結點', allowedChildren: ['branch'] },
+  { id: 'branch', name: '資料夾', allowedChildren: ['branch', 'leaf'] },
+  { id: 'leaf', name: '檔案', isLeaf: true }
+];
   
 /**
  * 任務型別 - 可關聯到任何節點
@@ -114,23 +118,23 @@ export interface WorkspaceUser extends User {
 
 //PrimeNG Tree需要的型別 要實現原生拖曳功能 所以需要以下型別
 
-export interface TreeNode<T = any> { // 樹狀結構節點型別
-    label?: string; // 節點標籤
-    data?: T; // 節點資料
-    icon?: string; // 節點圖示
-    expandedIcon?: string; // 展開圖示
-    collapsedIcon?: string; // 收合圖示
-    children?: TreeNode<T>[]; // 子節點
-    leaf?: boolean; // 是否為葉節點
-    expanded?: boolean; // 是否展開
-    type?: string; // 節點類型
-    parent?: TreeNode<T>; // 父節點
-    partialSelected?: boolean; // 部分選中
-    style?: any; // 節點樣式
-    styleClass?: string; // 節點樣式類別
-    draggable?: boolean; // 是否可拖動
-    droppable?: boolean; // 是否可放置
-    selectable?: boolean; // 是否可選中
-    key?: string; // 節點鍵值
-    loading?: boolean; // 是否加載中
-}
+// export interface TreeNode<T = any> { // 樹狀結構節點型別
+//    label?: string; // 節點標籤
+//    data?: T; // 節點資料
+//    icon?: string; // 節點圖示
+//    expandedIcon?: string; // 展開圖示
+//    collapsedIcon?: string; // 收合圖示
+//    children?: TreeNode<T>[]; // 子節點
+//    leaf?: boolean; // 是否為葉節點
+//    expanded?: boolean; // 是否展開
+//    type?: string; // 節點類型
+//    parent?: TreeNode<T>; // 父節點
+//    partialSelected?: boolean; // 部分選中
+//    style?: any; // 節點樣式
+//    styleClass?: string; // 節點樣式類別
+//    draggable?: boolean; // 是否可拖動
+//    droppable?: boolean; // 是否可放置
+//    selectable?: boolean; // 是否可選中
+//    key?: string; // 節點鍵值
+//    loading?: boolean; // 是否加載中
+// }

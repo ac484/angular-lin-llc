@@ -1,10 +1,9 @@
 // 本檔案依據 Firebase Console 專案設定，使用 Firebase Client SDK 操作 Cloud Firestore
 import { Injectable, inject } from '@angular/core';
 import { Firestore, collection, collectionData, addDoc, doc, updateDoc } from '@angular/fire/firestore';
-import { WorkspaceNode } from '../models/workspace.types';
+import { WorkspaceNode, Task, NODE_TYPES, NodeType } from '../models/workspace.types';
 import { Observable } from 'rxjs';
 import { TreeNode } from 'primeng/api';
-import { Task } from '../models/workspace.types';
 
 @Injectable({ providedIn: 'root' })
 export class WorkspaceDataService {
@@ -67,4 +66,9 @@ export class WorkspaceDataService {
     const nodeRef = doc(this.firestore, 'nodes', nodeId);
     return updateDoc(nodeRef, { parentId: newParentId });
   }
+}
+
+// 新增：根據 typeId 查 NodeType
+export function getNodeType(typeId: string): NodeType | undefined {
+  return NODE_TYPES.find(t => t.id === typeId);
 }
