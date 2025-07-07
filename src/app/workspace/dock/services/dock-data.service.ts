@@ -41,9 +41,9 @@ export class WorkspaceDataService {
           label: task.title,
           data: task,
           type: 'task',
+          children: [],
           leaf: true,
-          icon: 'pi pi-check-square',
-          children: []
+          icon: 'pi pi-check-square'
         }));
         const allChildren = [...children, ...taskNodes];
         return {
