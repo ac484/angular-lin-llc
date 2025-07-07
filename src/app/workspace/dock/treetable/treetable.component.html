@@ -33,16 +33,14 @@
   >
     <ng-template #header let-columns>
       <tr>
-        <th *ngFor="let col of columns">{{ col.header }}</th>
-      </tr>
-      <tr>
-        <th *ngFor="let col of columns">
+        <th *ngFor="let col of columns" class="tt-header-filter">
+          <span>{{ col.header }}</span>
           <input
             pInputText
-            [placeholder]="'依 ' + col.header + ' 篩選'"
+            [placeholder]="'篩選'"
             type="text"
             (input)="onColumnFilter($event, col.field)"
-            style="width: 100%"
+            style="width: 80px; margin-left: 0.5em;"
           />
         </th>
       </tr>

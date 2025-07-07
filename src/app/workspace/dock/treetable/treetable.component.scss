@@ -1,3 +1,9 @@
 :host {
   display: block;
+}
+
+:host ::ng-deep .tt-header-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
 } 
