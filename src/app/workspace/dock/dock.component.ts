@@ -73,9 +73,14 @@ export class WorkspaceDockComponent {
     if (!typeOverride && (parentNode?.data?.type === 'root' || parentNode?.data?.type === 'branch')) {
       type = 'branch';
     }
+    const typeNameMap: Record<string, string> = {
+      root: '根結點',
+      branch: '枝節點',
+      leaf: '葉節點'
+    };
     const node: WorkspaceNode = {
       id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
-      name: '新節點 ' + new Date().toLocaleTimeString(),
+      name: (typeNameMap[type] || '新節點') + ' ' + new Date().toLocaleTimeString(),
       type,
       status: 'active',
       createdAt: new Date(),

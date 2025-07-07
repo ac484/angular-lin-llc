@@ -20,6 +20,7 @@
 >
   <ng-template let-node pTemplate="default">
     <span>
+      <i *ngIf="node.icon" [class]="node.icon" style="margin-right: 4px;"></i>
       {{ node.label }}
       <span style="margin-left: 1rem; color: #888;">({{ node.data.type }})</span>
       <span style="margin-left: 1rem; color: #888;">[{{ node.data.status }}]</span>

@@ -45,7 +45,7 @@ export interface NodeType {
     color: string // 節點顏色
     allowedChildren?: string[] // 允許的子節點類型
     properties?: string[] // 該類型節點擁有的屬性
-    isLeaf?: boolean // 是否為葉節點（不可有子節點）
+    isLeaf: boolean // 是否為葉節點（不可有子節點）
 }
   
 /**
