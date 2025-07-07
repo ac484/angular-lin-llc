@@ -1,11 +1,22 @@
 <div class="card">
-  <div class="flex justify-center mb-3">
+  <div class="flex justify-center items-center mb-3 gap-3">
     <p-selectbutton
       [options]="filterModes"
       [(ngModel)]="filterMode"
       optionLabel="label"
       optionValue="value"
     />
+    <p-iconfield>
+      <p-inputicon class="pi pi-search" />
+      <input
+        type="text"
+        pInputText
+        placeholder="全域搜尋"
+        [(ngModel)]="globalFilterValue"
+        (input)="tt.filterGlobal(globalFilterValue, 'contains')"
+        style="width: 200px"
+      />
+    </p-iconfield>
   </div>
   <p-treetable
     #tt
@@ -20,21 +31,6 @@
     [scrollable]="true"
     [tableStyle]="{ 'min-width': '50rem' }"
   >
-    <ng-template #caption>
-      <div class="flex justify-end items-center">
-        <p-iconfield>
-          <p-inputicon class="pi pi-search" />
-          <input
-            type="text"
-            pInputText
-            placeholder="全域搜尋"
-            [(ngModel)]="globalFilterValue"
-            (input)="tt.filterGlobal(globalFilterValue, 'contains')"
-            style="width: 200px"
-          />
-        </p-iconfield>
-      </div>
-    </ng-template>
     <ng-template #header let-columns>
       <tr>
         <th *ngFor="let col of columns">{{ col.header }}</th>
