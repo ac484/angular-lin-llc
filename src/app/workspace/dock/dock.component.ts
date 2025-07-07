@@ -11,8 +11,6 @@ import { WorkspaceDataService } from './services/dock-data.service';
 import { WorkspaceStateService } from './services/dock-state.service';
 import { MENUBAR_ITEMS, DOCK_ITEMS, DOCK_CONTEXT_MENU_ITEMS } from './config/dock-menu.config';
 import { WorkspaceNode, Task } from './models/workspace.types';
-import { PLATFORM_ID, inject } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-workspace-dock',
@@ -28,8 +26,6 @@ export class WorkspaceDockComponent {
   dockContextMenuItems: MenuItem[] = [];
   selectedTreeNode: TreeNode<any> | null = null;
   @ViewChild('dockContextMenu') dockContextMenu?: DockContextMenuComponent;
-
-  isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   constructor(
     public data: WorkspaceDataService,
@@ -77,14 +73,9 @@ export class WorkspaceDockComponent {
     if (!typeOverride && (parentNode?.data?.type === 'root' || parentNode?.data?.type === 'branch')) {
       type = 'branch';
     }
-    const typeNameMap: Record<string, string> = {
-      root: '根結點',
-      branch: '枝節點',
-      leaf: '葉節點'
-    };
     const node: WorkspaceNode = {
       id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
-      name: (typeNameMap[type] || '新節點') + ' ' + new Date().toLocaleTimeString(),
+      name: '新節點 ' + new Date().toLocaleTimeString(),
       type,
       status: 'active',
       createdAt: new Date(),

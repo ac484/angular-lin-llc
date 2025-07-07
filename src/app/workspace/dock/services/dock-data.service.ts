@@ -36,9 +36,9 @@ export class WorkspaceDataService {
     return nodes
       .filter(node => (node.parentId ?? null) === parentId)
       .map(node => {
-        const nodeType = DEFAULT_NODE_TYPES.find(t => t.id === node.type);
-        const isLeaf = nodeType?.isLeaf === true;
+        // 遞迴產生子節點
         const children: TreeNode<WorkspaceNode | Task>[] = this.buildTree(nodes, node.id);
+        // 將 tasks 轉為葉節點
         const taskNodes: TreeNode<Task>[] = (node.tasks ?? []).map(task => ({
           key: task.id,
           label: task.title,
@@ -54,9 +54,8 @@ export class WorkspaceDataService {
           label: node.name,
           data: node,
           type: node.type,
-          icon: nodeType?.icon,
           children: allChildren,
-          leaf: isLeaf || allChildren.length === 0
+          leaf: allChildren.length === 0
         } as TreeNode<WorkspaceNode | Task>;
       });
   }

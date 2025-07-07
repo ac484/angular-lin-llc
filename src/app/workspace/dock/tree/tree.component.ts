@@ -4,13 +4,11 @@ import { ContextMenuModule } from 'primeng/contextmenu';
 import { TreeNode, MenuItem, TreeDragDropService } from 'primeng/api';
 import { WorkspaceNode, Task } from '../models/workspace.types';
 import { WorkspaceDataService } from '../services/dock-data.service';
-import { DEFAULT_NODE_TYPES } from '../config/dock-menu.config';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-workspace-tree',
   standalone: true,
-  imports: [CommonModule, TreeModule, ContextMenuModule],
+  imports: [TreeModule, ContextMenuModule],
   templateUrl: './tree.component.html',
   styleUrls: ['./tree.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,29 +21,18 @@ export class DockTreeComponent {
   @Output() action = new EventEmitter<{ type: string, node: TreeNode<WorkspaceNode | Task> }>();
   @Output() reload = new EventEmitter<void>();
 
-  get contextMenuItems(): MenuItem[] {
-    const data = this.selectedNode?.data;
-    const nodeTypeId = (data && 'type' in data) ? (data as WorkspaceNode).type : undefined;
-    const nodeType = nodeTypeId
-      ? (DEFAULT_NODE_TYPES.find(t => t.id === nodeTypeId) ?? null)
-      : null;
-    const isLeaf = nodeType?.isLeaf === true;
-
-    return [
-      ...(!isLeaf ? [
-        { label: '建立枝節點', icon: 'pi pi-share-alt', command: () => this.action.emit({ type: 'addBranch', node: this.selectedNode! }) },
-        { label: '建立葉結點', icon: 'pi pi-server', command: () => this.action.emit({ type: 'addLeaf', node: this.selectedNode! }) }
-      ] : []),
-      { separator: true },
-      { label: '重新命名', icon: 'pi pi-pencil', command: () => this.action.emit({ type: 'rename', node: this.selectedNode! }) },
-      { label: '刪除', icon: 'pi pi-trash', command: () => this.action.emit({ type: 'delete', node: this.selectedNode! }) },
-      { label: '複製 ID', icon: 'pi pi-copy', command: () => navigator.clipboard.writeText(this.selectedNode?.data?.id || '') },
-      { label: '查看詳細', icon: 'pi pi-info-circle', command: () => this.action.emit({ type: 'detail', node: this.selectedNode! }) },
-      { separator: true },
-      { label: '展開全部', icon: 'pi pi-angle-down', command: () => this.action.emit({ type: 'expandAll', node: this.selectedNode! }) },
-      { label: '收合全部', icon: 'pi pi-angle-up', command: () => this.action.emit({ type: 'collapseAll', node: this.selectedNode! }) }
-    ];
-  }
+  contextMenuItems: MenuItem[] = [
+    { label: '建立枝節點', icon: 'pi pi-share-alt', command: () => this.action.emit({ type: 'addBranch', node: this.selectedNode! }) },
+    { label: '建立葉節點', icon: 'pi pi-share-alt', command: () => this.action.emit({ type: 'addLeaf', node: this.selectedNode! }) },
+    { separator: true },
+    { label: '重新命名', icon: 'pi pi-pencil', command: () => this.action.emit({ type: 'rename', node: this.selectedNode! }) },
+    { label: '刪除', icon: 'pi pi-trash', command: () => this.action.emit({ type: 'delete', node: this.selectedNode! }) },
+    { label: '複製 ID', icon: 'pi pi-copy', command: () => navigator.clipboard.writeText(this.selectedNode?.data?.id || '') },
+    { label: '查看詳細', icon: 'pi pi-info-circle', command: () => this.action.emit({ type: 'detail', node: this.selectedNode! }) },
+    { separator: true },
+    { label: '展開全部', icon: 'pi pi-angle-down', command: () => this.action.emit({ type: 'expandAll', node: this.selectedNode! }) },
+    { label: '收合全部', icon: 'pi pi-angle-up', command: () => this.action.emit({ type: 'collapseAll', node: this.selectedNode! }) }
+  ];
 
   private data = inject(WorkspaceDataService);
 

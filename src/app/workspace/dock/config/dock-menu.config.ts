@@ -30,16 +30,14 @@ export const DEFAULT_NODE_TYPES: NodeType[] = [
     name: '根結點',
     icon: 'pi pi-sitemap',
     color: '#1976d2',
-    allowedChildren: ['branch', 'leaf'],
-    isLeaf: false
+    allowedChildren: ['branch', 'leaf']
   },
   {
     id: 'branch',
     name: '枝節點',
     icon: 'pi pi-share-alt',
     color: '#388e3c',
-    allowedChildren: ['branch', 'leaf'],
-    isLeaf: false
+    allowedChildren: ['branch', 'leaf']
   },
   {
     id: 'leaf',
