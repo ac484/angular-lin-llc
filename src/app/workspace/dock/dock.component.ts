@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { DockModule } from 'primeng/dock';
 import { TooltipModule } from 'primeng/tooltip';
 import { MenuItem, TreeNode } from 'primeng/api';
-import { DockTreeComponent } from './tree/tree.component';
 import { SharedTreetableComponent } from './treetable/treetable.component';
 import { WorkspaceDataService } from './services/dock-data.service';
 import { WorkspaceStateService } from './services/dock-state.service';
@@ -14,7 +13,7 @@ import { MenubarModule } from 'primeng/menubar';
 @Component({
   selector: 'app-workspace-dock',
   standalone: true,
-  imports: [CommonModule, DockModule, TooltipModule, MenubarModule, DockTreeComponent, SharedTreetableComponent],
+  imports: [CommonModule, DockModule, TooltipModule, MenubarModule, SharedTreetableComponent],
   templateUrl: './dock.component.html',
   styleUrls: ['./dock.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -22,7 +21,6 @@ import { MenubarModule } from 'primeng/menubar';
 export class WorkspaceDockComponent {
   menubarItems: MenuItem[] = [];
   dockItems: MenuItem[] = [];
-  selectedTreeNode: TreeNode<any> | null = null;
 
   constructor(
     public data: WorkspaceDataService,
@@ -125,40 +123,6 @@ export class WorkspaceDockComponent {
       case 'Tree': return () => this.toggleTree();
       case 'TreeTable': return () => this.toggleTreeTable();
       default: return undefined;
-    }
-  }
-
-  onTreeAction(event: { type: string, node: any }) {
-    switch (event.type) {
-      case 'addBranch':
-        this.addWorkspace(event.node, 'branch');
-        break;
-      case 'addLeaf':
-        this.addWorkspace(event.node, 'leaf');
-        break;
-      case 'add':
-        this.addWorkspace(event.node);
-        break;
-      case 'task':
-        this.addTaskToNode(event.node.data);
-        break;
-      case 'rename':
-        // TODO: 重新命名
-        break;
-      case 'delete':
-        if (event.node?.data?.id) {
-          this.data.deleteWorkspace(event.node.data.id).then(() => this.loadNodes());
-        }
-        break;
-      case 'detail':
-        // TODO: 查看詳細
-        break;
-      case 'expandAll':
-        // TODO: 展開全部
-        break;
-      case 'collapseAll':
-        // TODO: 收合全部
-        break;
     }
   }
 
