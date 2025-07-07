@@ -1,5 +1,6 @@
-<div class="dock-fixed">
-  <p-dock [model]="model" [position]="position" [breakpoint]="breakpoint">
+<app-workspace-menubar [model]="menubarItems"></app-workspace-menubar>
+<div (contextmenu)="onDockContextMenu($event)">
+  <p-dock [model]="dockItems" position="bottom" breakpoint="960px">
     <ng-template #item let-item>
       <a class="p-dock-item-link" [pTooltip]="item.label" tooltipPosition="top">
         <ng-container *ngIf="item.icon && item.icon.startsWith('pi '); else imageTpl">
@@ -11,4 +12,16 @@
       </a>
     </ng-template>
   </p-dock>
+  <app-workspace-contextmenu #dockContextMenu [model]="dockContextMenuItems"></app-workspace-contextmenu>
+</div>
+<div *ngIf="(state.showTreeTable$ | async)" style="margin-top: 1rem;">
+  <app-shared-treetable [value]="(state.treeTableData$ | async) || []" [columns]="(state.treeTableColumns$ | async) || []"></app-shared-treetable>
+</div>
+<div *ngIf="(state.showTree$ | async)" style="margin-top: 1rem;">
+  <app-workspace-tree
+    [nodes]="(state.treeData$ | async) || []"
+    [(selectedNode)]="selectedTreeNode"
+    (action)="onTreeAction($event)"
+    (reload)="loadNodes()"
+  ></app-workspace-tree>
 </div> 

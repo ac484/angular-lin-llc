@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { TreeNode } from 'primeng/api';
-import { WorkspaceNode, Task } from '../../core/models/workspace.types';
+import { WorkspaceNode, Task } from '../../../../core/models/workspace.types';
 
 @Injectable({ providedIn: 'root' })
 export class WorkspaceStateService {

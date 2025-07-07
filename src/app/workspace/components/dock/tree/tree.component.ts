@@ -2,8 +2,8 @@ import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter, inject
 import { TreeModule } from 'primeng/tree';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { TreeNode, MenuItem, TreeDragDropService } from 'primeng/api';
-import { WorkspaceNode, Task } from '../../../core/models/workspace.types';
-import { WorkspaceDataService } from '../../../workspace/services/workspace-data.service';
+import { WorkspaceNode, Task } from '../../../../core/models/workspace.types';
+import { WorkspaceDataService } from '../services/dock-data.service';
 
 @Component({
   selector: 'app-workspace-tree',
