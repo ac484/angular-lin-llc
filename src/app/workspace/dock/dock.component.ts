@@ -66,7 +66,6 @@ export class WorkspaceDockComponent implements OnInit {
         { label: '建立根結點', icon: 'pi pi-fw pi-plus', command: () => this.addWorkspace(undefined, 'root') },
         { label: 'Delete', icon: 'pi pi-fw pi-trash' },
         { separator: true },
-        { label: 'Export', icon: 'pi pi-fw pi-external-link' }
       ]},
       { label: 'Edit', items: [
         { label: 'Left', icon: 'pi pi-fw pi-align-left' },

@@ -4,6 +4,7 @@ import { ContextMenuModule } from 'primeng/contextmenu';
 import { MenuItem, TreeNode } from 'primeng/api';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
 import { DEFAULT_NODE_TYPES } from '../config/dock-menu.config';
 import type { NodeType, WorkspaceNode, Task } from '../models/workspace.types';
 import { WorkspaceDataService } from '../services/dock-data.service';
@@ -17,7 +18,7 @@ interface Column {
 @Component({
   selector: 'app-shared-treetable',
   standalone: true,
-  imports: [CommonModule, TreeTableModule, ContextMenuModule, ButtonModule],
+  imports: [CommonModule, TreeTableModule, ContextMenuModule, ButtonModule, CheckboxModule],
   templateUrl: './treetable.component.html',
   styleUrls: ['./treetable.component.scss']
 })
@@ -27,6 +28,7 @@ export class SharedTreetableComponent implements OnInit {
   items: MenuItem[] = [];
   selectedNode!: TreeNode<any>;
   nodeTypes: NodeType[] = DEFAULT_NODE_TYPES;
+  selectionKeys: Record<string, any> = {};
 
   constructor(
     private data: WorkspaceDataService,

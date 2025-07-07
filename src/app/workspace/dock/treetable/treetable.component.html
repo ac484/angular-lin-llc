@@ -2,7 +2,9 @@
   <p-treetable
     [value]="files"
     [columns]="cols"
-    dataKey="name"
+    selectionMode="checkbox"
+    [(selectionKeys)]="selectionKeys"
+    dataKey="key"
     [(contextMenuSelection)]="selectedNode"
     [contextMenu]="cm"
     [scrollable]="true"
@@ -14,9 +16,10 @@
       </tr>
     </ng-template>
     <ng-template #body let-rowNode let-rowData="rowData" let-columns="columns">
-      <tr [ttRow]="rowNode" [ttContextMenuRow]="rowNode">
+      <tr [ttRow]="rowNode" [ttContextMenuRow]="rowNode" [ttSelectableRow]="rowNode">
         <td *ngFor="let col of columns; let i = index; let last = last">
           <p-treetable-toggler [rowNode]="rowNode" *ngIf="i === 0" />
+          <p-treetable-checkbox [value]="rowNode" *ngIf="i === 0" />
           {{ rowData[col.field] }}
           <ng-container *ngIf="last">
             <p-button icon="pi pi-search" rounded="true" [style]="{ 'margin-right': '.5em' }" />
