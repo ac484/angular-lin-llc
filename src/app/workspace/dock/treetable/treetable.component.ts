@@ -30,7 +30,11 @@ export class SharedTreetableComponent implements OnInit {
     // this.files = ...;
     this.items = [
       { label: '檢視', icon: 'pi pi-search', command: () => this.viewNode(this.selectedNode) },
-      { label: '切換展開', icon: 'pi pi-sort', command: () => this.toggleNode(this.selectedNode) }
+      { label: '切換展開', icon: 'pi pi-sort', command: () => this.toggleNode(this.selectedNode) },
+      { separator: true },
+      { label: '新增根結點', icon: 'pi pi-plus', command: () => this.addRootNode() },
+      { label: '新增枝節點', icon: 'pi pi-plus', command: () => this.addBranchNode() },
+      { label: '新增葉節點', icon: 'pi pi-plus', command: () => this.addLeafNode() }
     ];
   }
 
@@ -41,6 +45,21 @@ export class SharedTreetableComponent implements OnInit {
   toggleNode(node: TreeNode<any>) {
     node.expanded = !node.expanded;
     this.files = [...this.files];
+  }
+
+  addRootNode() {
+    // TODO: 實際應呼叫父元件或 service
+    console.log('新增根結點');
+  }
+
+  addBranchNode() {
+    // TODO: 實際應呼叫父元件或 service
+    console.log('新增枝節點', this.selectedNode);
+  }
+
+  addLeafNode() {
+    // TODO: 實際應呼叫父元件或 service
+    console.log('新增葉節點', this.selectedNode);
   }
 
   getTypeLabel(rowData: WorkspaceNode | Task): string {
