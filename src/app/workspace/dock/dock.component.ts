@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, ViewChild, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DockModule } from 'primeng/dock';
 import { TooltipModule } from 'primeng/tooltip';
@@ -11,32 +11,26 @@ import { WorkspaceDataService } from './services/dock-data.service';
 import { WorkspaceStateService } from './services/dock-state.service';
 import { MENUBAR_ITEMS, DOCK_ITEMS, DOCK_CONTEXT_MENU_ITEMS } from './config/dock-menu.config';
 import { WorkspaceNode, Task } from './models/workspace.types';
-import { SharedTableComponent } from './table/table.component';
 
 @Component({
   selector: 'app-workspace-dock',
   standalone: true,
-  imports: [CommonModule, DockModule, TooltipModule, DockMenubarComponent, DockContextMenuComponent, DockTreeComponent, SharedTreetableComponent, SharedTableComponent],
+  imports: [CommonModule, DockModule, TooltipModule, DockMenubarComponent, DockContextMenuComponent, DockTreeComponent, SharedTreetableComponent],
   templateUrl: './dock.component.html',
   styleUrls: ['./dock.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WorkspaceDockComponent implements OnInit {
+export class WorkspaceDockComponent {
   menubarItems: MenuItem[] = [];
   dockItems: MenuItem[] = [];
   dockContextMenuItems: MenuItem[] = [];
   selectedTreeNode: TreeNode<any> | null = null;
   @ViewChild('dockContextMenu') dockContextMenu?: DockContextMenuComponent;
-  showTable = false;
-  testTableData: any[] = [];
-  testTableColumns: any[] = [];
 
   constructor(
     public data: WorkspaceDataService,
     public state: WorkspaceStateService
-  ) {}
-
-  ngOnInit(): void {
+  ) {
     // 產生 menubarItems，根據 label 動態加上 command
     this.menubarItems = MENUBAR_ITEMS.map(item => ({
       ...item,
@@ -129,7 +123,6 @@ export class WorkspaceDockComponent implements OnInit {
     switch (label) {
       case 'Tree': return () => this.toggleTree();
       case 'TreeTable': return () => this.toggleTreeTable();
-      case 'Table': return () => this.toggleTable();
       default: return undefined;
     }
   }
@@ -181,24 +174,5 @@ export class WorkspaceDockComponent implements OnInit {
     };
     const tasks = Array.isArray(node.tasks) ? [...node.tasks, newTask] : [newTask];
     this.data.updateNodeTasks(node.id, tasks).then(() => this.loadNodes());
-  }
-
-  toggleTable() {
-    this.showTable = !this.showTable;
-    if (this.showTable) {
-      // 測試用假資料
-      const testData = [
-        { id: '1', name: '測試項目', type: 'test', status: 'active', createdAt: new Date().toLocaleString() }
-      ];
-      const testColumns = [
-        { field: 'id', header: 'ID' },
-        { field: 'name', header: '名稱' },
-        { field: 'type', header: '類型' },
-        { field: 'status', header: '狀態' },
-        { field: 'createdAt', header: '建立時間' }
-      ];
-      this.testTableData = testData;
-      this.testTableColumns = testColumns;
-    }
   }
 } 

@@ -62,15 +62,3 @@ pnpm-lock.yaml
 tsconfig.app.json
 tsconfig.json
 tsconfig.spec.json
-
-
-src/app/workspace/dock/megamenu/megamenu.component.ts
-src/app/workspace/dock/megamenu/megamenu.component.html
-src/app/workspace/dock/megamenu/megamenu.component.scss
-src/app/workspace/dock/megamenu/megamenu.component.spec.ts
-src/app/workspace/dock/megamenu/megamenu.component.spec.ts
-src/app/workspace/dock/megamenu/menubar.component.ts
-src/app/workspace/dock/megamenu/menubar.component.html
-src/app/workspace/dock/megamenu/menubar.component.scss
-src/app/workspace/dock/megamenu/menubar.component.spec.ts
-src/app/workspace/dock/megamenu/menubar.component.spec.ts

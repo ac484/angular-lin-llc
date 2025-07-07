@@ -13,7 +13,7 @@
         <p-treetable-toggler [rowNode]="rowNode" />
         {{ rowData.name }}
       </td>
-      <td>{{ getTypeName(rowData.type) }}</td>
+      <td>{{ rowData.type }}</td>
       <td>{{ rowData.status }}</td>
       <td>{{ rowData.createdAt | date:'yyyy/MM/dd HH:mm:ss' }}</td>
     </tr>
