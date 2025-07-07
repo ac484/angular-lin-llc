@@ -3,6 +3,7 @@ import { TreeTableModule } from 'primeng/treetable';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { MenuItem, TreeNode } from 'primeng/api';
 import { CommonModule } from '@angular/common';
+import { ButtonModule } from 'primeng/button';
 import { DEFAULT_NODE_TYPES } from '../config/dock-menu.config';
 import type { NodeType, WorkspaceNode, Task } from '../models/workspace.types';
 
@@ -14,7 +15,7 @@ interface Column {
 @Component({
   selector: 'app-shared-treetable',
   standalone: true,
-  imports: [CommonModule, TreeTableModule, ContextMenuModule],
+  imports: [CommonModule, TreeTableModule, ContextMenuModule, ButtonModule],
   templateUrl: './treetable.component.html',
   styleUrls: ['./treetable.component.scss']
 })
