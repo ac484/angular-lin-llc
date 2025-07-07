@@ -17,5 +17,20 @@
   z-index: 9999;
   width: 100vw;
   max-width: 100vw;
+}
+
+:host ::ng-deep {
+  .dock-demo > .dock-window {
+    width: 100%;
+    height: 450px;
+    position: relative;
+    background-image: url('https://primefaces.org/cdn/primevue/images/dock/window.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  .dock-demo .p-menubar {
+    padding: 0;
+    border-radius: 0;
+  }
 } 
 
