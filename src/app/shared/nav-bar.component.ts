@@ -25,6 +25,11 @@ import { RouterModule } from '@angular/router';
         工作區
       </button>
       
+      <button mat-button routerLink="/workspaces" routerLinkActive="active">
+        <mat-icon>folder</mat-icon>
+        工作區
+      </button>
+
       <button mat-button routerLink="/account" routerLinkActive="active">
         <mat-icon>account_circle</mat-icon>
         我的

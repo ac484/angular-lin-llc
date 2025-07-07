@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { WorkspacesComponent } from './workspaces/workspaces.component';
 
 export const routes: Routes = [
   {
@@ -20,5 +21,6 @@ export const routes: Routes = [
   {
     path: 'admin',
     loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule)
-  }
+  },
+  { path: 'workspaces', component: WorkspacesComponent },
 ];
