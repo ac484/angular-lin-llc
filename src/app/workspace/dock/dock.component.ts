@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, ViewChild } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ViewChild, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DockModule } from 'primeng/dock';
 import { TooltipModule } from 'primeng/tooltip';
@@ -20,7 +20,7 @@ import { WorkspaceNode, Task } from './models/workspace.types';
   styleUrls: ['./dock.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WorkspaceDockComponent {
+export class WorkspaceDockComponent implements OnInit {
   menubarItems: MenuItem[] = [];
   dockItems: MenuItem[] = [];
   dockContextMenuItems: MenuItem[] = [];
@@ -30,7 +30,9 @@ export class WorkspaceDockComponent {
   constructor(
     public data: WorkspaceDataService,
     public state: WorkspaceStateService
-  ) {
+  ) {}
+
+  ngOnInit(): void {
     // 產生 menubarItems，根據 label 動態加上 command
     this.menubarItems = MENUBAR_ITEMS.map(item => ({
       ...item,
