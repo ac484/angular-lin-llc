@@ -73,9 +73,10 @@ export class WorkspaceDockComponent {
     if (!typeOverride && (parentNode?.data?.type === 'root' || parentNode?.data?.type === 'branch')) {
       type = 'branch';
     }
+    const name = type === 'root' ? '根結點' : '新節點 ' + new Date().toLocaleTimeString();
     const node: WorkspaceNode = {
       id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
-      name: '新節點 ' + new Date().toLocaleTimeString(),
+      name,
       type,
       status: 'active',
       createdAt: new Date(),
