@@ -13,7 +13,6 @@ export const MENUBAR_ITEMS: MenuItem[] = [
 
 export const DOCK_ITEMS: MenuItem[] = [
   { label: 'Home', icon: 'pi pi-home' },
-  { label: 'Tree', icon: 'pi pi-th-large' },
   { label: 'TreeTable', icon: 'pi pi-sitemap' },
 ];
 

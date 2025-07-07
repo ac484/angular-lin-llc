@@ -9,6 +9,7 @@ import { WorkspaceStateService } from './services/dock-state.service';
 import { MENUBAR_ITEMS, DOCK_ITEMS } from './config/dock-menu.config';
 import { WorkspaceNode, Task } from './models/workspace.types';
 import { MenubarModule } from 'primeng/menubar';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-workspace-dock',
@@ -24,7 +25,8 @@ export class WorkspaceDockComponent {
 
   constructor(
     public data: WorkspaceDataService,
-    public state: WorkspaceStateService
+    public state: WorkspaceStateService,
+    private router: Router
   ) {
     // 產生 menubarItems，根據 label 動態加上 command
     this.menubarItems = MENUBAR_ITEMS.map(item => ({
@@ -34,12 +36,15 @@ export class WorkspaceDockComponent {
         command: this.getMenubarCommand(sub.label)
       }))
     }));
-    // 產生 dockItems
+    this.loadNodes();
+  }
+
+  ngOnInit(): void {
+    // 產生 dockItems，依 PrimeNG Dock 原生作法於 ngOnInit 處理
     this.dockItems = DOCK_ITEMS.map(item => ({
       ...item,
       command: this.getDockCommand(item.label)
     }));
-    this.loadNodes();
   }
 
   toggleTreeTable() {
@@ -121,9 +126,18 @@ export class WorkspaceDockComponent {
   getDockCommand(label?: string) {
     switch (label) {
       case 'Tree': return () => this.toggleTree();
-      case 'TreeTable': return () => this.toggleTreeTable();
+      case 'TreeTable': return () => this.openTreeTable();
+      case 'Home': return () => this.goHome();
       default: return undefined;
     }
+  }
+
+  openTreeTable() {
+    this.state.showTreeTable$.next(true);
+  }
+
+  goHome() {
+    this.router.navigate(['/']);
   }
 
   addTaskToNode(node: WorkspaceNode) {
