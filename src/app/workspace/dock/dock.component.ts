@@ -160,7 +160,9 @@ export class WorkspaceDockComponent {
         // TODO: 重新命名
         break;
       case 'delete':
-        // TODO: 刪除
+        if (event.node?.data?.id) {
+          this.data.deleteWorkspace(event.node.data.id).then(() => this.loadNodes());
+        }
         break;
       case 'detail':
         // TODO: 查看詳細

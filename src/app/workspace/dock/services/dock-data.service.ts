@@ -2,34 +2,31 @@
 import { Injectable, inject } from '@angular/core';
 import { Firestore, collection, collectionData, addDoc, doc, updateDoc } from '@angular/fire/firestore';
 import { WorkspaceNode } from '../models/workspace.types';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
 import { TreeNode } from 'primeng/api';
 import { Task } from '../models/workspace.types';
 import { DEFAULT_NODE_TYPES } from '../config/dock-menu.config';
 import type { NodeType } from '../models/workspace.types';
+import { FirebaseService } from '../../../core/services/firebase.service';
 
 @Injectable({ providedIn: 'root' })
 export class WorkspaceDataService {
-  private firestore = inject(Firestore);
+  private firebase = inject(FirebaseService);
 
   loadNodes(): Observable<WorkspaceNode[]> {
-    const col = collection(this.firestore, 'nodes');
-    return collectionData(col, { idField: 'id' }) as Observable<WorkspaceNode[]>;
+    return from(this.firebase.getDocuments<WorkspaceNode>('nodes'));
   }
 
   addNode(node: WorkspaceNode): Promise<void> {
-    const col = collection(this.firestore, 'nodes');
-    return addDoc(col, node).then(() => {});
+    return this.firebase.addDocument('nodes', node).then(() => {});
   }
 
   addWorkspace(node: WorkspaceNode): Promise<void> {
-    const col = collection(this.firestore, 'nodes');
-    return addDoc(col, node).then(() => {});
+    return this.firebase.addDocument('nodes', node).then(() => {});
   }
 
   loadWorkspaces(): Observable<WorkspaceNode[]> {
-    const col = collection(this.firestore, 'workspaces');
-    return collectionData(col) as Observable<WorkspaceNode[]>;
+    return from(this.firebase.getDocuments<WorkspaceNode>('workspaces'));
   }
 
   buildTree(nodes: WorkspaceNode[], parentId: string | null = null): TreeNode<WorkspaceNode | Task>[] {
@@ -61,13 +58,11 @@ export class WorkspaceDataService {
   }
 
   updateNodeTasks(nodeId: string, tasks: Task[]): Promise<void> {
-    const nodeRef = doc(this.firestore, 'nodes', nodeId);
-    return updateDoc(nodeRef, { tasks });
+    return this.firebase.updateDocument('nodes', nodeId, { tasks });
   }
 
   updateNodeParent(nodeId: string, newParentId: string | null): Promise<void> {
-    const nodeRef = doc(this.firestore, 'nodes', nodeId);
-    return updateDoc(nodeRef, { parentId: newParentId });
+    return this.firebase.updateDocument('nodes', nodeId, { parentId: newParentId });
   }
 
   getNodeTypes(customTypes?: NodeType[]): NodeType[] {
@@ -77,5 +72,9 @@ export class WorkspaceDataService {
       ...DEFAULT_NODE_TYPES,
       ...customTypes.filter(t => !ids.has(t.id))
     ];
+  }
+
+  deleteWorkspace(nodeId: string): Promise<void> {
+    return this.firebase.deleteDocument('nodes', nodeId);
   }
 }
