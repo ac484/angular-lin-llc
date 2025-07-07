@@ -27,8 +27,6 @@ export class WorkspaceDockComponent implements OnInit {
   menubarItems: MenuItem[] = [];
   responsiveOptions: any[] = [];
   displayFinder = false;
-  displayTerminal = false;
-  displayGalleria = false;
   images: any[] = [];
   nodes: any[] = [];
 
@@ -48,12 +46,6 @@ export class WorkspaceDockComponent implements OnInit {
         command: () => { this.displayFinder = true; }
       },
       {
-        label: 'Terminal',
-        icon: 'https://primefaces.org/cdn/primeng/images/dock/terminal.svg',
-        tooltipOptions: { tooltipLabel: 'Terminal', tooltipPosition: 'top' },
-        command: () => { this.displayTerminal = true; }
-      },
-      {
         label: 'App Store',
         icon: 'https://primefaces.org/cdn/primeng/images/dock/appstore.svg',
         tooltipOptions: { tooltipLabel: 'App Store', tooltipPosition: 'top' },
@@ -65,28 +57,7 @@ export class WorkspaceDockComponent implements OnInit {
         label: 'Safari',
         icon: 'https://primefaces.org/cdn/primeng/images/dock/safari.svg',
         tooltipOptions: { tooltipLabel: 'Safari', tooltipPosition: 'top' },
-        command: () => {
-          this.messageService.add({ severity: 'warn', summary: 'Safari has stopped working', key: 'tc' });
-        }
-      },
-      {
-        label: 'Photos',
-        icon: 'https://primefaces.org/cdn/primeng/images/dock/photos.svg',
-        tooltipOptions: { tooltipLabel: 'Photos', tooltipPosition: 'top' },
-        command: () => { this.displayGalleria = true; }
-      },
-      {
-        label: 'GitHub',
-        icon: 'https://primefaces.org/cdn/primeng/images/dock/github.svg',
-        tooltipOptions: { tooltipLabel: 'GitHub', tooltipPosition: 'top' }
-      },
-      {
-        label: 'Trash',
-        icon: 'https://primefaces.org/cdn/primeng/images/dock/trash.png',
-        tooltipOptions: { tooltipLabel: 'Trash', tooltipPosition: 'top' },
-        command: () => {
-          this.messageService.add({ severity: 'info', summary: 'Empty Trash', key: 'tc' });
-        }
+        command: () => { this.state.showTreeTable$.next(true); }
       }
     ];
 

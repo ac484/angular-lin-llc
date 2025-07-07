@@ -23,14 +23,6 @@
   <p-dialog [(visible)]="displayFinder" header="Finder">
     <!-- Finder 內容可自訂，預設空白 -->
   </p-dialog>
-  <p-dialog [(visible)]="displayTerminal" header="Terminal">
-    <!-- Terminal 內容可自訂，預設空白 -->
-  </p-dialog>
-  <p-galleria [value]="images" [(visible)]="displayGalleria" [showThumbnails]="false" [showThumbnailNavigators]="false" [showItemNavigators]="true" [circular]="true" [fullScreen]="true" [containerStyle]="{ width: '400px' }">
-    <ng-template #item let-item>
-      <img [src]="item.itemImageSrc" style="width: 100%; display: block;" />
-    </ng-template>
-  </p-galleria>
   <div *ngIf="(state.showTreeTable$ | async)" style="margin-top: 1rem;">
     <app-shared-treetable [files]="(state.treeTableData$ | async) || []" [cols]="(state.treeTableColumns$ | async) || []"></app-shared-treetable>
   </div>
