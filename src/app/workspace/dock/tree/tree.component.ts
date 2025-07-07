@@ -23,7 +23,7 @@ export class DockTreeComponent {
 
   contextMenuItems: MenuItem[] = [
     { label: '建立枝節點', icon: 'pi pi-share-alt', command: () => this.action.emit({ type: 'addBranch', node: this.selectedNode! }) },
-    { label: '建立葉節點', icon: 'pi pi-leaf', command: () => this.action.emit({ type: 'addLeaf', node: this.selectedNode! }) },
+    { label: '建立葉節點', icon: 'pi pi-share-alt', command: () => this.action.emit({ type: 'addLeaf', node: this.selectedNode! }) },
     { separator: true },
     { label: '重新命名', icon: 'pi pi-pencil', command: () => this.action.emit({ type: 'rename', node: this.selectedNode! }) },
     { label: '刪除', icon: 'pi pi-trash', command: () => this.action.emit({ type: 'delete', node: this.selectedNode! }) },
