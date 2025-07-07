@@ -10,7 +10,7 @@ import { MenuItem } from 'primeng/api';
   styleUrls: ['./menubar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WorkspaceMenubarComponent {
+export class DockMenubarComponent {
   /** 選單項目 */
   @Input() model: MenuItem[] = [];
 } 

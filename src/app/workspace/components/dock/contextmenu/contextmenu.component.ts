@@ -10,7 +10,7 @@ import { MenuItem } from 'primeng/api';
   styleUrls: ['./contextmenu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WorkspaceContextMenuComponent {
+export class DockContextMenuComponent {
   /** 菜單項目模型 */
   @Input() model: MenuItem[] = [];
   @ViewChild(ContextMenu) contextMenu?: ContextMenu;

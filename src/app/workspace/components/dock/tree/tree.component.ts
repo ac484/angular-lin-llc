@@ -2,7 +2,7 @@ import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter, inject
 import { TreeModule } from 'primeng/tree';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { TreeNode, MenuItem, TreeDragDropService } from 'primeng/api';
-import { WorkspaceNode, Task } from '../../../../core/models/workspace.types';
+import { WorkspaceNode, Task } from '../models/workspace.types';
 import { WorkspaceDataService } from '../services/dock-data.service';
 
 @Component({
@@ -14,7 +14,7 @@ import { WorkspaceDataService } from '../services/dock-data.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TreeDragDropService]
 })
-export class WorkspaceTreeComponent {
+export class DockTreeComponent {
   @Input() nodes: TreeNode<WorkspaceNode | Task>[] = [];
   @Input() selectedNode: TreeNode<WorkspaceNode | Task> | null = null;
   @Output() selectedNodeChange = new EventEmitter<TreeNode<WorkspaceNode | Task> | null>();

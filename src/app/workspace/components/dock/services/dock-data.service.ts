@@ -1,10 +1,10 @@
 // 本檔案依據 Firebase Console 專案設定，使用 Firebase Client SDK 操作 Cloud Firestore
 import { Injectable, inject } from '@angular/core';
 import { Firestore, collection, collectionData, addDoc, doc, updateDoc } from '@angular/fire/firestore';
-import { WorkspaceNode } from '../../../../core/models/workspace.types';
+import { WorkspaceNode } from '../models/workspace.types';
 import { Observable } from 'rxjs';
 import { TreeNode } from 'primeng/api';
-import { Task } from '../../../../core/models/workspace.types';
+import { Task } from '../models/workspace.types';
 
 @Injectable({ providedIn: 'root' })
 export class WorkspaceDataService {

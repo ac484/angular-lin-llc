@@ -3,19 +3,19 @@ import { CommonModule } from '@angular/common';
 import { DockModule } from 'primeng/dock';
 import { TooltipModule } from 'primeng/tooltip';
 import { MenuItem, TreeNode } from 'primeng/api';
-import { WorkspaceMenubarComponent } from './menubar/menubar.component';
-import { WorkspaceContextMenuComponent } from './contextmenu/contextmenu.component';
-import { WorkspaceTreeComponent } from './tree/tree.component';
+import { DockMenubarComponent } from './menubar/menubar.component';
+import { DockContextMenuComponent } from './contextmenu/contextmenu.component';
+import { DockTreeComponent } from './tree/tree.component';
 import { SharedTreetableComponent } from './treetable/treetable.component';
 import { WorkspaceDataService } from './services/dock-data.service';
 import { WorkspaceStateService } from './services/dock-state.service';
 import { MENUBAR_ITEMS, DOCK_ITEMS, DOCK_CONTEXT_MENU_ITEMS } from './config/dock-menu.config';
-import { WorkspaceNode, Task } from '../../../core/models/workspace.types';
+import { WorkspaceNode, Task } from './models/workspace.types';
 
 @Component({
   selector: 'app-workspace-dock',
   standalone: true,
-  imports: [CommonModule, DockModule, TooltipModule, WorkspaceMenubarComponent, WorkspaceContextMenuComponent, WorkspaceTreeComponent, SharedTreetableComponent],
+  imports: [CommonModule, DockModule, TooltipModule, DockMenubarComponent, DockContextMenuComponent, DockTreeComponent, SharedTreetableComponent],
   templateUrl: './dock.component.html',
   styleUrls: ['./dock.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -25,7 +25,7 @@ export class WorkspaceDockComponent {
   dockItems: MenuItem[] = [];
   dockContextMenuItems: MenuItem[] = [];
   selectedTreeNode: TreeNode<any> | null = null;
-  @ViewChild('dockContextMenu') dockContextMenu?: WorkspaceContextMenuComponent;
+  @ViewChild('dockContextMenu') dockContextMenu?: DockContextMenuComponent;
 
   constructor(
     public data: WorkspaceDataService,
