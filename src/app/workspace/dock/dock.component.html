@@ -24,4 +24,7 @@
     (action)="onTreeAction($event)"
     (reload)="loadNodes()"
   ></app-workspace-tree>
+</div>
+<div *ngIf="showTable" style="margin-top: 1rem;">
+  <app-shared-table [value]="testTableData" [columns]="testTableColumns"></app-shared-table>
 </div> 
