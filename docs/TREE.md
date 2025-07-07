@@ -33,13 +33,22 @@
 │  │          role-management.component.ts
 │  │          role-management.module.ts
 │  │
+│  ├─classes
 │  ├─core
+│  │  ├─guards
+│  │  ├─models
 │  │  └─services
 │  │          firebase.service.ts
 │  │
+│  ├─enums
+│  ├─features
+│  │  ├─account
+│  │  └─auth
 │  ├─home
 │  │      home.component.ts
 │  │
+│  ├─interfaces
+│  ├─layout
 │  ├─login
 │  │      login.component.ts
 │  │
