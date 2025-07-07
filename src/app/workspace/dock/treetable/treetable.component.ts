@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { TreeTableModule } from 'primeng/treetable';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { MenuItem, TreeNode } from 'primeng/api';
@@ -9,6 +9,11 @@ import { DEFAULT_NODE_TYPES } from '../config/dock-menu.config';
 import type { NodeType, WorkspaceNode, Task } from '../models/workspace.types';
 import { WorkspaceDataService } from '../services/dock-data.service';
 import { WorkspaceStateService } from '../services/dock-state.service';
+import { FormsModule } from '@angular/forms';
+import { InputTextModule } from 'primeng/inputtext';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 
 interface Column {
   field: string;
@@ -18,7 +23,10 @@ interface Column {
 @Component({
   selector: 'app-shared-treetable',
   standalone: true,
-  imports: [CommonModule, TreeTableModule, ContextMenuModule, ButtonModule, CheckboxModule],
+  imports: [
+    CommonModule, TreeTableModule, ContextMenuModule, ButtonModule, CheckboxModule,
+    FormsModule, InputTextModule, SelectButtonModule, IconFieldModule, InputIconModule
+  ],
   templateUrl: './treetable.component.html',
   styleUrls: ['./treetable.component.scss']
 })
@@ -29,6 +37,16 @@ export class SharedTreetableComponent implements OnInit {
   selectedNode!: TreeNode<any>;
   nodeTypes: NodeType[] = DEFAULT_NODE_TYPES;
   selectionKeys: Record<string, any> = {};
+
+  // PrimeNG 官方 TreeTable 篩選功能
+  filterMode: 'lenient' | 'strict' = 'lenient';
+  filterModes = [
+    { label: '寬鬆', value: 'lenient' },
+    { label: '嚴格', value: 'strict' }
+  ];
+  globalFilterValue = '';
+
+  @ViewChild('tt') tt: any;
 
   constructor(
     private data: WorkspaceDataService,
@@ -110,5 +128,10 @@ export class SharedTreetableComponent implements OnInit {
     const type = (rowData as WorkspaceNode).type;
     const found = this.nodeTypes.find(t => t.id === type);
     return found ? found.name : type;
+  }
+
+  onColumnFilter(event: Event, field: string): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.tt?.filter(value, field, 'contains');
   }
 } 
