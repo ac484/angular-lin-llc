@@ -63,10 +63,7 @@ export class WorkspaceDockComponent implements OnInit {
     this.menubarItems = [
       { label: 'Finder' },
       { label: 'File', items: [
-        { label: 'New', icon: 'pi pi-fw pi-plus', items: [
-          { label: 'Bookmark', icon: 'pi pi-fw pi-bookmark' },
-          { label: 'Video', icon: 'pi pi-fw pi-video' }
-        ]},
+        { label: '建立根結點', icon: 'pi pi-fw pi-plus', command: () => this.addWorkspace(undefined, 'root') },
         { label: 'Delete', icon: 'pi pi-fw pi-trash' },
         { separator: true },
         { label: 'Export', icon: 'pi pi-fw pi-external-link' }

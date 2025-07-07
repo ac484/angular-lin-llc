@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { DEFAULT_NODE_TYPES } from '../config/dock-menu.config';
 import type { NodeType, WorkspaceNode, Task } from '../models/workspace.types';
+import { WorkspaceDataService } from '../services/dock-data.service';
+import { WorkspaceStateService } from '../services/dock-state.service';
 
 interface Column {
   field: string;
@@ -25,6 +27,11 @@ export class SharedTreetableComponent implements OnInit {
   items: MenuItem[] = [];
   selectedNode!: TreeNode<any>;
   nodeTypes: NodeType[] = DEFAULT_NODE_TYPES;
+
+  constructor(
+    private data: WorkspaceDataService,
+    private state: WorkspaceStateService
+  ) {}
 
   ngOnInit() {
     // TODO: 請用你的 service 取資料
@@ -49,18 +56,49 @@ export class SharedTreetableComponent implements OnInit {
   }
 
   addRootNode() {
-    // TODO: 實際應呼叫父元件或 service
-    console.log('新增根結點');
+    const node: WorkspaceNode = {
+      id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
+      name: '根結點',
+      type: 'root',
+      status: 'active',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      parentId: null
+    };
+    this.data.addWorkspace(node).then(() => this.reloadTree());
   }
 
   addBranchNode() {
-    // TODO: 實際應呼叫父元件或 service
-    console.log('新增枝節點', this.selectedNode);
+    if (!this.selectedNode?.data?.id) return;
+    const node: WorkspaceNode = {
+      id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
+      name: '枝節點',
+      type: 'branch',
+      status: 'active',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      parentId: this.selectedNode.data.id
+    };
+    this.data.addWorkspace(node).then(() => this.reloadTree());
   }
 
   addLeafNode() {
-    // TODO: 實際應呼叫父元件或 service
-    console.log('新增葉節點', this.selectedNode);
+    if (!this.selectedNode?.data?.id) return;
+    const node: WorkspaceNode = {
+      id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
+      name: '葉節點',
+      type: 'leaf',
+      status: 'active',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      parentId: this.selectedNode.data.id
+    };
+    this.data.addWorkspace(node).then(() => this.reloadTree());
+  }
+
+  reloadTree() {
+    this.state.showTreeTable$.next(false);
+    setTimeout(() => this.state.showTreeTable$.next(true), 0);
   }
 
   getTypeLabel(rowData: WorkspaceNode | Task): string {
