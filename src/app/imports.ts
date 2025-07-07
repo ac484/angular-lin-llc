@@ -1,7 +1,6 @@
 // Import PrimeNG modules
 import { AutoFocusModule } from 'primeng/autofocus';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { OverlayBadgeModule } from 'primeng/overlaybadge';
 import { TabsModule } from 'primeng/tabs';
@@ -104,7 +103,6 @@ import { CommonModule } from '@angular/common';
     @NgModule({
         imports: [
             CommonModule,
-            HttpClientModule,
     AvatarModule,
     AvatarGroupModule,
     AnimateOnScrollModule,
@@ -209,7 +207,6 @@ import { CommonModule } from '@angular/common';
     AvatarGroupModule,
     AnimateOnScrollModule,
     FormsModule,
-    HttpClientModule,
     ReactiveFormsModule,
     AccordionModule,
     AutoCompleteModule,

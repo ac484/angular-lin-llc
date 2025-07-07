@@ -1,0 +1,12 @@
+<ng-container *ngIf="auth.user$ | async as user; else guest">
+  <div class="profile">
+    <img *ngIf="user.photoURL" [src]="user.photoURL" class="avatar" />
+    <div class="info">
+      <div class="name">{{ user.displayName || user.email }}</div>
+      <button (click)="logout()">登出</button>
+    </div>
+  </div>
+</ng-container>
+<ng-template #guest>
+  <div>尚未登入</div>
+</ng-template>
