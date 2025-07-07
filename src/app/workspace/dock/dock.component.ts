@@ -126,7 +126,7 @@ export class WorkspaceDockComponent implements OnInit {
           { label: 'Remove', icon: 'pi pi-fw pi-calendar-minus' }
         ]}
       ]},
-      { label: 'Quit' }
+      { label: 'Quit', command: () => this.router.navigate(['/']) }
     ];
 
     this.responsiveOptions = [

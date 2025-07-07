@@ -2,14 +2,14 @@ import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WorkspaceDockComponent } from '../dock/dock.component';
 import { Router } from '@angular/router';
-import { ProgressspinnerComponent } from '../../shared/progressspinner/progressspinner.component';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-workspace',
   standalone: true,
-  imports: [CommonModule, WorkspaceDockComponent, ProgressspinnerComponent],
+  imports: [CommonModule, WorkspaceDockComponent, ProgressSpinnerModule],
   template: `
-    <app-progressspinner *ngIf="isLoading" [style]="{width: '48px', height: '48px', margin: '2rem auto', display: 'block'}"></app-progressspinner>
+    <p-progressSpinner *ngIf="isLoading" [style]="{width: '48px', height: '48px', margin: '2rem auto', display: 'block'}"></p-progressSpinner>
     <div *ngIf="!isLoading" class="workspace-content">
       <app-workspace-dock></app-workspace-dock>
     </div>
