@@ -1,4 +1,4 @@
-<app-workspace-menubar [model]="menubarItems"></app-workspace-menubar>
+<p-menubar [model]="menubarItems"></p-menubar>
 <div (contextmenu)="onDockContextMenu($event)">
   <p-dock [model]="dockItems" position="bottom" breakpoint="960px">
     <ng-template #item let-item>
@@ -12,7 +12,6 @@
       </a>
     </ng-template>
   </p-dock>
-  <app-workspace-contextmenu #dockContextMenu [model]="dockContextMenuItems"></app-workspace-contextmenu>
 </div>
 <div *ngIf="(state.showTreeTable$ | async)" style="margin-top: 1rem;">
   <app-shared-treetable [value]="(state.treeTableData$ | async) || []" [columns]="(state.treeTableColumns$ | async) || []" [nodeTypes]="data.getNodeTypes()"></app-shared-treetable>

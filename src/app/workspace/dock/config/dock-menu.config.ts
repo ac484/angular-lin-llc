@@ -15,7 +15,6 @@ export const DOCK_ITEMS: MenuItem[] = [
   { label: 'Home', icon: 'pi pi-home' },
   { label: 'Tree', icon: 'pi pi-th-large' },
   { label: 'TreeTable', icon: 'pi pi-sitemap' },
-  { label: 'Trash', icon: 'pi pi-trash' }
 ];
 
 export const DOCK_CONTEXT_MENU_ITEMS: MenuItem[] = [

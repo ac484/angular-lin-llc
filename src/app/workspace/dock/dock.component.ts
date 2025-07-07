@@ -3,19 +3,18 @@ import { CommonModule } from '@angular/common';
 import { DockModule } from 'primeng/dock';
 import { TooltipModule } from 'primeng/tooltip';
 import { MenuItem, TreeNode } from 'primeng/api';
-import { DockMenubarComponent } from './menubar/menubar.component';
-import { DockContextMenuComponent } from './contextmenu/contextmenu.component';
 import { DockTreeComponent } from './tree/tree.component';
 import { SharedTreetableComponent } from './treetable/treetable.component';
 import { WorkspaceDataService } from './services/dock-data.service';
 import { WorkspaceStateService } from './services/dock-state.service';
-import { MENUBAR_ITEMS, DOCK_ITEMS, DOCK_CONTEXT_MENU_ITEMS } from './config/dock-menu.config';
+import { MENUBAR_ITEMS, DOCK_ITEMS } from './config/dock-menu.config';
 import { WorkspaceNode, Task } from './models/workspace.types';
+import { MenubarModule } from 'primeng/menubar';
 
 @Component({
   selector: 'app-workspace-dock',
   standalone: true,
-  imports: [CommonModule, DockModule, TooltipModule, DockMenubarComponent, DockContextMenuComponent, DockTreeComponent, SharedTreetableComponent],
+  imports: [CommonModule, DockModule, TooltipModule, MenubarModule, DockTreeComponent, SharedTreetableComponent],
   templateUrl: './dock.component.html',
   styleUrls: ['./dock.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -23,9 +22,7 @@ import { WorkspaceNode, Task } from './models/workspace.types';
 export class WorkspaceDockComponent {
   menubarItems: MenuItem[] = [];
   dockItems: MenuItem[] = [];
-  dockContextMenuItems: MenuItem[] = [];
   selectedTreeNode: TreeNode<any> | null = null;
-  @ViewChild('dockContextMenu') dockContextMenu?: DockContextMenuComponent;
 
   constructor(
     public data: WorkspaceDataService,
@@ -43,11 +40,6 @@ export class WorkspaceDockComponent {
     this.dockItems = DOCK_ITEMS.map(item => ({
       ...item,
       command: this.getDockCommand(item.label)
-    }));
-    // 產生 dockContextMenuItems
-    this.dockContextMenuItems = DOCK_CONTEXT_MENU_ITEMS.map(item => ({
-      ...item,
-      command: this.getDockContextMenuCommand(item.label)
     }));
     this.loadNodes();
   }
@@ -115,7 +107,7 @@ export class WorkspaceDockComponent {
 
   onDockContextMenu(event: MouseEvent) {
     event.preventDefault();
-    this.dockContextMenu?.show(event);
+    // 直接用 <p-contextMenu> 原生 API，或於 HTML 綁定 #dockContextMenuRef
   }
 
   // 根據 label 回傳對應的 command function
@@ -132,12 +124,6 @@ export class WorkspaceDockComponent {
     switch (label) {
       case 'Tree': return () => this.toggleTree();
       case 'TreeTable': return () => this.toggleTreeTable();
-      default: return undefined;
-    }
-  }
-  getDockContextMenuCommand(label?: string) {
-    switch (label) {
-      case '重新整理': return () => this.loadNodes();
       default: return undefined;
     }
   }
