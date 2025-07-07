@@ -1,26 +1,6 @@
 import type { MenuItem } from 'primeng/api';
 import type { NodeType } from '../models/workspace.types';
 
-export const MENUBAR_ITEMS: MenuItem[] = [
-  {
-    label: '檔案',
-    icon: 'pi pi-file',
-    items: [
-      { label: '建立根結點', icon: 'pi pi-sitemap' }
-    ]
-  }
-];
-
-export const DOCK_ITEMS: MenuItem[] = [
-  { label: 'Home', icon: 'pi pi-home' },
-  { label: 'TreeTable', icon: 'pi pi-sitemap' },
-];
-
-export const DOCK_CONTEXT_MENU_ITEMS: MenuItem[] = [
-  { label: '重新整理', icon: 'pi pi-refresh' },
-  { label: '回首頁', icon: 'pi pi-home' }
-];
-
 // --- fallback 節點型別定義：僅根結點、枝節點、葉節點 ---
 export const DEFAULT_NODE_TYPES: NodeType[] = [
   {

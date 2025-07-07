@@ -6,7 +6,6 @@ import { MenuItem, TreeNode, MessageService } from 'primeng/api';
 import { SharedTreetableComponent } from './treetable/treetable.component';
 import { WorkspaceDataService } from './services/dock-data.service';
 import { WorkspaceStateService } from './services/dock-state.service';
-import { MENUBAR_ITEMS, DOCK_ITEMS } from './config/dock-menu.config';
 import { WorkspaceNode, Task } from './models/workspace.types';
 import { MenubarModule } from 'primeng/menubar';
 import { Router } from '@angular/router';
@@ -109,44 +108,6 @@ export class WorkspaceDockComponent implements OnInit {
     this.loadNodes();
   }
 
-  toggleTreeTable() {
-    this.state.showTreeTable$.next(!this.state.showTreeTable$.value);
-  }
-
-  toggleTree() {
-    this.state.showTree$.next(!this.state.showTree$.value);
-    this.state.treeData$.next(this.state.treeTableData$.value);
-  }
-
-  loadWorkspaces() {
-    this.data.loadWorkspaces().subscribe(data => {
-      // 可根據需求處理 workspaces
-      console.log('Firestore workspaces:', data);
-    });
-  }
-
-  addWorkspace(parentNode?: any, typeOverride?: string) {
-    let type = typeOverride || 'root';
-    if (!typeOverride && (parentNode?.data?.type === 'root' || parentNode?.data?.type === 'branch')) {
-      type = 'branch';
-    }
-    let name = '';
-    if (type === 'root') name = '根結點';
-    else if (type === 'branch') name = '枝節點';
-    else if (type === 'leaf') name = '葉節點';
-    else name = '新節點 ' + new Date().toLocaleTimeString();
-    const node: WorkspaceNode = {
-      id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
-      name,
-      type,
-      status: 'active',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      parentId: parentNode?.data?.id ?? null
-    };
-    this.data.addWorkspace(node).then(() => this.loadNodes());
-  }
-
   loadNodes() {
     this.data.loadNodes().subscribe((data: WorkspaceNode[]) => {
       const nodes: WorkspaceNode[] = (data ?? []).map((item: WorkspaceNode) => {
@@ -170,52 +131,25 @@ export class WorkspaceDockComponent implements OnInit {
     });
   }
 
-  onDockContextMenu(event: MouseEvent) {
-    event.preventDefault();
-    // 直接用 <p-contextMenu> 原生 API，或於 HTML 綁定 #dockContextMenuRef
-  }
-
-  // 根據 label 回傳對應的 command function
-  getMenubarCommand(label?: string) {
-    switch (label) {
-      case '開啟': return () => this.loadWorkspaces();
-      case '重新載入': return () => this.loadNodes();
-      case '讀取工作空間': return () => this.loadWorkspaces();
-      case '建立根結點': return () => this.addWorkspace(undefined, 'root');
-      default: return undefined;
+  addWorkspace(parentNode?: any, typeOverride?: string) {
+    let type = typeOverride || 'root';
+    if (!typeOverride && (parentNode?.data?.type === 'root' || parentNode?.data?.type === 'branch')) {
+      type = 'branch';
     }
-  }
-  getDockCommand(label?: string) {
-    switch (label) {
-      case 'Tree': return () => this.toggleTree();
-      case 'TreeTable': return () => this.openTreeTable();
-      case 'Home': return () => this.goHome();
-      default: return undefined;
-    }
-  }
-
-  openTreeTable() {
-    this.state.showTreeTable$.next(true);
-  }
-
-  goHome() {
-    this.router.navigate(['/']);
-  }
-
-  addTaskToNode(node: WorkspaceNode) {
-    if (!node) return;
-    const newTask: Task = {
+    let name = '';
+    if (type === 'root') name = '根結點';
+    else if (type === 'branch') name = '枝節點';
+    else if (type === 'leaf') name = '葉節點';
+    else name = '新節點 ' + new Date().toLocaleTimeString();
+    const node: WorkspaceNode = {
       id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
-      nodeId: node.id,
-      title: '新任務 ' + new Date().toLocaleTimeString(),
-      status: 'pending',
-      progress: 0,
-      assigneeId: '',
-      reviewerId: '',
+      name,
+      type,
+      status: 'active',
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
+      parentId: parentNode?.data?.id ?? null
     };
-    const tasks = Array.isArray(node.tasks) ? [...node.tasks, newTask] : [newTask];
-    this.data.updateNodeTasks(node.id, tasks).then(() => this.loadNodes());
+    this.data.addWorkspace(node).then(() => this.loadNodes());
   }
 } 
