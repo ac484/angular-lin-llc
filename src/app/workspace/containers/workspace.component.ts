@@ -1,6 +1,6 @@
 import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { WorkspaceDockComponent } from '../components/dock/dock.component';
+import { WorkspaceDockComponent } from '../dock/dock.component';
 import { Router } from '@angular/router';
 import { ProgressspinnerComponent } from '../../shared/progressspinner/progressspinner.component';
 

@@ -4,7 +4,7 @@ import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signO
 import { Storage, ref, uploadBytes, getDownloadURL, deleteObject } from '@angular/fire/storage';
 import { Observable, from } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
-import { User } from '../../workspace/components/dock/models/workspace.types';
+import { User } from '../../workspace/dock/models/workspace.types';
 
 // 本檔案依據 Firebase Console 專案設定，使用 Firebase Client SDK 操作 Cloud Firestore
 

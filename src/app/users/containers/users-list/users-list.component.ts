@@ -6,7 +6,7 @@ import { SelectModule } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
 import { RippleModule } from 'primeng/ripple';
 import { FirebaseService } from '../../../core/services/firebase.service';
-import { User } from '../../../workspace/components/dock/models/workspace.types';
+import { User } from '../../../workspace/dock/models/workspace.types';
 import { Observable, from, of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 
