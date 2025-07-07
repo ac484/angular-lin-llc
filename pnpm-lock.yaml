@@ -24,8 +24,8 @@ importers:
         specifier: ^19.0.0
         version: 19.2.14(rxjs@7.8.2)(zone.js@0.15.1)
       '@angular/fire':
-        specifier: 19.0.0-rc.1
-        version: 19.0.0-rc.1(75a42b1893c599f43c384b025570a6b7)
+        specifier: 19.0.0
+        version: 19.0.0(75a42b1893c599f43c384b025570a6b7)
       '@angular/forms':
         specifier: ^19.0.0
         version: 19.2.14(@angular/common@19.2.14(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@19.2.14(@angular/animations@19.2.14(@angular/common@19.2.14(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@19.2.14(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.1)))(rxjs@7.8.2)
@@ -39,8 +39,8 @@ importers:
         specifier: ^19.0.0
         version: 19.2.14(@angular/common@19.2.14(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@19.2.14(@angular/animations@19.2.14(@angular/common@19.2.14(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@19.2.14(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.1)))(rxjs@7.8.2)
       '@primeng/themes':
-        specifier: ^19.0.0-rc.1
-        version: 19.1.3
+        specifier: 19.0.0
+        version: 19.0.0
       firebase:
         specifier: ^11.10.0
         version: 11.10.0
@@ -48,8 +48,8 @@ importers:
         specifier: ^7.0.0
         version: 7.0.0
       primeng:
-        specifier: ^19.0.0-rc.1
-        version: 19.1.3(e20f521fde0d41d84ec00801b73de41e)
+        specifier: ^19.0.0
+        version: 19.0.0(e20f521fde0d41d84ec00801b73de41e)
       rxjs:
         specifier: ~7.8.0
         version: 7.8.2
@@ -262,8 +262,8 @@ packages:
       rxjs: ^6.5.3 || ^7.4.0
       zone.js: ~0.15.0
 
-  '@angular/fire@19.0.0-rc.1':
-    resolution: {integrity: sha512-Tpee/0lPQl2m2AfhzMjNZtFa+c/PaBINGhlmLY4FSW2rUG4j7spRkDqH3IXuRV9YJikkO0+qG7bnyKoJj4Q4ag==}
+  '@angular/fire@19.0.0':
+    resolution: {integrity: sha512-dVU9IdL9sGKe1fV7g2iGgkjUQIYrbnljHtHUgNpZaskyW+Vy6ndtsEbSUoRd6sLP8WpThWH7WvITKhu/8a6qfQ==}
     peerDependencies:
       '@angular/common': ^19.0.0
       '@angular/core': ^19.0.0
@@ -1706,8 +1706,8 @@ packages:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
 
-  '@primeng/themes@19.1.3':
-    resolution: {integrity: sha512-y4VryHHUTPWlmfR56NBANC0QPIxEngTUE/J3pGs4SJquq1n5EE/U16dxa1qW/wXqLF3jn3l/AO/4KZqGj5UuAA==}
+  '@primeng/themes@19.0.0':
+    resolution: {integrity: sha512-oG38G0aE3L7tXnFIVrglhid64ZbQrkjUGdqovPcLR2e2S89P9f5vafMNtUdGCZaCGgz2WqGdfeqZKw1TF0OT4A==}
 
   '@primeuix/styled@0.3.2':
     resolution: {integrity: sha512-ColZes0+/WKqH4ob2x8DyNYf1NENpe5ZguOvx5yCLxaP8EIMVhLjWLO/3umJiDnQU4XXMLkn2mMHHw+fhTX/mw==}
@@ -3804,8 +3804,8 @@ packages:
   primeicons@7.0.0:
     resolution: {integrity: sha512-jK3Et9UzwzTsd6tzl2RmwrVY/b8raJ3QZLzoDACj+oTJ0oX7L9Hy+XnVwgo4QVKlKpnP/Ur13SXV/pVh4LzaDw==}
 
-  primeng@19.1.3:
-    resolution: {integrity: sha512-KsrvJFblKg28kA6d4npnnABjKClmJv0CgDT/kOxFq5onQNBy4547DJzRGMba4+CMLKjHWWkYWuC+XSkPMNFrZg==}
+  primeng@19.0.0:
+    resolution: {integrity: sha512-A2i1dzYc67nyho2lEvJVHvWFKdMm1YvM5Z4lPdOykUEcWd1gmDSMHsvzs1zHY/CQQswL/+uWRrw2J+K0upQMnQ==}
     peerDependencies:
       '@angular/animations': ^19.0.0
       '@angular/cdk': ^19.0.0
@@ -4928,7 +4928,7 @@ snapshots:
       tslib: 2.8.1
       zone.js: 0.15.1
 
-  '@angular/fire@19.0.0-rc.1(75a42b1893c599f43c384b025570a6b7)':
+  '@angular/fire@19.0.0(75a42b1893c599f43c384b025570a6b7)':
     dependencies:
       '@angular-devkit/schematics': 19.2.15(chokidar@4.0.3)
       '@angular/common': 19.2.14(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)
@@ -6552,7 +6552,7 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@primeng/themes@19.1.3':
+  '@primeng/themes@19.0.0':
     dependencies:
       '@primeuix/styled': 0.3.2
 
@@ -8772,7 +8772,7 @@ snapshots:
 
   primeicons@7.0.0: {}
 
-  primeng@19.1.3(e20f521fde0d41d84ec00801b73de41e):
+  primeng@19.0.0(e20f521fde0d41d84ec00801b73de41e):
     dependencies:
       '@angular/animations': 19.2.14(@angular/common@19.2.14(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.1))
       '@angular/cdk': 19.2.19(@angular/common@19.2.14(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)
