@@ -59,5 +59,8 @@ docs/
 public/
 pnpm-lock.yaml
 .gitignore
+tsconfig.app.json
+tsconfig.json
+tsconfig.spec.json
 src/app/workspace/dock/panelmenu
 src/app/workspace/dock/megamenu

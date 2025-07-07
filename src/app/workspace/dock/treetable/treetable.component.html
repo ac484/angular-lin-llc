@@ -1,0 +1,68 @@
+<div class="card">
+  <div class="flex justify-center items-center mb-3 gap-3">
+    <p-selectbutton
+      [options]="filterModes"
+      [(ngModel)]="filterMode"
+      optionLabel="label"
+      optionValue="value"
+    />
+    <p-iconfield>
+      <p-inputicon class="pi pi-search" />
+      <input
+        type="text"
+        pInputText
+        placeholder="全域搜尋"
+        [(ngModel)]="globalFilterValue"
+        (input)="tt.filterGlobal(globalFilterValue, 'contains')"
+        style="width: 200px"
+      />
+    </p-iconfield>
+  </div>
+  <p-treetable
+    #tt
+    [value]="files"
+    [columns]="cols"
+    [filterMode]="filterMode"
+    selectionMode="checkbox"
+    [(selectionKeys)]="selectionKeys"
+    dataKey="key"
+    [(contextMenuSelection)]="selectedNode"
+    [contextMenu]="cm"
+    [scrollable]="true"
+    [tableStyle]="{ 'min-width': '50rem' }"
+  >
+    <ng-template #header let-columns>
+      <tr>
+        <th *ngFor="let col of columns">
+          <span>{{ col.header }}</span>
+          <input
+            pInputText
+            [placeholder]="'搜尋' + col.header"
+            type="text"
+            (input)="onColumnFilter($event, col.field)"
+            style="width: 80px; margin-left: 0.5em; display: inline-block; vertical-align: middle;"
+          />
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-rowNode let-rowData="rowData" let-columns="columns">
+      <tr [ttRow]="rowNode" [ttContextMenuRow]="rowNode" [ttSelectableRow]="rowNode">
+        <td *ngFor="let col of columns; let i = index; let last = last">
+          <p-treetable-toggler [rowNode]="rowNode" *ngIf="i === 0" />
+          <p-treetable-checkbox [value]="rowNode" *ngIf="i === 0" />
+          {{ rowData[col.field] }}
+          <ng-container *ngIf="last">
+            <p-button icon="pi pi-search" rounded="true" [style]="{ 'margin-right': '.5em' }" />
+            <p-button icon="pi pi-pencil" rounded="true" severity="success" />
+          </ng-container>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td [attr.colspan]="cols.length">查無資料</td>
+      </tr>
+    </ng-template>
+  </p-treetable>
+  <p-contextmenu #cm [model]="items"></p-contextmenu>
+</div> 
