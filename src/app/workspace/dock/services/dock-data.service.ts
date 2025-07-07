@@ -5,6 +5,8 @@ import { WorkspaceNode } from '../models/workspace.types';
 import { Observable } from 'rxjs';
 import { TreeNode } from 'primeng/api';
 import { Task } from '../models/workspace.types';
+import { DEFAULT_NODE_TYPES } from '../config/dock-menu.config';
+import type { NodeType } from '../models/workspace.types';
 
 @Injectable({ providedIn: 'root' })
 export class WorkspaceDataService {
@@ -66,5 +68,14 @@ export class WorkspaceDataService {
   updateNodeParent(nodeId: string, newParentId: string | null): Promise<void> {
     const nodeRef = doc(this.firestore, 'nodes', nodeId);
     return updateDoc(nodeRef, { parentId: newParentId });
+  }
+
+  getNodeTypes(customTypes?: NodeType[]): NodeType[] {
+    if (!customTypes) return DEFAULT_NODE_TYPES;
+    const ids = new Set(DEFAULT_NODE_TYPES.map(t => t.id));
+    return [
+      ...DEFAULT_NODE_TYPES,
+      ...customTypes.filter(t => !ids.has(t.id))
+    ];
   }
 }

@@ -69,10 +69,14 @@ export class WorkspaceDockComponent {
   }
 
   addWorkspace(parentNode?: any) {
+    let type = 'root';
+    if (parentNode?.data?.type === 'root' || parentNode?.data?.type === 'branch') {
+      type = 'branch';
+    }
     const node: WorkspaceNode = {
       id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
       name: '新節點 ' + new Date().toLocaleTimeString(),
-      type: 'custom',
+      type,
       status: 'active',
       createdAt: new Date(),
       updatedAt: new Date(),

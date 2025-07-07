@@ -62,3 +62,5 @@ pnpm-lock.yaml
 tsconfig.app.json
 tsconfig.json
 tsconfig.spec.json
+src/app/workspace/dock/panelmenu
+src/app/workspace/dock/megamenu
