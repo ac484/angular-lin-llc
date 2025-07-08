@@ -2,9 +2,9 @@ import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/cor
 import { SidenavComponent } from '../sidenav/sidenav.component';
 import { PrimeNgModules } from '../../../shared/modules/prime-ng.module';
 import { CommonModule } from '@angular/common';
-import { WorkspaceDataService } from '../../../services/workspace-data.service';
+import { WorkspaceDataService } from './workspace-sidenav-data.service';
 import { MenuItem } from 'primeng/api';
-import { WorkspaceNode } from '../../../models/workspace.types';
+import { WorkspaceNode } from './workspace-sidenav.types';
 import { TreeDragDropService, TreeNode } from 'primeng/api';
 
 @Component({
