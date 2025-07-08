@@ -2,11 +2,12 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { NavSection, MenuItem } from './menu-item.interface';
+import { ScrollerModule } from 'primeng/scroller';
 
 @Component({
   selector: 'app-nav-section',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ScrollerModule],
   templateUrl: './nav-section.component.html',
   styleUrls: ['./nav-section.component.scss']
 })

@@ -27,9 +27,13 @@
 
 
       <ul class="nav-list" *ngIf="section.items && section.items.length > 0">
-        <li *ngFor="let item of section.items" class="nav-item">
-          <ng-container *ngTemplateOutlet="menuItemTemplate; context: { $implicit: item }"></ng-container>
-        </li>
+        <p-scroller [items]="section.items" [itemSize]="40" styleClass="nav-virtual-list">
+          <ng-template pTemplate="item" let-item>
+            <li class="nav-item">
+              <ng-container *ngTemplateOutlet="menuItemTemplate; context: { $implicit: item }"></ng-container>
+            </li>
+          </ng-template>
+        </p-scroller>
       </ul>
     </div>
   </ng-container>
