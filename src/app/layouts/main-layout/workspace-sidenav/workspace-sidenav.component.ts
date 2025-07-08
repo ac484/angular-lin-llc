@@ -6,7 +6,7 @@ import { WorkspaceDataService } from './workspace-sidenav-data.service';
 import { WorkspaceStateService } from './workspace-sidenav-state.service';
 import { MenuItem, TreeNode, TreeDragDropService } from 'primeng/api';
 import { WorkspaceTreeNode, WorkspaceNode } from './workspace-sidenav.types';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil, map } from 'rxjs';
 
 @Component({
   selector: 'app-workspace-sidenav',
@@ -26,6 +26,9 @@ export class WorkspaceSidenavComponent implements OnDestroy {
   readonly treeNodes$ = this.dataService.loadTree();
   readonly selectedNode$ = this.stateService.selectedNode$;
   readonly treeConfig$ = this.stateService.treeConfig$;
+  
+  // 扁平節點列表 - 用於循環引用檢查
+  private allNodes: WorkspaceNode[] = [];
 
   // 選單項目
   readonly menubarItems: MenuItem[] = [
@@ -60,12 +63,12 @@ export class WorkspaceSidenavComponent implements OnDestroy {
   ];
 
   constructor() {
-    // 監聽節點數量變化
-    this.treeNodes$.pipe(
+    // 監聽節點變化並緩存扁平列表
+    this.dataService.loadNodes().pipe(
       takeUntil(this.destroy$)
     ).subscribe(nodes => {
-      const count = this.countAllNodes(nodes);
-      this.stateService.updateNodesCount(count);
+      this.allNodes = nodes;
+      this.stateService.updateNodesCount(nodes.length);
     });
   }
 
@@ -75,90 +78,59 @@ export class WorkspaceSidenavComponent implements OnDestroy {
   }
 
   /**
-   * 官方節點選擇事件
+   * 極簡拖放實現 - 將拖拽節點變成目標節點的子節點
    */
+  onNodeDrop(event: any): void {
+    const dragNode = event.dragNode?.data as WorkspaceNode;
+    const dropNode = event.dropNode?.data as WorkspaceNode;
+    
+    if (!dragNode) return;
+    
+    const newParentId = dropNode?.id || null;
+    
+    // 防止無意義移動和循環引用
+    if (dragNode.parentId === newParentId || 
+        this.wouldCreateCycle(dragNode.id, newParentId)) {
+      return;
+    }
+    
+    this.dataService.updateNodeParent(dragNode.id, newParentId);
+  }
+
+  /**
+   * 檢查是否會造成循環引用 - 最簡實現
+   */
+  private wouldCreateCycle(nodeId: string, newParentId: string | null): boolean {
+    if (!newParentId) return false;
+    if (nodeId === newParentId) return true;
+    
+    // 檢查新父節點是否為當前節點的後代
+    const isDescendant = (checkId: string): boolean => {
+      const node = this.allNodes.find(n => n.id === checkId);
+      if (!node?.parentId) return false;
+      if (node.parentId === nodeId) return true;
+      return isDescendant(node.parentId);
+    };
+    
+    return isDescendant(newParentId);
+  }
+
   onNodeSelect(event: any): void {
     this.stateService.setSelectedNode(event.node as WorkspaceTreeNode);
-    console.log('節點已選擇:', event.node.label);
   }
 
-  /**
-   * 官方節點取消選擇事件
-   */
   onNodeUnselect(event: any): void {
     this.stateService.setSelectedNode(null);
-    console.log('節點已取消選擇:', event.node.label);
   }
 
-  /**
-   * 官方節點展開事件
-   */
   onNodeExpand(event: any): void {
-    console.log('節點已展開:', event.node.label);
     // 可在此處實作懶載入邏輯
   }
 
-  /**
-   * 官方節點收合事件
-   */
   onNodeCollapse(event: any): void {
-    console.log('節點已收合:', event.node.label);
+    // 收合邏輯
   }
 
-  /**
-   * 官方拖放事件 - 完整實作
-   */
-  onNodeDrop(event: any): void {
-    if (!event.dragNode?.data) {
-      console.log('拖曳失敗：無效的拖曳節點');
-      return;
-    }
-    
-    const dragNodeData = event.dragNode.data as WorkspaceNode;
-    const dropNodeData = event.dropNode?.data as WorkspaceNode;
-    
-    console.log('拖曳事件:', {
-      dragNode: dragNodeData.name,
-      dropNode: dropNodeData?.name,
-      dropIndex: event.dropIndex
-    });
-
-    // 根據拖放位置決定新的父節點
-    let newParentId: string | null = null;
-    
-    if (event.dropNode) {
-      // 如果是放在節點上，成為該節點的子節點
-      newParentId = dropNodeData.id;
-    } else {
-      // 如果是放在根層級，父節點為 null
-      newParentId = null;
-    }
-    
-    // 防止循環引用和無意義的移動
-    if (dragNodeData.parentId === newParentId) {
-      console.log('拖曳取消：目標位置相同');
-      return;
-    }
-    
-    // 防止將父節點拖到子節點下
-    if (this.isDescendant(dragNodeData.id, newParentId)) {
-      console.log('拖曳取消：不能將父節點拖到子節點下');
-      return;
-    }
-    
-    // 執行節點移動
-    this.dataService.updateNodeParent(dragNodeData.id, newParentId)
-      .then(() => {
-        console.log('節點移動成功');
-      })
-      .catch(error => {
-        console.error('節點移動失敗:', error);
-      });
-  }
-
-  /**
-   * 新增根節點
-   */
   addNode(): void {
     const newNode: Omit<WorkspaceNode, 'id'> = {
       name: '新節點',
@@ -171,9 +143,6 @@ export class WorkspaceSidenavComponent implements OnDestroy {
     this.dataService.addNode(newNode);
   }
 
-  /**
-   * 新增子節點
-   */
   addChildNode(): void {
     const selectedNode = this.stateService.selectedNode$.value;
     const parentId = selectedNode?.data?.id || null;
@@ -189,9 +158,6 @@ export class WorkspaceSidenavComponent implements OnDestroy {
     this.dataService.addNode(newNode);
   }
 
-  /**
-   * 重新命名節點
-   */
   renameNode(): void {
     const selectedNode = this.stateService.selectedNode$.value;
     if (!selectedNode?.data) return;
@@ -202,9 +168,6 @@ export class WorkspaceSidenavComponent implements OnDestroy {
     }
   }
 
-  /**
-   * 刪除節點
-   */
   deleteNode(): void {
     const selectedNode = this.stateService.selectedNode$.value;
     if (!selectedNode?.data) return;
@@ -215,39 +178,11 @@ export class WorkspaceSidenavComponent implements OnDestroy {
     }
   }
 
-  /**
-   * 展開所有節點
-   */
   expandAll(): void {
-    // 可透過 ViewChild 取得 Tree 組件實例並呼叫 expandAll()
     console.log('展開所有節點');
   }
 
-  /**
-   * 收合所有節點
-   */
   collapseAll(): void {
-    // 可透過 ViewChild 取得 Tree 組件實例並呼叫 collapseAll()
     console.log('收合所有節點');
-  }
-
-  /**
-   * 計算所有節點數量
-   */
-  private countAllNodes(nodes: WorkspaceTreeNode[]): number {
-    return nodes.reduce((count, node) => {
-      return count + 1 + (node.children ? this.countAllNodes(node.children) : 0);
-    }, 0);
-  }
-
-  /**
-   * 檢查是否為子節點 - 防止循環引用
-   */
-  private isDescendant(ancestorId: string, nodeId: string | null): boolean {
-    if (!nodeId) return false;
-    
-    // 這裡需要實作邏輯檢查 nodeId 是否為 ancestorId 的後代
-    // 為了簡化，先返回 false，實際專案中需要完整實作
-    return false;
   }
 }
