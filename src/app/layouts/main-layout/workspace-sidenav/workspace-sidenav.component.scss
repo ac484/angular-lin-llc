@@ -11,3 +11,15 @@
 :host ::ng-deep .p-tree .p-treenode-draggable {
   cursor: move;
 }
+
+// 添加容器滾動樣式
+//:host ::ng-deep .tree-scroll-container {
+//  height: 100%;
+//  overflow-y: auto;
+//}
+
+// 使 p-tree 撐滿容器高度
+//:host ::ng-deep .p-tree {
+//  height: 100% !important;
+//  max-height: 100% !important;
+//}
