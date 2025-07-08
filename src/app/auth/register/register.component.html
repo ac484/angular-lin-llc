@@ -1,0 +1,183 @@
+<div class="flex flex-col sm:flex-row min-h-screen bg-gray-100">
+  <div class="hidden sm:flex flex-col flex-auto bg-blue-600 items-center justify-center p-4 sm:p-8 lg:p-12 sm:w-2/3">
+    <div class="flex flex-col items-center justify-center flex-1 space-y-10">
+      <div class="flex flex-col items-center space-y-6">
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">Create Account!</h1>
+        <p class="text-lg sm:text-xl lg:text-2xl text-center text-white max-w-md">
+          Signup today and start managing your account with ease.
+        </p>
+      </div>
+      <img
+        class="h-auto max-w-xl m-5"
+        src="/assets/sitting.svg"/>
+    </div>
+
+
+
+  </div>
+
+  <!-- Right Column -->
+  <div class="flex flex-col flex-auto bg-gray-200 sm:w-1/3">
+
+
+
+    <app-auth-card-layout
+      *ngIf="showVerificationMessage"
+      [title]="'Verify Your Email'"
+      [infoMessage]="infoMessage"
+      [errorMessage]="errorMessage"
+    >
+
+
+      <div class="text-gray-700 text-lg	space-y-2">
+        <p>
+          Thank you for signing up! Please check your inbox for a verification email.
+        </p>
+        <p>
+          If you didn’t receive the email, check your spam folder or click below to resend.
+        </p>
+
+
+        <!-- Buttons -->
+        <div class="flex flex-col gap-4 sm:gap-6 mt-6 sm:mt-8">
+
+          <a
+            pButton
+            label="Back to Login"
+            icon="pi pi-arrow-left"
+            [href]="'login'"
+            class="p-button-primary form-btn-lg">
+          </a>
+
+
+          <button
+            #btn
+            pButton
+            type="submit"
+            label="Resend Email"
+            icon="pi pi-send"
+            class="p-button-outlined form-btn-lg"
+            (click)="sendResetEmail(btn)"
+
+          >
+          </button>
+
+
+
+        </div>
+
+
+
+
+
+
+      </div>
+
+
+
+    </app-auth-card-layout>
+
+
+    <app-auth-card-layout
+      *ngIf="!showVerificationMessage"
+      [title]="'Register Your Account'"
+      [errorMessage]="errorMessage"
+    >
+
+
+
+
+
+
+
+      <form [formGroup]="registerForm"
+            (ngSubmit)="register()"
+            class="form-lg"
+            autocomplete="off"
+      >
+
+
+        <app-form-field
+          [control]="registerForm.get('email')"
+          label="Email"
+        >
+
+
+          <p-iconfield>
+            <p-inputicon class="pi pi-user" />
+            <input pInputText
+                   id="email"
+                   type="text"
+                   formControlName="email"
+                   [ngClass]="{'ng-invalid ng-dirty': registerForm.get('email')?.invalid && registerForm.get('email')?.touched}"
+                   size="small"
+            />
+          </p-iconfield>
+
+        </app-form-field>
+
+
+
+
+        <app-form-field
+          [control]="registerForm.get('password')"
+          label="Password"
+        >
+          <app-password-input
+            formControlName="password"
+          ></app-password-input>
+        </app-form-field>
+
+
+        <app-form-field
+          [control]="registerForm.get('confirmPassword')"
+          label="Confirm Password"
+        >
+
+          <app-password-input
+            formControlName="confirmPassword"
+          ></app-password-input>
+
+        </app-form-field>
+
+
+
+
+
+
+        <!-- Buttons -->
+        <div class="flex flex-col gap-4 sm:gap-6 mt-6 sm:mt-8">
+          <button
+            pButton
+            type="submit"
+            [label]="isLoading ? 'Creating account...' : 'Register'"
+            icon="pi pi-user-plus"
+            iconPos="left"
+            class="p-button-primary h-12 sm:h-14 lg:h-16 text-base sm:text-lg lg:text-xl"
+            [disabled]="registerForm.invalid || isLoading">
+          </button>
+
+
+          <a
+            [routerLink]="['/login']"
+            pButton
+            type="button"
+            label="Back to Login"
+            icon="pi pi-arrow-left"
+            iconPos="left"
+            class="p-button-outlined h-12 sm:h-14 lg:h-16 text-base sm:text-lg lg:text-xl">
+          </a>
+        </div>
+      </form>
+
+
+    </app-auth-card-layout>
+
+
+
+  </div>
+</div>
+
+<p-toast></p-toast>
+
+

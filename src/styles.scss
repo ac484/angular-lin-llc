@@ -1,9 +1,122 @@
-/* You can add global styles to this file, and also import other style files */
+@import "primeicons/primeicons.css";
+@layer tailwind-base, primeng, tailwind-utilities;
 
-@use "tailwindcss";
-@use "primeicons/primeicons.css";
-@use "primeflex/primeflex.css";
+html {
+  font-size: 18px
+}
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+
+/* Tailwind Base styles */
+@layer tailwind-base {
+  @tailwind base;
+}
+
+@layer primeng;
+
+
+/* Tailwind Components & Utilities */
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}
+
+/* PrimeNG Icon Styles */
+.p-input-icon-left {
+  position: relative;
+}
+
+.p-input-icon-left i.status-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0.75rem;
+  color: #64748b; /* Tailwind slate-500 */
+  font-size: 1.25rem; /* 20px */
+  z-index: 1;
+}
+
+/* Responsive icon sizes */
+@media (min-width: 640px) {
+  .p-input-icon-left i.status-icon {
+    font-size: 1.5rem; /* 24px for sm breakpoint */
+  }
+}
+
+@media (min-width: 1024px) {
+  .p-input-icon-left i.status-icon {
+    font-size: 1.75rem; /* 28px for lg breakpoint */
+  }
+}
+
+/* Button icon alignment */
+.p-button .p-button-icon {
+  font-size: 1.25rem;
+  margin-right: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .p-button .p-button-icon {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .p-button .p-button-icon {
+    font-size: 1.75rem;
+  }
+}
+
+/* Checkbox icon size */
+.p-checkbox .p-checkbox-icon {
+  font-size: 1rem;
+}
+
+@media (min-width: 640px) {
+  .p-checkbox .p-checkbox-icon {
+    font-size: 1.25rem;
+  }
+}
+
+/* Input padding adjustment for icons */
+.p-input-icon-left input {
+  padding-left: 3rem !important;
+}
+
+/* Toast icon sizing */
+.p-toast .p-toast-message .p-toast-message-icon {
+  font-size: 1.5rem;
+}
+
+
+
+.form-btn-lg {
+  @apply h-12 sm:h-14 lg:h-16 text-base sm:text-lg lg:text-xl;
+}
+
+.form-lg {
+  app-form-field {
+    input {
+      @apply w-full h-12 sm:h-14 lg:h-16 pl-10 text-base sm:text-lg;
+    }
+
+    label {
+      @apply block text-gray-700 text-base sm:text-lg lg:text-xl font-medium mb-2;
+    }
+
+    ::ng-deep {
+      input {
+        @apply w-full h-12 sm:h-14 lg:h-16;
+      }
+
+      p-password, .p-inputwrapper {
+        @apply w-full;
+      }
+
+      ::ng-deep {
+        @apply w-full;
+      }
+    }
+  }
+
+}
