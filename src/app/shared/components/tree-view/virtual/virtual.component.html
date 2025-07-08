@@ -1,1 +1,16 @@
-<p>virtual works!</p>
+<div>
+  <div class="font-semibold mb-2">虛擬捲動 (Virtual Scroll)</div>
+  <p-tree
+    [value]="virtualFiles"
+    [virtualScroll]="true"
+    [virtualScrollItemSize]="46"
+    scrollHeight="250px"
+    styleClass="w-full md:w-[30rem]"
+  ></p-tree>
+  <p-tree
+    [value]="virtualFiles"
+    styleClass="w-full md:w-[30rem]"
+    selectionMode="single"
+    [(selection)]="selectedFileVirtual"
+  ></p-tree>
+</div>

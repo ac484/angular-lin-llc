@@ -1,1 +1,36 @@
-<p>dnd works!</p>
+<div class="flex gap-4">
+  <div>
+    <div class="font-semibold mb-2">跨樹拖曳 A</div>
+    <p-tree
+      [value]="files3"
+      [draggableNodes]="true"
+      [droppableNodes]="true"
+      draggableScope="multi-tree"
+      droppableScope="multi-tree"
+      styleClass="w-full md:w-[15rem]"
+    ></p-tree>
+    <p-tree
+      [value]="files3"
+      styleClass="w-full md:w-[15rem]"
+      selectionMode="single"
+      [(selection)]="selectedFile3"
+    ></p-tree>
+  </div>
+  <div>
+    <div class="font-semibold mb-2">跨樹拖曳 B</div>
+    <p-tree
+      [value]="files4"
+      [draggableNodes]="true"
+      [droppableNodes]="true"
+      draggableScope="multi-tree"
+      droppableScope="multi-tree"
+      styleClass="w-full md:w-[15rem]"
+    ></p-tree>
+    <p-tree
+      [value]="files4"
+      styleClass="w-full md:w-[15rem]"
+      selectionMode="single"
+      [(selection)]="selectedFile4"
+    ></p-tree>
+  </div>
+</div>

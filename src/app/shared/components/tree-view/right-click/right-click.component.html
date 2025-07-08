@@ -1,1 +1,11 @@
-<p>right-click works!</p>
+<div>
+  <div class="font-semibold mb-2">右鍵選單 (Context Menu)</div>
+  <p-tree
+    [value]="files"
+    styleClass="w-full md:w-[30rem]"
+    selectionMode="single"
+    [(selection)]="selectedFile"
+    [contextMenu]="cm"
+  />
+  <p-contextMenu #cm [model]="items" />
+</div>
