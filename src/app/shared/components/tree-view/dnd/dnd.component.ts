@@ -18,4 +18,16 @@ export class DndComponent {
   selectedFile3: TreeNode | null = null;
   selectedFile4: TreeNode | null = null;
   dragScope = 'multi-tree';
+  // 單樹內拖曳 demo
+  singleTree: TreeNode[] = [
+    {
+      label: '根節點',
+      key: 'root',
+      children: [
+        { label: '子節點 1', key: 'c1', leaf: true },
+        { label: '子節點 2', key: 'c2', leaf: true }
+      ]
+    }
+  ];
+  selectedSingle: TreeNode | null = null;
 }

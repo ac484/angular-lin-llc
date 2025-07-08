@@ -6,13 +6,19 @@ import { CommonModule } from '@angular/common';
 import { MenuItem, MessageService } from 'primeng/api';
 import { TemplateComponent } from '../../../shared/components/tree-view/template/template.component';
 import { RightClickComponent } from '../../../shared/components/tree-view/right-click/right-click.component';
+import { DndComponent } from '../../../shared/components/tree-view/dnd/dnd.component';
+import { CheckboxComponent } from '../../../shared/components/tree-view/checkbox/checkbox.component';
+import { DisableComponent } from '../../../shared/components/tree-view/disable/disable.component';
+import { LazyComponent } from '../../../shared/components/tree-view/lazy/lazy.component';
+import { VirtualComponent } from '../../../shared/components/tree-view/virtual/virtual.component';
+import { SearchComponent } from '../../../shared/components/tree-view/search/search.component';
 
 @Component({
   selector: 'app-workspace-sidenav',
   templateUrl: './workspace-sidenav.component.html',
   styleUrls: ['./workspace-sidenav.component.scss'],
   standalone: true,
-  imports: [CommonModule, SidenavComponent, ...PrimeNgModules, TemplateComponent, RightClickComponent],
+  imports: [CommonModule, SidenavComponent, ...PrimeNgModules, TemplateComponent, RightClickComponent, DndComponent, CheckboxComponent, DisableComponent, LazyComponent, VirtualComponent, SearchComponent],
   providers: [MessageService, TreeDragDropService]
 })
 export class WorkspaceSidenavComponent {
@@ -42,78 +48,11 @@ export class WorkspaceSidenavComponent {
       { label: '新增節點', icon: 'pi pi-plus', command: () => this.onAddNode() }
     ] }
   ];
-  files: TreeNode[] = [
-    {
-      label: '文件夾1',
-      key: 'f1',
-      children: [
-        { label: '檔案1-1', key: 'f1-1', leaf: true },
-        { label: '檔案1-2', key: 'f1-2', leaf: true }
-      ]
-    },
-    {
-      label: '文件夾2',
-      key: 'f2',
-      children: [
-        { label: '檔案2-1', key: 'f2-1', leaf: true }
-      ]
-    }
-  ];
-  files2: TreeNode[] = [
-    {
-      label: '專案X',
-      key: 'x',
-      children: [
-        { label: '子檔案X-1', key: 'x1', leaf: true },
-        { label: '子檔案X-2', key: 'x2', leaf: true }
-      ]
-    },
-    {
-      label: '專案Y',
-      key: 'y',
-      children: [
-        { label: '子檔案Y-1', key: 'y1', leaf: true }
-      ]
-    }
-  ];
   selectedFile: TreeNode | null = null;
-  selectedFiles: TreeNode[] = [];
 
   // 1. 多選
   selectedFilesMultiple: { [key: string]: boolean } = {};
   metaKeySelection = false;
-
-  // 2. Lazy loading
-  lazyFiles: TreeNode[] = [
-    { label: 'Lazy Root', key: 'lazy1', leaf: false }
-  ];
-  loading = false;
-  loadNode(event: { node: TreeNode }) {
-    this.loading = true;
-    setTimeout(() => {
-      event.node.children = [
-        { label: 'Lazy Child 1', key: 'lazy1-1', leaf: true },
-        { label: 'Lazy Child 2', key: 'lazy1-2', leaf: true }
-      ];
-      this.loading = false;
-    }, 800);
-  }
-
-  // 4. 虛擬捲動
-  virtualFiles: TreeNode[] = Array.from({ length: 100 }).map((_, i) => ({
-    label: `節點 ${i + 1}`,
-    key: `v${i + 1}`,
-    leaf: true
-  }));
-
-  // 5. 跨樹拖曳
-  dragScope = 'multi-tree';
-  files3: TreeNode[] = [
-    { label: 'A', key: 'a', children: [{ label: 'A-1', key: 'a1', leaf: true }] }
-  ];
-  files4: TreeNode[] = [
-    { label: 'B', key: 'b', children: [{ label: 'B-1', key: 'b1', leaf: true }] }
-  ];
 
   // 6. 節點圖示
   filesWithIcon: TreeNode[] = [
@@ -122,18 +61,7 @@ export class WorkspaceSidenavComponent {
     ] }
   ];
 
-  // 7. 節點禁用
-  filesDisabled: TreeNode[] = [
-    { label: '可選', key: 'd1', leaf: true },
-    { label: '不可選', key: 'd2', leaf: true, selectable: false }
-  ];
-
-  selectedFileLazy: TreeNode | null = null;
-  selectedFileVirtual: TreeNode | null = null;
-  selectedFile3: TreeNode | null = null;
-  selectedFile4: TreeNode | null = null;
   selectedFileIcon: TreeNode | null = null;
-  selectedFileDisabled: TreeNode | null = null;
 
   constructor(private messageService: MessageService) {
   }
@@ -144,14 +72,7 @@ export class WorkspaceSidenavComponent {
   }
 
   onAddNode() {
-    const newKey = 'new' + (Date.now());
-    this.files.push({
-      label: '新節點',
-      key: newKey,
-      leaf: true,
-      icon: 'pi pi-file',
-      selectable: true
-    });
+    // 節點新增功能已不再由主元件管理，請於對應 tree 子元件實作
   }
 
   nodeExpand(event: { node: TreeNode }) {

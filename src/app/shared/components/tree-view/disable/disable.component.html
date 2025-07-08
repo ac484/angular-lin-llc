@@ -1,1 +1,7 @@
-<p>disable works!</p>
+<div class="font-semibold mb-2">節點禁用 (Disabled)</div>
+<p-tree
+  [value]="filesDisabled"
+  styleClass="w-full md:w-[30rem]"
+  selectionMode="single"
+  [(selection)]="selectedFileDisabled"
+></p-tree>

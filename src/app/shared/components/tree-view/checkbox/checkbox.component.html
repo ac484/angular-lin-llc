@@ -1,1 +1,7 @@
-<p>checkbox works!</p>
+<div class="font-semibold mb-2">多選 (Checkbox)</div>
+<p-tree
+  [value]="files"
+  selectionMode="checkbox"
+  styleClass="w-full md:w-[30rem]"
+  [(selection)]="selectedFiles"
+></p-tree>

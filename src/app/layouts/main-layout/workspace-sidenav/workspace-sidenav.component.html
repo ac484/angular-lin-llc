@@ -10,135 +10,25 @@
       <app-right-click></app-right-click>
     </div>
     <div class="card mb-4">
-      <div class="font-semibold mb-2">多選 (Checkbox)</div>
-      <p-tree
-        [value]="files"
-        selectionMode="checkbox"
-        styleClass="w-full md:w-[30rem]"
-        [(selection)]="selectedFiles"
-      ></p-tree>
+      <app-checkbox></app-checkbox>
     </div>
     <div class="card mb-4">
-      <div class="font-semibold mb-2">寬鬆過濾</div>
-      <p-tree
-        [value]="files"
-        styleClass="w-full md:w-[30rem]"
-        [filter]="true"
-        filterPlaceholder="Lenient Filter"
-      ></p-tree>
+      <app-search></app-search>
     </div>
     <div class="card mb-4">
-      <div class="font-semibold mb-2">嚴格過濾</div>
-      <p-tree
-        [value]="files2"
-        styleClass="w-full md:w-[30rem]"
-        [filter]="true"
-        filterMode="strict"
-        filterPlaceholder="Strict Filter"
-      ></p-tree>
+      <!-- 嚴格過濾已合併至 app-search -->
     </div>
     <div class="card mb-4">
-      <div class="font-semibold mb-2">多選 (Multiple, 無需 Ctrl)</div>
-      <p-tree
-        [value]="files"
-        selectionMode="multiple"
-        [(selection)]="selectedFilesMultiple"
-        [metaKeySelection]="metaKeySelection"
-        styleClass="w-full md:w-[30rem]"
-      ></p-tree>
-      <p-tree
-        [value]="files"
-        styleClass="w-full md:w-[30rem]"
-        selectionMode="single"
-        [(selection)]="selectedFile"
-        (onNodeExpand)="nodeExpand($event)"
-        (onNodeCollapse)="nodeCollapse($event)"
-        (onNodeSelect)="nodeSelect($event)"
-        (onNodeUnselect)="nodeUnselect($event)"
-      ></p-tree>
+      <!-- 多選 (Multiple, 無需 Ctrl) 及單選 demo 建議模組化遷移，暫移除 -->
     </div>
     <div class="card mb-4">
-      <div class="font-semibold mb-2">Lazy Loading</div>
-      <p-tree
-        [value]="lazyFiles"
-        (onNodeExpand)="loadNode($event)"
-        [loading]="loading"
-        styleClass="w-full md:w-[30rem]"
-      ></p-tree>
-      <p-tree
-        [value]="lazyFiles"
-        styleClass="w-full md:w-[30rem]"
-        selectionMode="single"
-        [(selection)]="selectedFileLazy"
-        (onNodeExpand)="nodeExpand($event)"
-        (onNodeCollapse)="nodeCollapse($event)"
-        (onNodeSelect)="nodeSelect($event)"
-        (onNodeUnselect)="nodeUnselect($event)"
-      ></p-tree>
+      <app-lazy></app-lazy>
     </div>
     <div class="card mb-4">
-      <div class="font-semibold mb-2">虛擬捲動 (Virtual Scroll)</div>
-      <p-tree
-        [value]="virtualFiles"
-        [virtualScroll]="true"
-        [virtualScrollItemSize]="46"
-        scrollHeight="250px"
-        styleClass="w-full md:w-[30rem]"
-      ></p-tree>
-      <p-tree
-        [value]="virtualFiles"
-        styleClass="w-full md:w-[30rem]"
-        selectionMode="single"
-        [(selection)]="selectedFileVirtual"
-        (onNodeExpand)="nodeExpand($event)"
-        (onNodeCollapse)="nodeCollapse($event)"
-        (onNodeSelect)="nodeSelect($event)"
-        (onNodeUnselect)="nodeUnselect($event)"
-      ></p-tree>
+      <app-virtual></app-virtual>
     </div>
     <div class="card mb-4 flex gap-4">
-      <div>
-        <div class="font-semibold mb-2">跨樹拖曳 A</div>
-        <p-tree
-          [value]="files3"
-          [draggableNodes]="true"
-          [droppableNodes]="true"
-          draggableScope="multi-tree"
-          droppableScope="multi-tree"
-          styleClass="w-full md:w-[15rem]"
-        ></p-tree>
-        <p-tree
-          [value]="files3"
-          styleClass="w-full md:w-[15rem]"
-          selectionMode="single"
-          [(selection)]="selectedFile3"
-          (onNodeExpand)="nodeExpand($event)"
-          (onNodeCollapse)="nodeCollapse($event)"
-          (onNodeSelect)="nodeSelect($event)"
-          (onNodeUnselect)="nodeUnselect($event)"
-        ></p-tree>
-      </div>
-      <div>
-        <div class="font-semibold mb-2">跨樹拖曳 B</div>
-        <p-tree
-          [value]="files4"
-          [draggableNodes]="true"
-          [droppableNodes]="true"
-          draggableScope="multi-tree"
-          droppableScope="multi-tree"
-          styleClass="w-full md:w-[15rem]"
-        ></p-tree>
-        <p-tree
-          [value]="files4"
-          styleClass="w-full md:w-[15rem]"
-          selectionMode="single"
-          [(selection)]="selectedFile4"
-          (onNodeExpand)="nodeExpand($event)"
-          (onNodeCollapse)="nodeCollapse($event)"
-          (onNodeSelect)="nodeSelect($event)"
-          (onNodeUnselect)="nodeUnselect($event)"
-        ></p-tree>
-      </div>
+      <app-dnd></app-dnd>
     </div>
     <div class="card mb-4">
       <div class="font-semibold mb-2">節點圖示 (Icon)</div>
@@ -158,21 +48,7 @@
       ></p-tree>
     </div>
     <div class="card mb-4">
-      <div class="font-semibold mb-2">節點禁用 (Disabled)</div>
-      <p-tree
-        [value]="filesDisabled"
-        styleClass="w-full md:w-[30rem]"
-      ></p-tree>
-      <p-tree
-        [value]="filesDisabled"
-        styleClass="w-full md:w-[30rem]"
-        selectionMode="single"
-        [(selection)]="selectedFileDisabled"
-        (onNodeExpand)="nodeExpand($event)"
-        (onNodeCollapse)="nodeCollapse($event)"
-        (onNodeSelect)="nodeSelect($event)"
-        (onNodeUnselect)="nodeUnselect($event)"
-      ></p-tree>
+      <app-disable></app-disable>
     </div>
     <div class="card mb-4">
       <app-template></app-template>

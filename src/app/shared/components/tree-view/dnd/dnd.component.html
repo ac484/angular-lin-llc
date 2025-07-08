@@ -34,3 +34,14 @@
     ></p-tree>
   </div>
 </div>
+<div class="mb-6">
+  <div class="font-semibold mb-2">單樹內拖曳</div>
+  <p-tree
+    [value]="singleTree"
+    [draggableNodes]="true"
+    [droppableNodes]="true"
+    styleClass="w-full md:w-[20rem]"
+    selectionMode="single"
+    [(selection)]="selectedSingle"
+  ></p-tree>
+</div>
