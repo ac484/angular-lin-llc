@@ -2,12 +2,16 @@ import { Component } from '@angular/core';
 import { TreeNode, MenuItem } from 'primeng/api';
 import { TreeModule } from 'primeng/tree';
 import { ContextMenuModule } from 'primeng/contextmenu';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+
 @Component({
   selector: 'app-right-click',
   templateUrl: './right-click.component.html',
   styleUrls: ['./right-click.component.scss'],
   standalone: true,
-  imports: [TreeModule, ContextMenuModule]
+  imports: [TreeModule, ContextMenuModule, ToastModule],
+  providers: [MessageService]
 })
 export class RightClickComponent {
   files: TreeNode[] = [
@@ -32,10 +36,29 @@ export class RightClickComponent {
     { label: '檢視', icon: 'pi pi-search', command: () => this.viewNode(this.selectedFile) },
     { label: '刪除', icon: 'pi pi-trash', command: () => this.deleteNode(this.selectedFile) }
   ];
+
+  constructor(private messageService: MessageService) {}
+
+  // 檢視節點，彈出訊息
   viewNode(node: TreeNode | null) {
-    // 可根據需求彈出訊息或其他操作
+    if (node) {
+      this.messageService.add({
+        severity: 'info',
+        summary: '節點資訊',
+        detail: node.label
+      });
+    }
   }
+
+  // 刪除節點
   deleteNode(node: TreeNode | null) {
-    // 可根據需求刪除節點
+    if (!node) return;
+    // 僅支援刪除第一層節點（示範用）
+    this.files = this.files.filter(n => n !== node);
+    this.messageService.add({
+      severity: 'warn',
+      summary: '已刪除',
+      detail: node.label
+    });
   }
 }

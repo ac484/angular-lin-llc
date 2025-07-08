@@ -5,13 +5,14 @@ import { TreeNode, TreeDragDropService } from 'primeng/api';
 import { CommonModule } from '@angular/common';
 import { MenuItem, MessageService } from 'primeng/api';
 import { TemplateComponent } from '../../../shared/components/tree-view/template/template.component';
+import { RightClickComponent } from '../../../shared/components/tree-view/right-click/right-click.component';
 
 @Component({
   selector: 'app-workspace-sidenav',
   templateUrl: './workspace-sidenav.component.html',
   styleUrls: ['./workspace-sidenav.component.scss'],
   standalone: true,
-  imports: [CommonModule, SidenavComponent, ...PrimeNgModules, TemplateComponent],
+  imports: [CommonModule, SidenavComponent, ...PrimeNgModules, TemplateComponent, RightClickComponent],
   providers: [MessageService, TreeDragDropService]
 })
 export class WorkspaceSidenavComponent {
@@ -134,38 +135,7 @@ export class WorkspaceSidenavComponent {
   selectedFileIcon: TreeNode | null = null;
   selectedFileDisabled: TreeNode | null = null;
 
-  items: MenuItem[] = [
-    { label: '檢視', icon: 'pi pi-search', command: () => this.viewNode(this.selectedFile) },
-    { label: '刪除', icon: 'pi pi-trash', command: () => this.deleteNode(this.selectedFile) }
-  ];
-
   constructor(private messageService: MessageService) {
-    this.contextMenuItems = [
-      {
-        label: '檢視',
-        icon: 'pi pi-search',
-        command: () => this.viewNode(this.selectedNode)
-      },
-      {
-        label: '取消選取',
-        icon: 'pi pi-times',
-        command: () => this.unselectNode()
-      }
-    ];
-  }
-
-  viewNode(node: TreeNode | null) {
-    if (node) {
-      this.messageService.add({
-        severity: 'info',
-        summary: '節點資訊',
-        detail: node.label
-      });
-    }
-  }
-
-  unselectNode() {
-    this.selectedNode = null;
   }
 
   onNodeDrop(event: any) {
@@ -210,16 +180,6 @@ export class WorkspaceSidenavComponent {
       severity: 'info',
       summary: '取消選取',
       detail: event.node.label
-    });
-  }
-
-  deleteNode(node: TreeNode | null) {
-    if (!node) return;
-    this.files = this.files.filter(n => n !== node);
-    this.messageService.add({
-      severity: 'warn',
-      summary: '已刪除',
-      detail: node.label
     });
   }
 }

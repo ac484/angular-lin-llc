@@ -7,26 +7,7 @@
   </ng-container>
   <ng-container sidenavBody>
     <div class="card mb-4">
-      <div class="font-semibold mb-2">單選 + 展開/收合/選取事件</div>
-      <p-tree
-        [value]="files"
-        styleClass="w-full md:w-[30rem]"
-        selectionMode="single"
-        [(selection)]="selectedFile"
-        (onNodeExpand)="nodeExpand($event)"
-        (onNodeCollapse)="nodeCollapse($event)"
-        (onNodeSelect)="nodeSelect($event)"
-        (onNodeUnselect)="nodeUnselect($event)"
-      ></p-tree>
-      <p-tree
-        [value]="files"
-        styleClass="w-full md:w-[30rem]"
-        selectionMode="single"
-        [(selection)]="selectedFile"
-        [contextMenu]="cm"
-      />
-      <p-contextMenu #cm [model]="items" />
-      <p-toast />
+      <app-right-click></app-right-click>
     </div>
     <div class="card mb-4">
       <div class="font-semibold mb-2">多選 (Checkbox)</div>
