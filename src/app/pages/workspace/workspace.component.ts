@@ -1,5 +1,5 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TreeLiveModule } from './tree-live/tree-live.module'; // 匯入 NgModule
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { NODES } from './tree-live/tree-mock';
 
 @Component({
