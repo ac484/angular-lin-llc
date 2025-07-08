@@ -1,10 +1,15 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { TreeLiveModule } from './tree-live/tree-live.module'; // 匯入 NgModule
+import { NODES } from './tree-live/tree-mock';
 
 @Component({
   selector: 'app-workspace',
   templateUrl: './workspace.component.html',
   styleUrls: ['./workspace.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true
+  standalone: true,
+  imports: [TreeLiveModule]
 })
-export class WorkspaceComponent {}
+export class WorkspaceComponent {
+  tree = NODES;
+}
