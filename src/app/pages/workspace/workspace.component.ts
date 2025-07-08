@@ -2,7 +2,6 @@ import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { collection, collectionData, addDoc, Firestore } from '@angular/fire/firestore';
 import { PrimeNgModules } from '../../shared/modules/prime-ng.module';
 import { AsyncPipe, NgIf } from '@angular/common';
-import { WorkspaceSidenavComponent } from '../../layouts/main-layout/workspace-sidenav/workspace-sidenav.component';
 import { Observable } from 'rxjs';
 
 interface WorkspaceNode {
