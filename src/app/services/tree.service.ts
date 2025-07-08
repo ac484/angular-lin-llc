@@ -6,6 +6,10 @@ import { TreeNode } from 'primeng/api';
 export interface WorkspaceNode {
   id: string;
   name: string;
+  key?: string; // PrimeNG TreeNode.key
+  leaf?: boolean; // 是否為葉節點
+  icon?: string; // 節點圖示
+  selectable?: boolean; // 是否可選
   children?: WorkspaceNode[];
   dataItems?: DataItem[];
   // 其他欄位可自行擴充
@@ -26,8 +30,11 @@ export interface DataItem {
 // 巢狀 WorkspaceNode 轉 PrimeNG TreeNode
 export function fromWorkspaceNodeToTreeNode(node: WorkspaceNode): TreeNode {
   return {
-    key: node.id,
+    key: node.key ?? node.id,
     label: node.name,
+    leaf: node.leaf,
+    icon: node.icon,
+    selectable: node.selectable,
     children: node.children ? node.children.map(fromWorkspaceNodeToTreeNode) : [],
     data: { ...node }
   };

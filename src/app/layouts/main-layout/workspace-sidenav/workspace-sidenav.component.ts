@@ -133,6 +133,11 @@ export class WorkspaceSidenavComponent {
   selectedFileIcon: TreeNode | null = null;
   selectedFileDisabled: TreeNode | null = null;
 
+  items: MenuItem[] = [
+    { label: '檢視', icon: 'pi pi-search', command: () => this.viewNode(this.selectedFile) },
+    { label: '刪除', icon: 'pi pi-trash', command: () => this.deleteNode(this.selectedFile) }
+  ];
+
   constructor(private messageService: MessageService) {
     this.contextMenuItems = [
       {
@@ -168,7 +173,14 @@ export class WorkspaceSidenavComponent {
   }
 
   onAddNode() {
-    this.treeNodes.push({ label: '新節點', key: 'new' + (this.treeNodes.length + 1) });
+    const newKey = 'new' + (Date.now());
+    this.files.push({
+      label: '新節點',
+      key: newKey,
+      leaf: true,
+      icon: 'pi pi-file',
+      selectable: true
+    });
   }
 
   nodeExpand(event: { node: TreeNode }) {
@@ -197,6 +209,16 @@ export class WorkspaceSidenavComponent {
       severity: 'info',
       summary: '取消選取',
       detail: event.node.label
+    });
+  }
+
+  deleteNode(node: TreeNode | null) {
+    if (!node) return;
+    this.files = this.files.filter(n => n !== node);
+    this.messageService.add({
+      severity: 'warn',
+      summary: '已刪除',
+      detail: node.label
     });
   }
 }
