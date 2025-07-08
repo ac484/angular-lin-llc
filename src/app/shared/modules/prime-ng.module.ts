@@ -64,6 +64,10 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { TagModule } from 'primeng/tag';
 // PrimeNG 徽章模組
 import { BadgeModule } from 'primeng/badge';
+// PrimeNG Tree 右鍵選單模組
+import { ContextMenuModule } from 'primeng/contextmenu';
+// PrimeNG 拖曳模組
+import { DragDropModule } from 'primeng/dragdrop';
 // PrimeNG 多值標籤模組
 // import { ChipsModule } from 'primeng/chips'; // 若未安裝可先註解
 
@@ -101,6 +105,8 @@ export const PrimeNgModules = [
   ProgressBarModule, // 進度條
   TagModule, // 標籤
   BadgeModule, // 徽章
+  ContextMenuModule, // Tree 右鍵選單
+  DragDropModule, // Tree 拖曳
   // ChipsModule // 多值標籤（如未安裝請勿加入）
   // 其他 PrimeNG 模組請加在此處
 ];

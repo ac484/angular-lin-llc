@@ -4,17 +4,14 @@ import { PrimeNgModules } from '../../../shared/modules/prime-ng.module';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { collection, collectionData, addDoc, Firestore } from '@angular/fire/firestore';
+import { TreeNode } from 'primeng/api';
+import { ContextMenu } from 'primeng/contextmenu';
+import { MenuItem } from 'primeng/api';
 
-export interface WorkspaceNode {
-  id: string;
-  name: string;
-  key?: string; // PrimeNG TreeNode.key
-  leaf?: boolean; // 是否為葉節點
-  icon?: string; // 節點圖示
-  selectable?: boolean; // 是否可選
-  children?: WorkspaceNode[];
+export interface WorkspaceNode extends TreeNode {
+  // PrimeNG TreeNode 標準屬性已包含 children, key, label, leaf, icon, data 等
+  // 可擴充自訂欄位
   dataItems?: DataItem[];
-  // 其他欄位可自行擴充
 }
 
 export interface DataItem {
@@ -34,18 +31,40 @@ export interface DataItem {
   templateUrl: './workspace-sidenav.component.html',
   styleUrls: ['./workspace-sidenav.component.scss'],
   standalone: true,
-  imports: [CommonModule, SidenavComponent, ...PrimeNgModules]
+  imports: [CommonModule, SidenavComponent, ...PrimeNgModules, ContextMenu]
 })
 export class WorkspaceSidenavComponent {
   private firestore = inject(Firestore);
-  treeNodes$: Observable<WorkspaceNode[]> = collectionData(collection(this.firestore, 'workspaceTree'), { idField: 'id' }) as Observable<WorkspaceNode[]>;
+  treeNodes$: Observable<WorkspaceNode[]> = collectionData(collection(this.firestore, 'workspaceTree'), { idField: 'key' }) as Observable<WorkspaceNode[]>;
+  loading = false;
+  contextMenuItems: MenuItem[] = [
+    { label: '新增', icon: 'pi pi-plus', command: () => this.onAddNode() },
+    { label: '刪除', icon: 'pi pi-trash', command: () => this.onDeleteNode() },
+    { label: '重新命名', icon: 'pi pi-pencil', command: () => this.onRenameNode() }
+  ];
+  selectedNode: WorkspaceNode | null = null;
 
-  onAddNode() {
-    const node: Partial<WorkspaceNode> = { name: '新節點' };
-    addDoc(collection(this.firestore, 'workspaceTree'), node);
+  onAddNode() { console.log('新增節點', this.selectedNode); }
+  onDeleteNode() { console.log('刪除節點', this.selectedNode); }
+  onRenameNode() { console.log('重新命名', this.selectedNode); }
+
+  onNodeSelect(event: { node: WorkspaceNode }) { console.log('選取', event.node); }
+  onNodeUnselect(event: { node: WorkspaceNode }) { console.log('取消選取', event.node); }
+  onNodeContextMenu(event: any) {
+    this.selectedNode = event.node;
+    // context menu 由模板控制顯示
   }
+  onNodeDrop(event: any) { console.log('拖曳完成', event); }
 
-  onManageNode() {
-    alert('管理節點');
+  // PrimeNG Tree 無限節點展開（Lazy Loading）
+  onNodeExpand(event: { node: WorkspaceNode }) {
+    this.loading = true;
+    setTimeout(() => {
+      event.node.children = [
+        { key: `${event.node.key}-1`, label: '子節點1', leaf: true },
+        { key: `${event.node.key}-2`, label: '子節點2', leaf: true }
+      ];
+      this.loading = false;
+    }, 500);
   }
 }
