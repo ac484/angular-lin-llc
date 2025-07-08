@@ -33,6 +33,7 @@ export class WorkspaceDataService {
     return nodes
       .filter(node => (node.parentId ?? null) === parentId || (node.parentId === '' && parentId === null))
       .map(node => ({
+        key: node.id, // 拖曳必備唯一 key
         label: node.name,
         data: node,
         children: this.buildTree(nodes, node.id),
