@@ -1,3 +1,5 @@
+// PrimeNG 切換按鈕模組
+import { ToggleButtonModule } from 'primeng/togglebutton';
 // PrimeNG 內容選單模組
 import { ContextMenuModule } from 'primeng/contextmenu';
 // PrimeNG 按鈕模組
@@ -70,6 +72,7 @@ import { BadgeModule } from 'primeng/badge';
 // import { ChipsModule } from 'primeng/chips'; // 若未安裝可先註解
 
 export const PrimeNgModules = [
+  ToggleButtonModule,
   ContextMenuModule, // 內容選單
   ButtonModule, // 按鈕
   InputTextModule, // 輸入框
