@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { SidenavComponent } from '../sidenav/sidenav.component';
 import { PrimeNgModules } from '../../../shared/modules/prime-ng.module';
 import { CommonModule } from '@angular/common';
@@ -13,7 +13,8 @@ import { TreeDragDropService, TreeNode } from 'primeng/api';
   styleUrls: ['./workspace-sidenav.component.scss'],
   standalone: true,
   imports: [CommonModule, SidenavComponent, ...PrimeNgModules],
-  providers: [TreeDragDropService]
+  providers: [TreeDragDropService],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkspaceSidenavComponent implements OnInit {
   treeNodes: TreeNode<WorkspaceNode>[] = [];
@@ -49,44 +50,41 @@ export class WorkspaceSidenavComponent implements OnInit {
   }
 
   addNode(nodeOrEvent?: TreeNode<WorkspaceNode> | any) {
-    // 支援 context menu、menubar、樹節點右鍵
     let parentId: string | null = null;
-    if (nodeOrEvent && nodeOrEvent.data && nodeOrEvent.data.id) {
-      parentId = nodeOrEvent.data.id;
-    }
-    const name = prompt('輸入節點名稱', '新節點');
-    if (!name) return;
+    if (nodeOrEvent?.data?.id) parentId = nodeOrEvent.data.id;
+    const name = '新節點';
+    const now = new Date();
     const node: WorkspaceNode = {
       id: Date.now().toString(),
       name,
       type: 'custom',
       status: 'active',
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: now,
+      updatedAt: now,
       parentId
     };
     this.data.addNode(node).then(() => this.load());
   }
+
   deleteNode(node?: TreeNode<WorkspaceNode> | null) {
     if (node) this.data.deleteNode(node.data).then(() => this.load());
   }
+
   renameNode(node?: TreeNode<WorkspaceNode> | null) {
     if (node) {
       const name = prompt('輸入新名稱', node.data.name);
-      if (name) this.data.addNode({ ...node.data, name }).then(() => this.load());
+      if (name) this.data.addNode({ ...node.data, name, updatedAt: new Date() }).then(() => this.load());
     }
   }
-  onNodeSelect(event: any) { this.selectedNode = event.node; }
+
+  onNodeSelect(event: { node: TreeNode<WorkspaceNode> }) { this.selectedNode = event.node; }
   onNodeUnselect(event: any) { this.selectedNode = null; }
   onNodeDrop(event: any) {
-    // event.dragNode: 被拖曳的節點
-    // event.dropNode: 目標節點
-    // event.dropPosition: -1(上), 0(內), 1(下)
     const dragNode = event.dragNode?.data;
     const dropNode = event.dropNode?.data;
     if (!dragNode || !dropNode) return;
-    // 僅支援拖曳到其他節點下方（可依需求調整 dropPosition）
     const newParentId = event.dropPosition === 0 ? dropNode.id : dropNode.parentId || null;
+    if (dragNode.parentId === newParentId) return; // parentId 沒變不用寫入
     this.loading = true;
     this.data.updateNodeParent(dragNode.id, newParentId).then(() => this.load());
   }
