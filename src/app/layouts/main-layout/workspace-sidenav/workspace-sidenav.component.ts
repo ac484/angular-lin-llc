@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { SidenavComponent } from '../sidenav/sidenav.component';
 import { PrimeNgModules } from '../../../shared/modules/prime-ng.module';
 import { CommonModule } from '@angular/common';
@@ -6,7 +6,7 @@ import { WorkspaceDataService } from './workspace-sidenav-data.service';
 import { MenuItem } from 'primeng/api';
 import { WorkspaceNode } from './workspace-sidenav.types';
 import { TreeDragDropService, TreeNode } from 'primeng/api';
-import { Observable, map } from 'rxjs';
+import { Observable, map, takeUntil, Subject, BehaviorSubject, shareReplay } from 'rxjs';
 
 @Component({
   selector: 'app-workspace-sidenav',
@@ -17,7 +17,10 @@ import { Observable, map } from 'rxjs';
   providers: [TreeDragDropService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WorkspaceSidenavComponent {
+export class WorkspaceSidenavComponent implements OnDestroy {
+  private readonly destroy$ = new Subject<void>();
+  private readonly nodesCount$ = new BehaviorSubject<number>(0);
+  
   treeNodes$: Observable<TreeNode<WorkspaceNode>[]>;
   selectedNode: TreeNode<WorkspaceNode> | null = null;
   contextMenuItems: MenuItem[] = [
@@ -39,8 +42,19 @@ export class WorkspaceSidenavComponent {
 
   constructor() {
     this.treeNodes$ = this.data.loadNodes().pipe(
-      map(nodes => this.data.buildTree(nodes))
+      takeUntil(this.destroy$),
+      map(nodes => {
+        this.nodesCount$.next(nodes.length);
+        return this.data.buildTree(nodes);
+      }),
+      shareReplay(1) // 避免重複訂閱
     );
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.nodesCount$.complete();
   }
 
   addNode(nodeOrEvent?: TreeNode<WorkspaceNode> | any) {
@@ -49,7 +63,7 @@ export class WorkspaceSidenavComponent {
     const name = '新節點';
     const now = new Date();
     const node: WorkspaceNode = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(), // 修復hotspotting問題，使用UUID
       name,
       type: 'custom',
       status: 'active',
@@ -57,7 +71,7 @@ export class WorkspaceSidenavComponent {
       updatedAt: now,
       parentId
     };
-    this.data.addNode(node); // collectionData 會自動推送新資料
+    this.data.addNode(node);
   }
 
   deleteNode(node?: TreeNode<WorkspaceNode> | null) {
@@ -88,14 +102,10 @@ export class WorkspaceSidenavComponent {
   nodeUnselect(event: any): void { console.log('nodeUnselect', event); }
 
   get enableLazy(): boolean {
-    // async pipe 資料可能為 undefined，預設 false
-    let count = 0;
-    this.treeNodes$.subscribe(nodes => { count = nodes?.length || 0; }).unsubscribe();
-    return count > 5000;
+    return this.nodesCount$.value > 5000;
   }
+  
   get enableVirtualScroll(): boolean {
-    let count = 0;
-    this.treeNodes$.subscribe(nodes => { count = nodes?.length || 0; }).unsubscribe();
-    return count > 1000;
+    return this.nodesCount$.value > 1000;
   }
 }
