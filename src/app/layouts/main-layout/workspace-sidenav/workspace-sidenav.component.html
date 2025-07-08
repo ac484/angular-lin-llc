@@ -194,18 +194,7 @@
       ></p-tree>
     </div>
     <div class="card mb-4">
-      <!-- 自訂模板：URL 與一般節點 -->
-      <div class="font-semibold mb-2">自訂模板（URL/一般節點）</div>
-      <p-tree [value]="nodes" styleClass="w-full md:w-[30rem]">
-        <ng-template let-node pTemplate="url">
-          <a [href]="node.data" target="_blank" rel="noopener noreferrer" class="text-surface-700 dark:text-surface-100 hover:text-primary">
-            {{ node.label }}
-          </a>
-        </ng-template>
-        <ng-template let-node pTemplate="default">
-          <b>{{ node.label }}</b>
-        </ng-template>
-      </p-tree>
+      <app-template></app-template>
     </div>
     <p-contextMenu #cm [model]="contextMenuItems"></p-contextMenu>
     <p-toast></p-toast>

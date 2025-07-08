@@ -4,13 +4,14 @@ import { PrimeNgModules } from '../../../shared/modules/prime-ng.module';
 import { TreeNode, TreeDragDropService } from 'primeng/api';
 import { CommonModule } from '@angular/common';
 import { MenuItem, MessageService } from 'primeng/api';
+import { TemplateComponent } from '../../../shared/components/tree-view/template/template.component';
 
 @Component({
   selector: 'app-workspace-sidenav',
   templateUrl: './workspace-sidenav.component.html',
   styleUrls: ['./workspace-sidenav.component.scss'],
   standalone: true,
-  imports: [CommonModule, SidenavComponent, ...PrimeNgModules],
+  imports: [CommonModule, SidenavComponent, ...PrimeNgModules, TemplateComponent],
   providers: [MessageService, TreeDragDropService]
 })
 export class WorkspaceSidenavComponent {
@@ -132,40 +133,6 @@ export class WorkspaceSidenavComponent {
   selectedFile4: TreeNode | null = null;
   selectedFileIcon: TreeNode | null = null;
   selectedFileDisabled: TreeNode | null = null;
-
-  // 新增：自訂模板用的節點資料
-  nodes: TreeNode[] = [
-    {
-      label: 'Google',
-      key: 'url1',
-      data: 'https://www.google.com',
-      type: 'url',
-      leaf: true
-    },
-    {
-      label: '一般節點',
-      key: 'default1',
-      leaf: true
-    },
-    {
-      label: '文件夾',
-      key: 'folder1',
-      children: [
-        {
-          label: 'Angular 官網',
-          key: 'url2',
-          data: 'https://angular.dev',
-          type: 'url',
-          leaf: true
-        },
-        {
-          label: '普通子節點',
-          key: 'default2',
-          leaf: true
-        }
-      ]
-    }
-  ];
 
   items: MenuItem[] = [
     { label: '檢視', icon: 'pi pi-search', command: () => this.viewNode(this.selectedFile) },
