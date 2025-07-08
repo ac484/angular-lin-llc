@@ -9,11 +9,7 @@
     <div class="font-bold text-lg">Workspace</div>
   </ng-container>
   <ng-container sidenavBody>
-    <ul>
-      <li>Workspace 節點一</li>
-      <li>Workspace 節點二</li>
-      <!-- 可根據需求放 tree 或其他 Workspace 專屬功能 -->
-    </ul>
+    <p-tree [value]="treeNodes$ | async"></p-tree>
   </ng-container>
   <ng-container sidenavFooter>
     <div class="text-xs text-gray-400">Workspace 專屬資訊</div>
