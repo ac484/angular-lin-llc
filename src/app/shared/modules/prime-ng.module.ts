@@ -70,6 +70,7 @@ import { ContextMenuModule } from 'primeng/contextmenu';
 import { DragDropModule } from 'primeng/dragdrop';
 // PrimeNG 多值標籤模組
 // import { ChipsModule } from 'primeng/chips'; // 若未安裝可先註解
+import { ScrollerModule } from 'primeng/scroller';
 
 export const PrimeNgModules = [
   ButtonModule, // 按鈕
@@ -107,6 +108,7 @@ export const PrimeNgModules = [
   BadgeModule, // 徽章
   ContextMenuModule, // Tree 右鍵選單
   DragDropModule, // Tree 拖曳
+  ScrollerModule, // 虛擬捲動
   // ChipsModule // 多值標籤（如未安裝請勿加入）
   // 其他 PrimeNG 模組請加在此處
 ];
