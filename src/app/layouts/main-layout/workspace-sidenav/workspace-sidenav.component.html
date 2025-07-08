@@ -13,8 +13,6 @@
            [contextMenu]="cm"
            [draggableNodes]="true"
            [droppableNodes]="true"
-           [draggableScope]="treeScope"
-           [droppableScope]="treeScope"
            [virtualScroll]="true"
            scrollHeight="250px"
            [virtualScrollItemSize]="46"
@@ -27,17 +25,6 @@
            [loadingIcon]="'pi pi-spin pi-spinner'"
            class="w-full"
     ></p-tree>
-    <p-tree [value]="files" class="w-full md:w-[30rem]"
-           selectionMode="single"
-           [(selection)]="selectedFile"
-           [draggableNodes]="true"
-           [droppableNodes]="true"
-           [draggableScope]="fileScope"
-           [droppableScope]="fileScope"
-           (onNodeExpand)="nodeExpand($event)"
-           (onNodeCollapse)="nodeCollapse($event)"
-           (onNodeSelect)="nodeSelect($event)"
-           (onNodeUnselect)="nodeUnselect($event)"></p-tree>
     <p-contextMenu #cm [model]="contextMenuItems"></p-contextMenu>
   </ng-container>
   <ng-container sidenavFooter>

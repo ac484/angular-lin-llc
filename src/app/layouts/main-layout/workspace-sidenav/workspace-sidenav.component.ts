@@ -20,8 +20,6 @@ export class WorkspaceSidenavComponent implements OnInit {
   treeNodes: TreeNode<WorkspaceNode>[] = [];
   selectedNode: TreeNode<WorkspaceNode> | null = null;
   loading = false;
-  files: TreeNode[] = [];
-  selectedFile: TreeNode | null = null;
   contextMenuItems: MenuItem[] = [
     { label: '新增', icon: 'pi pi-plus', command: () => this.addNode(this.selectedNode) },
     { label: '刪除', icon: 'pi pi-trash', command: () => this.deleteNode(this.selectedNode) },
@@ -39,22 +37,8 @@ export class WorkspaceSidenavComponent implements OnInit {
 
   private data: WorkspaceDataService = inject(WorkspaceDataService);
 
-  // --- 跨樹/不跨樹拖曳切換 ---
-  crossTreeDrag = false;
-  get treeScope(): string {
-    return this.crossTreeDrag ? 'workspace' : 'treeA';
-  }
-  get fileScope(): string {
-    return this.crossTreeDrag ? 'workspace' : 'treeB';
-  }
-
-  private autoSetDragMode(): void {
-    this.crossTreeDrag = this.files.length > 0;
-  }
-
   ngOnInit() {
     this.load();
-    this.autoSetDragMode();
   }
 
   load() {
@@ -62,7 +46,6 @@ export class WorkspaceSidenavComponent implements OnInit {
     this.data.loadNodes().subscribe(nodes => {
       this.treeNodes = this.data.buildTree(nodes);
       this.loading = false;
-      this.autoSetDragMode();
     });
   }
 
