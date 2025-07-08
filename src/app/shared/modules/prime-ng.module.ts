@@ -1,3 +1,5 @@
+// PrimeNG 核心模組
+import { CommonModule } from '@angular/common';
 // PrimeNG 按鈕模組
 import { ButtonModule } from 'primeng/button';
 // PrimeNG 輸入框模組
@@ -72,7 +74,9 @@ import { DragDropModule } from 'primeng/dragdrop';
 // import { ChipsModule } from 'primeng/chips'; // 若未安裝可先註解
 import { ScrollerModule } from 'primeng/scroller';
 
+
 export const PrimeNgModules = [
+  CommonModule, // 核心模組
   ButtonModule, // 按鈕
   InputTextModule, // 輸入框
   CardModule, // 卡片
