@@ -22,6 +22,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { DialogService, DynamicDialog } from 'primeng/dynamicdialog';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { DataViewModule } from 'primeng/dataview';
+import { TreeModule } from 'primeng/tree';
 
 export const PrimeNgModules = [
   ButtonModule,
@@ -47,6 +48,7 @@ export const PrimeNgModules = [
   FileUploadModule,
   DynamicDialog,
   SplitButtonModule,
-  DataViewModule
+  DataViewModule,
+  TreeModule
   // Add other PrimeNG modules here
 ];

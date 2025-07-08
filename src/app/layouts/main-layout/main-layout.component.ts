@@ -46,9 +46,7 @@ export class MainLayoutComponent {
         {
           label: 'Sub Pages',
           items: [
-            { label: 'Sub Page', routerLink: '/' },
-            { label: 'Sub Page 2', routerLink: '/404' },
-            { label: 'Sub Page 3', routerLink: '/404' }
+            { label: 'Sub Page', routerLink: '/workspace' },
           ]
         }
       ]
