@@ -2,7 +2,13 @@
   <ng-container sidenavLogo>
     <p-menubar [model]="[
       { label: '首頁', icon: 'pi pi-home', routerLink: '/' },
-      { label: '專案', icon: 'pi pi-briefcase', routerLink: '/projects' },
+      { 
+        label: '節點', icon: 'pi pi-briefcase',
+        items: [
+          { label: '新增節點', icon: 'pi pi-plus', command: onAddNode },
+          { label: '管理節點', icon: 'pi pi-cog', command: onManageNode }
+        ]
+      }
     ]"></p-menubar>
   </ng-container>
   <ng-container sidenavHeader>

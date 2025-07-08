@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { Firestore, collection, collectionData, addDoc, doc, updateDoc, deleteDoc, arrayUnion, arrayRemove, getDoc } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
-export interface TreeNode {
+export interface WorkspaceNode {
   id?: string;
   label: string;
   name?: string;
   status?: '正常' | '異常';
   parentId?: string;
-  children?: TreeNode[];
+  children?: WorkspaceNode[];
   dataItems?: DataItem[];
 }
 
@@ -28,22 +28,22 @@ export interface DataItem {
 export class TreeService {
   constructor(private firestore: Firestore) {}
 
-  getTreeNodes(): Observable<TreeNode[]> {
+  getWorkspaceNodes(): Observable<WorkspaceNode[]> {
     const ref = collection(this.firestore, 'workspaceTree');
-    return collectionData(ref, { idField: 'id' }) as Observable<TreeNode[]>;
+    return collectionData(ref, { idField: 'id' }) as Observable<WorkspaceNode[]>;
   }
 
-  addTreeNode(node: TreeNode) {
+  addWorkspaceNode (node: WorkspaceNode ) {
     const ref = collection(this.firestore, 'workspaceTree');
     return addDoc(ref, node);
   }
 
-  updateTreeNode(id: string, data: Partial<TreeNode>) {
+  updateWorkspaceNode (id: string, data: Partial<WorkspaceNode >) {
     const ref = doc(this.firestore, 'workspaceTree', id);
     return updateDoc(ref, data);
   }
 
-  deleteTreeNode(id: string) {
+  deleteWorkspaceNode (id: string) {
     const ref = doc(this.firestore, 'workspaceTree', id);
     return deleteDoc(ref);
   }
@@ -60,7 +60,7 @@ export class TreeService {
   async updateDataItem(nodeId: string, index: number, dataItem: DataItem) {
     const ref = doc(this.firestore, 'workspaceTree', nodeId);
     const snap = await getDoc(ref);
-    const data = snap.data() as TreeNode;
+    const data = snap.data() as WorkspaceNode ;
     if (!data.dataItems) return;
     const items = [...data.dataItems];
     items[index] = dataItem;

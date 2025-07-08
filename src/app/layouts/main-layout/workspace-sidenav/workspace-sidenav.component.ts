@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { SidenavComponent } from '../sidenav/sidenav.component';
 import { PrimeNgModules } from '../../../shared/modules/prime-ng.module';
-import { TreeService, TreeNode } from '../../../services/tree.service';
+import { TreeService, WorkspaceNode } from '../../../services/tree.service';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
@@ -13,8 +13,17 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule, SidenavComponent, ...PrimeNgModules]
 })
 export class WorkspaceSidenavComponent {
-  treeNodes$: Observable<TreeNode[]>;
+  treeNodes$: Observable<WorkspaceNode[]>;
   constructor(private treeService: TreeService) {
-    this.treeNodes$ = this.treeService.getTreeNodes();
+    this.treeNodes$ = this.treeService.getWorkspaceNodes();
+  }
+
+  onAddNode() {
+    const node: WorkspaceNode = { label: '新節點' };
+    this.treeService.addWorkspaceNode(node);
+  }
+
+  onManageNode() {
+    alert('管理節點');
   }
 }
