@@ -1,15 +1,27 @@
 <app-sidenav>
   <ng-container sidenavLogo>
-    <p-menubar [model]="[
-      { label: '首頁', icon: 'pi pi-home', routerLink: '/' },
-      { label: '專案', icon: 'pi pi-briefcase', routerLink: '/projects' },
-    ]"></p-menubar>
+    <p-menubar [model]="menubarModel"></p-menubar>
   </ng-container>
   <ng-container sidenavHeader>
     <div class="font-bold text-lg">Workspace</div>
   </ng-container>
   <ng-container sidenavBody>
-    <p-tree [value]="treeNodes$ | async"></p-tree>
+    <div class="card">
+      <p-tree
+        [value]="treeNodes"
+        selectionMode="single"
+        [(selection)]="selectedNode"
+        [draggableNodes]="true"
+        [droppableNodes]="true"
+        draggableScope="self"
+        droppableScope="self"
+        (onNodeDrop)="onNodeDrop($event)"
+        [contextMenu]="cm"
+        styleClass="w-full md:w-[30rem]"
+      ></p-tree>
+    </div>
+    <p-contextMenu #cm [model]="contextMenuItems"></p-contextMenu>
+    <p-toast></p-toast>
   </ng-container>
   <ng-container sidenavFooter>
     <div class="text-xs text-gray-400">Workspace 專屬資訊</div>
