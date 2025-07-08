@@ -14,13 +14,14 @@ import { VirtualComponent } from '../../../shared/components/tree-view/virtual/v
 import { SearchComponent } from '../../../shared/components/tree-view/search/search.component';
 import { ModelsComponent } from '../../../shared/components/tree-view/models/models.component';
 import { ActionsComponent } from '../../../shared/components/tree-view/actions/actions.component';
+import { WorkspaceNodeToTreeNodePipe } from '../../../shared/components/tree-view/adapter/tree-view-adapter.service';
 
 @Component({
   selector: 'app-workspace-sidenav',
   templateUrl: './workspace-sidenav.component.html',
   styleUrls: ['./workspace-sidenav.component.scss'],
   standalone: true,
-  imports: [CommonModule, SidenavComponent, ...PrimeNgModules, TemplateComponent, RightClickComponent, DndComponent, CheckboxComponent, DisableComponent, LazyComponent, VirtualComponent, SearchComponent, ModelsComponent, ActionsComponent],
+  imports: [CommonModule, SidenavComponent, ...PrimeNgModules, TemplateComponent, RightClickComponent, DndComponent, CheckboxComponent, DisableComponent, LazyComponent, VirtualComponent, SearchComponent, ModelsComponent, ActionsComponent, WorkspaceNodeToTreeNodePipe],
   providers: [MessageService, TreeDragDropService]
 })
 export class WorkspaceSidenavComponent {
