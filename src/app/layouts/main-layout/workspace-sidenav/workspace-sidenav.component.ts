@@ -40,6 +40,91 @@ export class WorkspaceSidenavComponent {
       { label: '新增節點', icon: 'pi pi-plus', command: () => this.onAddNode() }
     ] }
   ];
+  files: TreeNode[] = [
+    {
+      label: '文件夾1',
+      key: 'f1',
+      children: [
+        { label: '檔案1-1', key: 'f1-1', leaf: true },
+        { label: '檔案1-2', key: 'f1-2', leaf: true }
+      ]
+    },
+    {
+      label: '文件夾2',
+      key: 'f2',
+      children: [
+        { label: '檔案2-1', key: 'f2-1', leaf: true }
+      ]
+    }
+  ];
+  files2: TreeNode[] = [
+    {
+      label: '專案X',
+      key: 'x',
+      children: [
+        { label: '子檔案X-1', key: 'x1', leaf: true },
+        { label: '子檔案X-2', key: 'x2', leaf: true }
+      ]
+    },
+    {
+      label: '專案Y',
+      key: 'y',
+      children: [
+        { label: '子檔案Y-1', key: 'y1', leaf: true }
+      ]
+    }
+  ];
+  selectedFile: TreeNode | null = null;
+  selectedFiles: TreeNode[] = [];
+
+  // 1. 多選
+  selectedFilesMultiple: { [key: string]: boolean } = {};
+  metaKeySelection = false;
+
+  // 2. Lazy loading
+  lazyFiles: TreeNode[] = [
+    { label: 'Lazy Root', key: 'lazy1', leaf: false }
+  ];
+  loading = false;
+  loadNode(event: { node: TreeNode }) {
+    this.loading = true;
+    setTimeout(() => {
+      event.node.children = [
+        { label: 'Lazy Child 1', key: 'lazy1-1', leaf: true },
+        { label: 'Lazy Child 2', key: 'lazy1-2', leaf: true }
+      ];
+      this.loading = false;
+    }, 800);
+  }
+
+  // 4. 虛擬捲動
+  virtualFiles: TreeNode[] = Array.from({ length: 100 }).map((_, i) => ({
+    label: `節點 ${i + 1}`,
+    key: `v${i + 1}`,
+    leaf: true
+  }));
+
+  // 5. 跨樹拖曳
+  dragScope = 'multi-tree';
+  files3: TreeNode[] = [
+    { label: 'A', key: 'a', children: [{ label: 'A-1', key: 'a1', leaf: true }] }
+  ];
+  files4: TreeNode[] = [
+    { label: 'B', key: 'b', children: [{ label: 'B-1', key: 'b1', leaf: true }] }
+  ];
+
+  // 6. 節點圖示
+  filesWithIcon: TreeNode[] = [
+    { label: '資料夾', key: 'icon1', icon: 'pi pi-folder', children: [
+      { label: '檔案', key: 'icon1-1', icon: 'pi pi-file', leaf: true }
+    ] }
+  ];
+
+  // 7. 節點禁用
+  filesDisabled: TreeNode[] = [
+    { label: '可選', key: 'd1', leaf: true },
+    { label: '不可選', key: 'd2', leaf: true, selectable: false }
+  ];
 
   constructor(private messageService: MessageService) {
     this.contextMenuItems = [
@@ -77,5 +162,34 @@ export class WorkspaceSidenavComponent {
 
   onAddNode() {
     this.treeNodes.push({ label: '新節點', key: 'new' + (this.treeNodes.length + 1) });
+  }
+
+  nodeExpand(event: { node: TreeNode }) {
+    this.messageService.add({
+      severity: 'info',
+      summary: '展開',
+      detail: event.node.label
+    });
+  }
+  nodeCollapse(event: { node: TreeNode }) {
+    this.messageService.add({
+      severity: 'info',
+      summary: '收合',
+      detail: event.node.label
+    });
+  }
+  nodeSelect(event: { node: TreeNode }) {
+    this.messageService.add({
+      severity: 'info',
+      summary: '選取',
+      detail: event.node.label
+    });
+  }
+  nodeUnselect(event: { node: TreeNode }) {
+    this.messageService.add({
+      severity: 'info',
+      summary: '取消選取',
+      detail: event.node.label
+    });
   }
 }
