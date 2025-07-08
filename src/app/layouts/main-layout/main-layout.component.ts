@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { SidebarModule } from 'primeng/sidebar';
 import { SidenavComponent } from './sidenav/sidenav.component';
@@ -9,6 +9,7 @@ import {NavSection} from './sidenav/nav-section/menu-item.interface';
 import {HamburgerMenuComponent} from './sidenav/hamburger/hamburger-menu.component';
 import {LoadingIndicatorComponent} from './loading-indicator/loading-indicator.component';
 import { WorkspaceSidenavComponent } from './workspace-sidenav/workspace-sidenav.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-main-layout',
@@ -18,6 +19,11 @@ import { WorkspaceSidenavComponent } from './workspace-sidenav/workspace-sidenav
   styleUrls: ['./main-layout.component.scss']
 })
 export class MainLayoutComponent {
+  router = inject(Router);
+  get isWorkspacePage(): boolean {
+    return this.router.url.startsWith('/workspace');
+  }
+
   headerSection: NavSection = {
     title:'Dashboard',
     icon: 'pi pi-home',
@@ -48,6 +54,8 @@ export class MainLayoutComponent {
           label: 'Sub Pages',
           items: [
             { label: 'Sub Page', routerLink: '/workspace' },
+            { label: 'Sub Page 2', routerLink: '/404' },
+            { label: 'Sub Page 3', routerLink: '/404' }
           ]
         }
       ]
@@ -63,10 +71,4 @@ export class MainLayoutComponent {
       }
     ]
   };
-
-  constructor(private router: Router) {}
-
-  get isWorkspaceRoute(): boolean {
-    return this.router.url.startsWith('/workspace');
-  }
 }

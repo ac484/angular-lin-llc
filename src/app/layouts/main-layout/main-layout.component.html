@@ -9,7 +9,7 @@
 
   <div class="content-wrapper flex-grow mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6 mt-14 md:mt-0">
     <div class="flex h-full md:gap-6">
-      <ng-container *ngIf="isWorkspaceRoute; else defaultSidenav">
+      <ng-container *ngIf="isWorkspacePage; else defaultSidenav">
         <app-workspace-sidenav></app-workspace-sidenav>
       </ng-container>
       <ng-template #defaultSidenav>
