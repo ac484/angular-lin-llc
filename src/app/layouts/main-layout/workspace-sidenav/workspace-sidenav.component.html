@@ -56,6 +56,16 @@
         [metaKeySelection]="metaKeySelection"
         styleClass="w-full md:w-[30rem]"
       ></p-tree>
+      <p-tree
+        [value]="files"
+        styleClass="w-full md:w-[30rem]"
+        selectionMode="single"
+        [(selection)]="selectedFile"
+        (onNodeExpand)="nodeExpand($event)"
+        (onNodeCollapse)="nodeCollapse($event)"
+        (onNodeSelect)="nodeSelect($event)"
+        (onNodeUnselect)="nodeUnselect($event)"
+      ></p-tree>
     </div>
     <div class="card mb-4">
       <div class="font-semibold mb-2">Lazy Loading</div>
@@ -64,6 +74,16 @@
         (onNodeExpand)="loadNode($event)"
         [loading]="loading"
         styleClass="w-full md:w-[30rem]"
+      ></p-tree>
+      <p-tree
+        [value]="lazyFiles"
+        styleClass="w-full md:w-[30rem]"
+        selectionMode="single"
+        [(selection)]="selectedFileLazy"
+        (onNodeExpand)="nodeExpand($event)"
+        (onNodeCollapse)="nodeCollapse($event)"
+        (onNodeSelect)="nodeSelect($event)"
+        (onNodeUnselect)="nodeUnselect($event)"
       ></p-tree>
     </div>
     <div class="card mb-4">
@@ -74,6 +94,16 @@
         [virtualScrollItemSize]="46"
         scrollHeight="250px"
         styleClass="w-full md:w-[30rem]"
+      ></p-tree>
+      <p-tree
+        [value]="virtualFiles"
+        styleClass="w-full md:w-[30rem]"
+        selectionMode="single"
+        [(selection)]="selectedFileVirtual"
+        (onNodeExpand)="nodeExpand($event)"
+        (onNodeCollapse)="nodeCollapse($event)"
+        (onNodeSelect)="nodeSelect($event)"
+        (onNodeUnselect)="nodeUnselect($event)"
       ></p-tree>
     </div>
     <div class="card mb-4 flex gap-4">
@@ -87,6 +117,16 @@
           droppableScope="multi-tree"
           styleClass="w-full md:w-[15rem]"
         ></p-tree>
+        <p-tree
+          [value]="files3"
+          styleClass="w-full md:w-[15rem]"
+          selectionMode="single"
+          [(selection)]="selectedFile3"
+          (onNodeExpand)="nodeExpand($event)"
+          (onNodeCollapse)="nodeCollapse($event)"
+          (onNodeSelect)="nodeSelect($event)"
+          (onNodeUnselect)="nodeUnselect($event)"
+        ></p-tree>
       </div>
       <div>
         <div class="font-semibold mb-2">跨樹拖曳 B</div>
@@ -98,6 +138,16 @@
           droppableScope="multi-tree"
           styleClass="w-full md:w-[15rem]"
         ></p-tree>
+        <p-tree
+          [value]="files4"
+          styleClass="w-full md:w-[15rem]"
+          selectionMode="single"
+          [(selection)]="selectedFile4"
+          (onNodeExpand)="nodeExpand($event)"
+          (onNodeCollapse)="nodeCollapse($event)"
+          (onNodeSelect)="nodeSelect($event)"
+          (onNodeUnselect)="nodeUnselect($event)"
+        ></p-tree>
       </div>
     </div>
     <div class="card mb-4">
@@ -106,12 +156,32 @@
         [value]="filesWithIcon"
         styleClass="w-full md:w-[30rem]"
       ></p-tree>
+      <p-tree
+        [value]="filesWithIcon"
+        styleClass="w-full md:w-[30rem]"
+        selectionMode="single"
+        [(selection)]="selectedFileIcon"
+        (onNodeExpand)="nodeExpand($event)"
+        (onNodeCollapse)="nodeCollapse($event)"
+        (onNodeSelect)="nodeSelect($event)"
+        (onNodeUnselect)="nodeUnselect($event)"
+      ></p-tree>
     </div>
     <div class="card mb-4">
       <div class="font-semibold mb-2">節點禁用 (Disabled)</div>
       <p-tree
         [value]="filesDisabled"
         styleClass="w-full md:w-[30rem]"
+      ></p-tree>
+      <p-tree
+        [value]="filesDisabled"
+        styleClass="w-full md:w-[30rem]"
+        selectionMode="single"
+        [(selection)]="selectedFileDisabled"
+        (onNodeExpand)="nodeExpand($event)"
+        (onNodeCollapse)="nodeCollapse($event)"
+        (onNodeSelect)="nodeSelect($event)"
+        (onNodeUnselect)="nodeUnselect($event)"
       ></p-tree>
     </div>
     <p-contextMenu #cm [model]="contextMenuItems"></p-contextMenu>

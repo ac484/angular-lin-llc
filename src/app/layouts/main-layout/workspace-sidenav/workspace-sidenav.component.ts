@@ -126,6 +126,13 @@ export class WorkspaceSidenavComponent {
     { label: '不可選', key: 'd2', leaf: true, selectable: false }
   ];
 
+  selectedFileLazy: TreeNode | null = null;
+  selectedFileVirtual: TreeNode | null = null;
+  selectedFile3: TreeNode | null = null;
+  selectedFile4: TreeNode | null = null;
+  selectedFileIcon: TreeNode | null = null;
+  selectedFileDisabled: TreeNode | null = null;
+
   constructor(private messageService: MessageService) {
     this.contextMenuItems = [
       {
