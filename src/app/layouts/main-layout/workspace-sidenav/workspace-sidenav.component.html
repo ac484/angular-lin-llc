@@ -2,32 +2,39 @@
   <ng-container sidenavLogo>
     <p-menubar [model]="menubarItems"></p-menubar>
   </ng-container>
+  
   <ng-container sidenavHeader>
     <div class="font-bold text-lg">Workspace</div>
   </ng-container>
+  
   <ng-container sidenavBody>
-    <!-- 自動切換拖曳模式，無需按鈕 -->
-    <p-tree [value]="treeNodes$ | async"
-           selectionMode="single"
-           [(selection)]="selectedNode"
-           [contextMenu]="cm"
-           [draggableNodes]="true"
-           [droppableNodes]="true"
-           [virtualScroll]="enableVirtualScroll"
-           scrollHeight="250px"
-           [virtualScrollItemSize]="46"
-           [filter]="true"
-           filterPlaceholder="搜尋節點"
-           [lazy]="enableLazy"
-           (onNodeSelect)="onNodeSelect($event)"
-           (onNodeUnselect)="onNodeUnselect($event)"
-           (onNodeDrop)="onNodeDrop($event)"
-           [loadingIcon]="'pi pi-spin pi-spinner'"
-           class="w-full"
-    ></p-tree>
+    <!-- PrimeNG Tree 官方配置 -->
+    <p-tree 
+      [value]="treeNodes$ | async"
+      [selection]="selectedNode$ | async"
+      [contextMenu]="cm"
+      [draggableNodes]="(treeConfig$ | async)?.enableDragDrop"
+      [droppableNodes]="(treeConfig$ | async)?.enableDragDrop"
+      [virtualScroll]="(treeConfig$ | async)?.enableVirtualScroll"
+      [virtualScrollItemSize]="(treeConfig$ | async)?.virtualScrollItemSize"
+      [scrollHeight]="(treeConfig$ | async)?.scrollHeight"
+      [lazy]="(treeConfig$ | async)?.enableLazyLoad"
+      [filter]="true"
+      filterPlaceholder="搜尋節點"
+      selectionMode="single"
+      draggableScope="workspace"
+      droppableScope="workspace"
+      (onNodeSelect)="onNodeSelect($event)"
+      (onNodeUnselect)="onNodeUnselect($event)"
+      (onNodeDrop)="onNodeDrop($event)"
+      class="w-full">
+    </p-tree>
+    
+    <!-- 右鍵選單 -->
     <p-contextMenu #cm [model]="contextMenuItems"></p-contextMenu>
   </ng-container>
+  
   <ng-container sidenavFooter>
-    <div class="text-xs text-gray-400">Workspace 專屬資訊</div>
+    <div class="text-xs text-gray-400">{{ (treeNodes$ | async)?.length || 0 }} 個節點</div>
   </ng-container>
 </app-sidenav>

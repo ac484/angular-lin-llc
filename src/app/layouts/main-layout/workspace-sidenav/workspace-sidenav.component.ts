@@ -1,12 +1,12 @@
-import { Component, inject, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { SidenavComponent } from '../sidenav/sidenav.component';
 import { PrimeNgModules } from '../../../shared/modules/prime-ng.module';
 import { CommonModule } from '@angular/common';
 import { WorkspaceDataService } from './workspace-sidenav-data.service';
-import { MenuItem } from 'primeng/api';
-import { WorkspaceNode } from './workspace-sidenav.types';
-import { TreeDragDropService, TreeNode } from 'primeng/api';
-import { Observable, map, takeUntil, Subject, BehaviorSubject, shareReplay } from 'rxjs';
+import { WorkspaceStateService } from './workspace-sidenav-state.service';
+import { MenuItem, TreeNode } from 'primeng/api';
+import { WorkspaceTreeNode, WorkspaceNode } from './workspace-sidenav.types';
+import { Observable, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-workspace-sidenav',
@@ -14,21 +14,20 @@ import { Observable, map, takeUntil, Subject, BehaviorSubject, shareReplay } fro
   styleUrls: ['./workspace-sidenav.component.scss'],
   standalone: true,
   imports: [CommonModule, SidenavComponent, ...PrimeNgModules],
-  providers: [TreeDragDropService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkspaceSidenavComponent implements OnDestroy {
   private readonly destroy$ = new Subject<void>();
-  private readonly nodesCount$ = new BehaviorSubject<number>(0);
-  
-  treeNodes$: Observable<TreeNode<WorkspaceNode>[]>;
-  selectedNode: TreeNode<WorkspaceNode> | null = null;
-  contextMenuItems: MenuItem[] = [
-    { label: '新增', icon: 'pi pi-plus', command: () => this.addNode(this.selectedNode) },
-    { label: '刪除', icon: 'pi pi-trash', command: () => this.deleteNode(this.selectedNode) },
-    { label: '重新命名', icon: 'pi pi-pencil', command: () => this.renameNode(this.selectedNode) }
-  ];
-  menubarItems: MenuItem[] = [
+  private readonly dataService = inject(WorkspaceDataService);
+  private readonly stateService = inject(WorkspaceStateService);
+
+  // 樹狀資料
+  readonly treeNodes$ = this.dataService.loadTree();
+  readonly selectedNode$ = this.stateService.selectedNode$;
+  readonly treeConfig$ = this.stateService.treeConfig$;
+
+  // 選單項目
+  readonly menubarItems: MenuItem[] = [
     { label: '首頁', icon: 'pi pi-home', routerLink: '/' },
     {
       label: '節點', icon: 'pi pi-briefcase',
@@ -38,74 +37,133 @@ export class WorkspaceSidenavComponent implements OnDestroy {
     }
   ];
 
-  private data: WorkspaceDataService = inject(WorkspaceDataService);
+  // 右鍵選單
+  readonly contextMenuItems: MenuItem[] = [
+    { 
+      label: '新增子節點', 
+      icon: 'pi pi-plus', 
+      command: () => this.addChildNode()
+    },
+    { 
+      label: '重新命名', 
+      icon: 'pi pi-pencil', 
+      command: () => this.renameNode() 
+    },
+    { 
+      label: '刪除', 
+      icon: 'pi pi-trash', 
+      command: () => this.deleteNode() 
+    }
+  ];
 
   constructor() {
-    this.treeNodes$ = this.data.loadNodes().pipe(
-      takeUntil(this.destroy$),
-      map(nodes => {
-        this.nodesCount$.next(nodes.length);
-        return this.data.buildTree(nodes);
-      }),
-      shareReplay(1) // 避免重複訂閱
-    );
+    // 監聽節點數量變化
+    this.treeNodes$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(nodes => {
+      const count = this.countAllNodes(nodes);
+      this.stateService.updateNodesCount(count);
+    });
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    this.nodesCount$.complete();
   }
 
-  addNode(nodeOrEvent?: TreeNode<WorkspaceNode> | any) {
-    let parentId: string | null = null;
-    if (nodeOrEvent?.data?.id) parentId = nodeOrEvent.data.id;
-    const name = '新節點';
-    const now = new Date();
-    const node: WorkspaceNode = {
-      id: crypto.randomUUID(), // 修復hotspotting問題，使用UUID
-      name,
-      type: 'custom',
+  /**
+   * 官方節點選擇事件
+   */
+  onNodeSelect(event: any): void {
+    this.stateService.setSelectedNode(event.node as WorkspaceTreeNode);
+  }
+
+  /**
+   * 官方節點取消選擇事件
+   */
+  onNodeUnselect(event: any): void {
+    this.stateService.setSelectedNode(null);
+  }
+
+  /**
+   * 官方拖放事件
+   */
+  onNodeDrop(event: any): void {
+    if (!event.dragNode?.data) return;
+    
+    const dragNodeData = event.dragNode.data as WorkspaceNode;
+    const newParentId = event.dropNode?.data?.id || null;
+    
+    if (dragNodeData.parentId === newParentId) return;
+    
+    this.dataService.updateNodeParent(dragNodeData.id, newParentId);
+  }
+
+  /**
+   * 新增根節點
+   */
+  addNode(): void {
+    const newNode: Omit<WorkspaceNode, 'id'> = {
+      name: '新節點',
+      type: 'folder',
       status: 'active',
-      createdAt: now,
-      updatedAt: now,
-      parentId
+      parentId: null,
+      createdAt: new Date(),
+      updatedAt: new Date()
     };
-    this.data.addNode(node);
+    this.dataService.addNode(newNode);
   }
 
-  deleteNode(node?: TreeNode<WorkspaceNode> | null) {
-    if (node) this.data.deleteNode(node.data);
+  /**
+   * 新增子節點
+   */
+  addChildNode(): void {
+    const selectedNode = this.stateService.selectedNode$.value;
+    const parentId = selectedNode?.data?.id || null;
+    
+    const newNode: Omit<WorkspaceNode, 'id'> = {
+      name: '新子節點',
+      type: 'folder',
+      status: 'active',
+      parentId,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.dataService.addNode(newNode);
   }
 
-  renameNode(node?: TreeNode<WorkspaceNode> | null) {
-    if (node) {
-      const name = prompt('輸入新名稱', node.data.name);
-      if (name) this.data.addNode({ ...node.data, name, updatedAt: new Date() });
+  /**
+   * 重新命名節點
+   */
+  renameNode(): void {
+    const selectedNode = this.stateService.selectedNode$.value;
+    if (!selectedNode?.data) return;
+    
+    const newName = prompt('輸入新名稱', selectedNode.data.name);
+    if (newName && newName.trim()) {
+      this.dataService.updateNodeName(selectedNode.data.id, newName.trim());
     }
   }
 
-  onNodeSelect(event: { node: TreeNode<WorkspaceNode> }) { this.selectedNode = event.node; }
-  onNodeUnselect(event: any) { this.selectedNode = null; }
-  onNodeDrop(event: any) {
-    const dragNode = event.dragNode?.data;
-    const dropNode = event.dropNode?.data;
-    if (!dragNode || !dropNode) return;
-    const newParentId = event.dropPosition === 0 ? dropNode.id : dropNode.parentId || null;
-    if (dragNode.parentId === newParentId) return;
-    this.data.updateNodeParent(dragNode.id, newParentId);
+  /**
+   * 刪除節點
+   */
+  deleteNode(): void {
+    const selectedNode = this.stateService.selectedNode$.value;
+    if (!selectedNode?.data) return;
+    
+    if (confirm(`確定要刪除「${selectedNode.data.name}」嗎？`)) {
+      this.dataService.deleteNode(selectedNode.data.id);
+      this.stateService.setSelectedNode(null);
+    }
   }
 
-  nodeExpand(event: any): void { console.log('nodeExpand', event); }
-  nodeCollapse(event: any): void { console.log('nodeCollapse', event); }
-  nodeSelect(event: any): void { console.log('nodeSelect', event); }
-  nodeUnselect(event: any): void { console.log('nodeUnselect', event); }
-
-  get enableLazy(): boolean {
-    return this.nodesCount$.value > 5000;
-  }
-  
-  get enableVirtualScroll(): boolean {
-    return this.nodesCount$.value > 1000;
+  /**
+   * 計算所有節點數量
+   */
+  private countAllNodes(nodes: WorkspaceTreeNode[]): number {
+    return nodes.reduce((count, node) => {
+      return count + 1 + (node.children ? this.countAllNodes(node.children) : 0);
+    }, 0);
   }
 }
