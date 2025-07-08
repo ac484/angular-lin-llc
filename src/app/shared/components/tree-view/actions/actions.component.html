@@ -1,0 +1,16 @@
+<div class="font-semibold mb-2">節點操作（新增/編輯/刪除）</div>
+<p-tree
+  [value]="nodes"
+  selectionMode="single"
+  [(selection)]="selectedNode"
+  styleClass="w-full md:w-[30rem] mb-2"
+></p-tree>
+<div class="flex gap-2 mb-2">
+  <button type="button" (click)="addNode()" [disabled]="!selectedNode">新增子節點</button>
+  <button type="button" (click)="startEdit()" [disabled]="!selectedNode">編輯</button>
+  <button type="button" (click)="deleteNode()" [disabled]="!selectedNode">刪除</button>
+</div>
+<div *ngIf="isEditing" class="mb-2">
+  <input [(ngModel)]="editLabel" />
+  <button type="button" (click)="saveEdit()">儲存</button>
+</div>
