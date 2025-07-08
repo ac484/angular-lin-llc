@@ -9,22 +9,27 @@
 
   <div class="content-wrapper flex-grow mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6 mt-14 md:mt-0">
     <div class="flex h-full md:gap-6">
-      <app-sidenav>
-        <ng-container sidenavLogo>
-          <div class="flex items-center justify-center">
-            <img src="https://via.assets.so/img.jpg?w=400&h=150&tc=white" alt="Logo">
-          </div>
-        </ng-container>
-        <ng-container sidenavHeader>
-          <app-nav-section [sections]="headerSection"></app-nav-section>
-        </ng-container>
-        <ng-container sidenavBody>
-          <app-nav-section [sections]="bodySection"></app-nav-section>
-        </ng-container>
-        <ng-container sidenavFooter>
-          <app-nav-section [sections]="footerSection"></app-nav-section>
-        </ng-container>
-      </app-sidenav>
+      <ng-container *ngIf="isWorkspaceRoute; else defaultSidenav">
+        <app-workspace-sidenav></app-workspace-sidenav>
+      </ng-container>
+      <ng-template #defaultSidenav>
+        <app-sidenav>
+          <ng-container sidenavLogo>
+            <div class="flex items-center justify-center">
+              <img src="https://via.assets.so/img.jpg?w=400&h=150&tc=white" alt="Logo">
+            </div>
+          </ng-container>
+          <ng-container sidenavHeader>
+            <app-nav-section [sections]="headerSection"></app-nav-section>
+          </ng-container>
+          <ng-container sidenavBody>
+            <app-nav-section [sections]="bodySection"></app-nav-section>
+          </ng-container>
+          <ng-container sidenavFooter>
+            <app-nav-section [sections]="footerSection"></app-nav-section>
+          </ng-container>
+        </app-sidenav>
+      </ng-template>
       <div class="page-content bg-white shadow-md rounded-lg flex-grow">
         <app-loading-indicator></app-loading-indicator>
         <router-outlet></router-outlet>
