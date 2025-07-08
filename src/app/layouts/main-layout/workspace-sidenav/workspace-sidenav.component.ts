@@ -4,7 +4,7 @@ import { PrimeNgModules } from '../../../shared/modules/prime-ng.module';
 import { CommonModule } from '@angular/common';
 import { WorkspaceDataService } from './workspace-sidenav-data.service';
 import { WorkspaceStateService } from './workspace-sidenav-state.service';
-import { MenuItem, TreeNode, TreeDragDropService } from 'primeng/api';
+import { MenuItem, TreeNode, TreeDragDropService, MessageService } from 'primeng/api';
 import { WorkspaceTreeNode, WorkspaceNode } from './workspace-sidenav.types';
 import { Observable, Subject, takeUntil, map } from 'rxjs';
 
@@ -14,13 +14,14 @@ import { Observable, Subject, takeUntil, map } from 'rxjs';
   styleUrls: ['./workspace-sidenav.component.scss'],
   standalone: true,
   imports: [CommonModule, SidenavComponent, ...PrimeNgModules],
-  providers: [TreeDragDropService],
+  providers: [TreeDragDropService, MessageService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkspaceSidenavComponent implements OnDestroy {
   private readonly destroy$ = new Subject<void>();
   private readonly dataService = inject(WorkspaceDataService);
   private readonly stateService = inject(WorkspaceStateService);
+  private readonly messageService = inject(MessageService);
 
   // 樹狀資料
   readonly treeNodes$ = this.dataService.loadTree();
@@ -91,10 +92,20 @@ export class WorkspaceSidenavComponent implements OnDestroy {
     // 防止無意義移動和循環引用
     if (dragNode.parentId === newParentId || 
         this.wouldCreateCycle(dragNode.id, newParentId)) {
+      this.messageService.add({ 
+        severity: 'warn', 
+        summary: '移動失敗', 
+        detail: '無法移動到此位置' 
+      });
       return;
     }
     
     this.dataService.updateNodeParent(dragNode.id, newParentId);
+    this.messageService.add({ 
+      severity: 'success', 
+      summary: '節點已移動', 
+      detail: `「${dragNode.name}」已移動到「${dropNode?.name || '根目錄'}」` 
+    });
   }
 
   /**
@@ -117,18 +128,36 @@ export class WorkspaceSidenavComponent implements OnDestroy {
 
   onNodeSelect(event: any): void {
     this.stateService.setSelectedNode(event.node as WorkspaceTreeNode);
+    this.messageService.add({ 
+      severity: 'info', 
+      summary: '節點已選擇', 
+      detail: event.node.label 
+    });
   }
 
   onNodeUnselect(event: any): void {
     this.stateService.setSelectedNode(null);
+    this.messageService.add({ 
+      severity: 'info', 
+      summary: '節點已取消選擇', 
+      detail: event.node.label 
+    });
   }
 
   onNodeExpand(event: any): void {
-    // 可在此處實作懶載入邏輯
+    this.messageService.add({ 
+      severity: 'success', 
+      summary: '節點已展開', 
+      detail: event.node.label 
+    });
   }
 
   onNodeCollapse(event: any): void {
-    // 收合邏輯
+    this.messageService.add({ 
+      severity: 'warn', 
+      summary: '節點已收合', 
+      detail: event.node.label 
+    });
   }
 
   addNode(): void {
@@ -141,6 +170,11 @@ export class WorkspaceSidenavComponent implements OnDestroy {
       updatedAt: new Date()
     };
     this.dataService.addNode(newNode);
+    this.messageService.add({ 
+      severity: 'success', 
+      summary: '節點已新增', 
+      detail: '新節點已建立' 
+    });
   }
 
   addChildNode(): void {
@@ -156,6 +190,11 @@ export class WorkspaceSidenavComponent implements OnDestroy {
       updatedAt: new Date()
     };
     this.dataService.addNode(newNode);
+    this.messageService.add({ 
+      severity: 'success', 
+      summary: '子節點已新增', 
+      detail: selectedNode ? `在「${selectedNode.data?.name}」下新增子節點` : '新增根節點' 
+    });
   }
 
   renameNode(): void {
@@ -165,6 +204,11 @@ export class WorkspaceSidenavComponent implements OnDestroy {
     const newName = prompt('輸入新名稱', selectedNode.data.name);
     if (newName && newName.trim()) {
       this.dataService.updateNodeName(selectedNode.data.id, newName.trim());
+      this.messageService.add({ 
+        severity: 'success', 
+        summary: '節點已重新命名', 
+        detail: `重新命名為「${newName.trim()}」` 
+      });
     }
   }
 
@@ -175,14 +219,27 @@ export class WorkspaceSidenavComponent implements OnDestroy {
     if (confirm(`確定要刪除「${selectedNode.data.name}」嗎？`)) {
       this.dataService.deleteNode(selectedNode.data.id);
       this.stateService.setSelectedNode(null);
+      this.messageService.add({ 
+        severity: 'error', 
+        summary: '節點已刪除', 
+        detail: `「${selectedNode.data.name}」已被刪除` 
+      });
     }
   }
 
   expandAll(): void {
-    console.log('展開所有節點');
+    this.messageService.add({ 
+      severity: 'info', 
+      summary: '展開所有節點', 
+      detail: '所有節點已展開' 
+    });
   }
 
   collapseAll(): void {
-    console.log('收合所有節點');
+    this.messageService.add({ 
+      severity: 'info', 
+      summary: '收合所有節點', 
+      detail: '所有節點已收合' 
+    });
   }
 }
