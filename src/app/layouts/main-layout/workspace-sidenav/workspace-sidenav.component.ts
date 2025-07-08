@@ -133,6 +133,40 @@ export class WorkspaceSidenavComponent {
   selectedFileIcon: TreeNode | null = null;
   selectedFileDisabled: TreeNode | null = null;
 
+  // 新增：自訂模板用的節點資料
+  nodes: TreeNode[] = [
+    {
+      label: 'Google',
+      key: 'url1',
+      data: 'https://www.google.com',
+      type: 'url',
+      leaf: true
+    },
+    {
+      label: '一般節點',
+      key: 'default1',
+      leaf: true
+    },
+    {
+      label: '文件夾',
+      key: 'folder1',
+      children: [
+        {
+          label: 'Angular 官網',
+          key: 'url2',
+          data: 'https://angular.dev',
+          type: 'url',
+          leaf: true
+        },
+        {
+          label: '普通子節點',
+          key: 'default2',
+          leaf: true
+        }
+      ]
+    }
+  ];
+
   items: MenuItem[] = [
     { label: '檢視', icon: 'pi pi-search', command: () => this.viewNode(this.selectedFile) },
     { label: '刪除', icon: 'pi pi-trash', command: () => this.deleteNode(this.selectedFile) }
