@@ -37,6 +37,13 @@ export class WorkspaceSidenavComponent implements OnInit {
 
   private data: WorkspaceDataService = inject(WorkspaceDataService);
 
+  get enableLazy(): boolean {
+    return this.treeNodes.length > 5000;
+  }
+  get enableVirtualScroll(): boolean {
+    return this.treeNodes.length > 1000;
+  }
+
   ngOnInit() {
     this.load();
   }
