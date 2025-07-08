@@ -3,16 +3,17 @@ import { SidenavComponent } from '../sidenav/sidenav.component';
 import { PrimeNgModules } from '../../../shared/modules/prime-ng.module';
 import { CommonModule } from '@angular/common';
 import { WorkspaceDataService } from '../../../services/workspace-data.service';
-import { TreeNode } from 'primeng/api';
 import { MenuItem } from 'primeng/api';
 import { WorkspaceNode } from '../../../models/workspace.types';
+import { TreeDragDropService, TreeNode } from 'primeng/api';
 
 @Component({
   selector: 'app-workspace-sidenav',
   templateUrl: './workspace-sidenav.component.html',
   styleUrls: ['./workspace-sidenav.component.scss'],
   standalone: true,
-  imports: [CommonModule, SidenavComponent, ...PrimeNgModules]
+  imports: [CommonModule, SidenavComponent, ...PrimeNgModules],
+  providers: [TreeDragDropService]
 })
 export class WorkspaceSidenavComponent implements OnInit {
   treeNodes: TreeNode<WorkspaceNode>[] = [];
