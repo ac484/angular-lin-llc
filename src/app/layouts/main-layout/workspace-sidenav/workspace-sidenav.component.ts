@@ -77,5 +77,16 @@ export class WorkspaceSidenavComponent implements OnInit {
   }
   onNodeSelect(event: any) { this.selectedNode = event.node; }
   onNodeUnselect(event: any) { this.selectedNode = null; }
-  onNodeDrop(event: any) { this.load(); }
+  onNodeDrop(event: any) {
+    // event.dragNode: 被拖曳的節點
+    // event.dropNode: 目標節點
+    // event.dropPosition: -1(上), 0(內), 1(下)
+    const dragNode = event.dragNode?.data;
+    const dropNode = event.dropNode?.data;
+    if (!dragNode || !dropNode) return;
+    // 僅支援拖曳到其他節點下方（可依需求調整 dropPosition）
+    const newParentId = event.dropPosition === 0 ? dropNode.id : dropNode.parentId || null;
+    this.loading = true;
+    this.data.updateNodeParent(dragNode.id, newParentId).then(() => this.load());
+  }
 }

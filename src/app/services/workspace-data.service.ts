@@ -1,6 +1,6 @@
 // 本檔案依據 Firebase Console 專案設定，使用 Firebase Client SDK 操作 Cloud Firestore
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, collectionData, addDoc, doc, deleteDoc } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, addDoc, doc, deleteDoc, updateDoc } from '@angular/fire/firestore';
 import { WorkspaceNode } from '../models/workspace.types';
 import { Observable } from 'rxjs';
 import { TreeNode } from 'primeng/api';
@@ -43,5 +43,10 @@ export class WorkspaceDataService {
   async deleteNode(node: WorkspaceNode): Promise<void> {
     const ref = doc(this.firestore, 'nodes', node.id);
     await deleteDoc(ref);
+  }
+
+  async updateNodeParent(nodeId: string, parentId: string | null): Promise<void> {
+    const ref = doc(this.firestore, 'nodes', nodeId);
+    await updateDoc(ref, { parentId });
   }
 }
