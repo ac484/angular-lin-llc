@@ -8,7 +8,7 @@
   </ng-container>
   
   <ng-container sidenavBody>
-    <!-- PrimeNG Tree 官方配置 -->
+    <!-- PrimeNG Tree 官方完整配置 -->
     <p-tree 
       [value]="treeNodes$ | async"
       [selection]="selectedNode$ | async"
@@ -26,6 +26,8 @@
       droppableScope="workspace"
       (onNodeSelect)="onNodeSelect($event)"
       (onNodeUnselect)="onNodeUnselect($event)"
+      (onNodeExpand)="onNodeExpand($event)"
+      (onNodeCollapse)="onNodeCollapse($event)"
       (onNodeDrop)="onNodeDrop($event)"
       class="w-full">
     </p-tree>
