@@ -8,6 +8,7 @@ import {AlertsComponent} from './pages/alerts/alerts.component';
 import {ButtonsComponent} from './pages/buttons/buttons.component';
 import {authGuard} from './guards/auth.guard';
 import {logoutGuard} from './guards/logout.guard';
+import { WorkspaceComponent } from './pages/workspace/workspace.component';
 
 export const routes: Routes = [
   {
@@ -27,7 +28,8 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'alerts', component: AlertsComponent },
-      { path: 'buttons', component: ButtonsComponent }
+      { path: 'buttons', component: ButtonsComponent },
+      { path: 'workspace', component: WorkspaceComponent }
     ]
   },
   {
