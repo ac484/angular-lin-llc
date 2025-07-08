@@ -1,26 +1,41 @@
 import { Routes } from '@angular/router';
-import { WorkspacesComponent } from './workspaces/workspaces.component';
+import { LoginComponent } from './auth/login/login.component';
+import { RegisterComponent } from './auth/register/register.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import {ForgotPasswordComponent} from './auth/forgot-password/forgot-password.component';
+import {MainLayoutComponent} from './layouts/main-layout/main-layout.component';
+import {AlertsComponent} from './pages/alerts/alerts.component';
+import {ButtonsComponent} from './pages/buttons/buttons.component';
+import {authGuard} from './guards/auth.guard';
+import {logoutGuard} from './guards/logout.guard';
+import { WorkspaceComponent } from './pages/workspace/workspace.component';
 
 export const routes: Routes = [
   {
-    path: 'login',
-    loadComponent: () => import('./login/login.component').then(m => m.LoginComponent)
+    path: '',
+    children: [
+      { path: '', redirectTo: 'login', pathMatch: 'full' },
+      { path: 'login', component: LoginComponent },
+      { path: 'register', component: RegisterComponent },
+      { path: 'forgot-password', component: ForgotPasswordComponent },
+
+    ]
   },
   {
     path: '',
-    loadComponent: () => import('./home/home.component').then(m => m.HomeComponent)
+    component: MainLayoutComponent,
+    canActivate:[authGuard],
+    children: [
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'alerts', component: AlertsComponent },
+      { path: 'buttons', component: ButtonsComponent },
+      { path: 'workspace', component: WorkspaceComponent }
+    ]
   },
   {
-    path: 'account',
-    loadComponent: () => import('./account/account.component').then(m => m.AccountComponent)
+    path: 'logout',
+    canActivate:[logoutGuard],
+    component:LoginComponent
   },
-  {
-    path: 'workspace',
-    loadChildren: () => import('./workspace/workspace.module').then(m => m.WorkspaceModule)
-  },
-  {
-    path: 'admin',
-    loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule)
-  },
-  { path: 'workspaces', component: WorkspacesComponent },
+  { path: '**', redirectTo: 'login' }
 ];

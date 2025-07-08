@@ -1,9 +1,161 @@
-/* You can add global styles to this file, and also import other style files */
 
-@use "tailwindcss";
-@use "primeicons/primeicons.css";
-@use "primeflex/primeflex.css";
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define the theme object.
+$main-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+    tertiary: mat.$blue-palette,
+  ),
+  density: (
+    scale: 0,
+  )
+));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+:root {
+  @include mat.all-component-themes($main-theme);
+}
+
+// Comment out the line below if you want to use the pre-defined typography utility classes.
+// For more information: https://material.angular.io/guide/typography#using-typography-styles-in-your-application.
+// @include mat.typography-hierarchy($main-theme);
+
+// Comment out the line below if you want to use the deprecated `color` inputs.
+// @include mat.color-variants-backwards-compatibility($main-theme);
+@import "primeicons/primeicons.css";
+@layer tailwind-base, primeng, tailwind-utilities;
+
+html {
+  font-size: 18px
+}
+
+
+
+/* Tailwind Base styles */
+@layer tailwind-base {
+  @tailwind base;
+}
+
+@layer primeng;
+
+
+/* Tailwind Components & Utilities */
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}
+
+/* PrimeNG Icon Styles */
+.p-input-icon-left {
+  position: relative;
+}
+
+.p-input-icon-left i.status-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0.75rem;
+  color: #64748b; /* Tailwind slate-500 */
+  font-size: 1.25rem; /* 20px */
+  z-index: 1;
+}
+
+/* Responsive icon sizes */
+@media (min-width: 640px) {
+  .p-input-icon-left i.status-icon {
+    font-size: 1.5rem; /* 24px for sm breakpoint */
+  }
+}
+
+@media (min-width: 1024px) {
+  .p-input-icon-left i.status-icon {
+    font-size: 1.75rem; /* 28px for lg breakpoint */
+  }
+}
+
+/* Button icon alignment */
+.p-button .p-button-icon {
+  font-size: 1.25rem;
+  margin-right: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .p-button .p-button-icon {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .p-button .p-button-icon {
+    font-size: 1.75rem;
+  }
+}
+
+/* Checkbox icon size */
+.p-checkbox .p-checkbox-icon {
+  font-size: 1rem;
+}
+
+@media (min-width: 640px) {
+  .p-checkbox .p-checkbox-icon {
+    font-size: 1.25rem;
+  }
+}
+
+/* Input padding adjustment for icons */
+.p-input-icon-left input {
+  padding-left: 3rem !important;
+}
+
+/* Toast icon sizing */
+.p-toast .p-toast-message .p-toast-message-icon {
+  font-size: 1.5rem;
+}
+
+
+
+.form-btn-lg {
+  @apply h-12 sm:h-14 lg:h-16 text-base sm:text-lg lg:text-xl;
+}
+
+.form-lg {
+  app-form-field {
+    input {
+      @apply w-full h-12 sm:h-14 lg:h-16 pl-10 text-base sm:text-lg;
+    }
+
+    label {
+      @apply block text-gray-700 text-base sm:text-lg lg:text-xl font-medium mb-2;
+    }
+
+    ::ng-deep {
+      input {
+        @apply w-full h-12 sm:h-14 lg:h-16;
+      }
+
+      p-password, .p-inputwrapper {
+        @apply w-full;
+      }
+
+      ::ng-deep {
+        @apply w-full;
+      }
+    }
+  }
+
+}
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-
